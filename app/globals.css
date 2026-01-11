@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Quattrocento+Sans:wght@400;700&display=swap");
+
+:root {
+  --font-cormorant: "Cormorant Garamond", serif;
+  --font-quattrocento: "Quattrocento Sans", sans-serif;
+
+  /* Blacks Theme Colors */
+  --color-dark: #1a1a1a;
+  --color-charcoal: #2d2d2d;
+  --color-cream: #faf7f0;
+  --color-cream-dark: #f5f2eb;
+  --color-beige: #e8e3d6;
+  --color-forest: #2c5f4f;
+  --color-forest-light: #3a7868;
+  --color-teal: #3a7a9e;
+  --color-gold: #c9a86a;
+  --color-text-light: #666;
+  --color-text-dark: #1a1a1a;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-quattrocento);
+  background-color: var(--color-cream);
+  color: var(--color-text-dark);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-cormorant);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* Smooth transitions */
+a,
+button,
+input,
+textarea,
+select {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom Scrollbar - Blacks themed */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-cream-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-forest);
+  border-radius: 6px;
+  border: 2px solid var(--color-cream-dark);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-forest-light);
+}
+
+/* Elegant animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.slide-in {
+  animation: slideIn 0.5s ease-out;
+}
+
+/* Premium button styles */
+.btn-primary {
+  background: linear-gradient(
+    135deg,
+    var(--color-forest) 0%,
+    var(--color-forest-light) 100%
+  );
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  box-shadow: 0 4px 6px rgba(44, 95, 79, 0.2);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(44, 95, 79, 0.3);
+}
+
+/* Card shadows */
+.card-shadow {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+}
+
+.card-shadow:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Input focus states */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-forest);
+  box-shadow: 0 0 0 3px rgba(44, 95, 79, 0.1);
+}
+
+/* Book-style decorative elements */
+.page-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-gold),
+    transparent
+  );
+  margin: 2rem 0;
+}

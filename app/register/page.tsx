@@ -1,5 +1,6 @@
 "use client"
 
+import { signInWithGoogle } from "@/lib/auth"
 import axios from "axios"
 import gsap from "gsap"
 import { useRouter } from "next/navigation"
@@ -141,8 +142,36 @@ export default function RegisterPage() {
     }
   }
 
+  const handleGoogleSignIn = async () => {
+    setLoading(true)
+    try {
+      const { user, idToken } = await signInWithGoogle()
+
+      // Sync with backend (will create user if doesn't exist)
+      const response = await axios.post(`${API_URL}/auth/firebase`, {
+        firebaseToken: idToken,
+        email: user.email,
+        name: user.displayName,
+        photoURL: user.photoURL,
+      })
+
+      localStorage.setItem("token", response.data.token)
+      toast.success(`Welcome, ${user.displayName}!`)
+
+      setTimeout(() => {
+        router.push(
+          response.data.user.role === "admin" ? "/admin/genres" : "/library"
+        )
+      }, 1000)
+    } catch (error: any) {
+      toast.error(error.message || "Google sign-in failed")
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-white flex flex-row-reverse">
+    <div className="min-h-screen bg-gradient-to-br from-[#1F242E] via-[#2C5F4F] to-[#1F242E] flex flex-row-reverse relative overflow-hidden">
       <Toaster
         position="top-right"
         toastOptions={{
@@ -151,35 +180,87 @@ export default function RegisterPage() {
         }}
       />
 
+      {/* Floating Book Covers - Behind Both Panels */}
+      <div className="absolute inset-0 overflow-hidden opacity-40">
+        {/* Large Books */}
+        <img
+          src="https://covers.openlibrary.org/b/id/8235886-L.jpg"
+          alt=""
+          className="absolute top-20 left-20 w-40 h-56 rounded-lg shadow-2xl transform rotate-12 animate-float object-cover"
+        />
+        <img
+          src="https://covers.openlibrary.org/b/id/10387084-L.jpg"
+          alt=""
+          className="absolute bottom-40 left-40 w-44 h-60 rounded-lg shadow-2xl transform -rotate-6 animate-float object-cover"
+        />
+        <img
+          src="https://covers.openlibrary.org/b/id/12549326-L.jpg"
+          alt=""
+          className="absolute top-40 right-16 w-40 h-56 rounded-lg shadow-2xl transform rotate-[-15deg] animate-float-delayed object-cover"
+        />
+
+        {/* Medium Books */}
+        <img
+          src="https://covers.openlibrary.org/b/id/12583098-L.jpg"
+          alt=""
+          className="absolute top-60 right-32 w-32 h-44 rounded-lg shadow-2xl animate-float-delayed object-cover transform rotate-3"
+        />
+        <img
+          src="https://covers.openlibrary.org/b/id/10677563-L.jpg"
+          alt=""
+          className="absolute bottom-1/3 left-1/4 w-32 h-48 rounded-lg shadow-2xl transform -rotate-12 animate-float-delayed object-cover"
+        />
+        <img
+          src="https://covers.openlibrary.org/b/id/7884916-L.jpg"
+          alt=""
+          className="absolute top-1/3 right-1/4 w-28 h-40 rounded-lg shadow-2xl animate-float object-cover transform rotate-6"
+        />
+        <img
+          src="https://covers.openlibrary.org/b/id/8465165-L.jpg"
+          alt=""
+          className="absolute bottom-32 right-1/3 w-32 h-46 rounded-lg shadow-2xl transform rotate-8 animate-float object-cover"
+        />
+        <img
+          src="https://covers.openlibrary.org/b/id/10521270-L.jpg"
+          alt=""
+          className="absolute top-1/2 left-16 w-30 h-42 rounded-lg shadow-2xl transform -rotate-8 animate-float-delayed object-cover"
+        />
+
+        {/* Small Books */}
+        <img
+          src="https://covers.openlibrary.org/b/id/8225261-L.jpg"
+          alt=""
+          className="absolute bottom-20 right-20 w-20 h-32 rounded-lg shadow-2xl animate-float-delayed object-cover transform rotate-[-5deg]"
+        />
+        <img
+          src="https://covers.openlibrary.org/b/id/8231357-L.jpg"
+          alt=""
+          className="absolute top-1/4 left-1/3 w-24 h-34 rounded-lg shadow-2xl animate-float object-cover transform rotate-12"
+        />
+        <img
+          src="https://covers.openlibrary.org/b/id/7659574-L.jpg"
+          alt=""
+          className="absolute bottom-1/4 right-1/4 w-22 h-32 rounded-lg shadow-2xl animate-float-delayed object-cover transform -rotate-10"
+        />
+        <img
+          src="https://covers.openlibrary.org/b/id/8418735-L.jpg"
+          alt=""
+          className="absolute top-3/4 left-1/2 w-20 h-30 rounded-lg shadow-2xl animate-float object-cover transform rotate-15"
+        />
+
+        {/* Center Feature Book */}
+        <img
+          src="https://covers.openlibrary.org/b/id/12919193-L.jpg"
+          alt=""
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-64 rounded-lg shadow-2xl animate-float object-cover transform rotate-[-8deg] opacity-40"
+        />
+      </div>
+
       {/* Right Panel - Illustration & Benefits */}
       <div
         ref={leftPanelRef}
-        className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#2C5F4F] via-[#3A7868] to-[#2C5F4F] p-12 flex-col justify-between relative overflow-hidden"
+        className="hidden lg:flex lg:w-1/2 p-12 flex-col justify-between relative z-10"
       >
-        {/* Floating Book Covers */}
-        <div className="absolute inset-0 overflow-hidden opacity-50">
-          <img
-            src="https://covers.openlibrary.org/b/id/7884916-L.jpg"
-            alt=""
-            className="absolute top-32 right-20 w-28 h-40 rounded-lg shadow-2xl animate-float object-cover"
-          />
-          <img
-            src="https://covers.openlibrary.org/b/id/10677563-L.jpg"
-            alt=""
-            className="absolute top-60 left-32 w-32 h-48 rounded-lg shadow-2xl transform rotate-45 animate-float-delayed object-cover"
-          />
-          <img
-            src="https://covers.openlibrary.org/b/id/8231346-L.jpg"
-            alt=""
-            className="absolute bottom-40 right-40 w-36 h-52 rounded-lg shadow-2xl animate-float object-cover"
-          />
-          <img
-            src="https://covers.openlibrary.org/b/id/12677815-L.jpg"
-            alt=""
-            className="absolute bottom-24 left-24 w-24 h-36 rounded-lg shadow-2xl transform -rotate-12 animate-float-delayed object-cover"
-          />
-        </div>
-
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-12">
             <div className="w-12 h-12 bg-[#C9A86A] rounded-xl flex items-center justify-center">
@@ -200,7 +281,7 @@ export default function RegisterPage() {
             <h2 className="text-4xl font-heading font-bold text-white leading-tight">
               Start Your Reading Journey Today
             </h2>
-            <p className="text-lg text-gray-200">
+            <p className="text-lg text-gray-300">
               Join thousands of readers who are transforming the way they
               discover and track books.
             </p>
@@ -288,38 +369,49 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        <div className="relative z-10 text-center">
-          <p className="text-white/60 text-sm">
-            Trusted by 10,000+ readers worldwide
-          </p>
+        <div className="relative z-10">
+          <blockquote className="text-white/80 italic text-lg">
+            "A reader lives a thousand lives before he dies... The man who never
+            reads lives only one."
+          </blockquote>
+          <p className="text-white/60 mt-2">— George R.R. Martin</p>
         </div>
       </div>
 
       {/* Left Panel - Form */}
-      <div className="flex-1 flex items-center justify-center p-10 lg:p-14 overflow-y-auto bg-white/90 backdrop-blur-xl border-r border-white/20 shadow-2xl">
-        <div className="w-full max-w-md" ref={formRef}>
+      <div className="flex-1 flex items-center justify-center p-6 lg:p-8 relative z-10">
+        <div
+          className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 shadow-2xl"
+          ref={formRef}
+        >
           {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#2C5F4F] to-[#3A7868] rounded-lg flex items-center justify-center text-xl">
-              📚
+          <div className="lg:hidden flex items-center gap-2 mb-4 justify-center">
+            <div className="w-9 h-9 bg-[#C9A86A] rounded-lg flex items-center justify-center">
+              <svg
+                className="w-5 h-5 text-white"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+              </svg>
             </div>
-            <span className="text-xl font-heading font-bold text-[#1F242E]">
+            <span className="text-lg font-heading font-bold text-white">
               BookWorm
             </span>
           </div>
 
-          <div className="mb-10">
-            <h1 className="text-4xl font-heading font-bold text-[#1F242E] mb-3">
+          <div className="mb-5 text-center">
+            <h1 className="text-3xl font-heading font-bold text-white mb-2">
               Create Account
             </h1>
-            <p className="text-[#85817B] text-lg">
+            <p className="text-gray-200 text-base">
               Begin your literary adventure
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-3">
             {/* Photo Upload */}
-            <div className="flex justify-center mb-6">
+            <div className="flex justify-center mb-4">
               <div className="relative group cursor-pointer">
                 <input
                   type="file"
@@ -329,7 +421,7 @@ export default function RegisterPage() {
                   id="photo-upload"
                 />
                 <label htmlFor="photo-upload" className="cursor-pointer block">
-                  <div className="relative w-28 h-28 rounded-full overflow-hidden bg-gradient-to-br from-[#2C5F4F]/10 to-[#C9A86A]/10 border-4 border-dashed border-[#C9A86A]/30 group-hover:border-[#2C5F4F] transition-all duration-300">
+                  <div className="relative w-24 h-24 rounded-full overflow-hidden bg-white/90 border-3 border-[#C9A86A] group-hover:border-[#B89858] group-hover:bg-white transition-all duration-300 shadow-lg">
                     {photoPreview ? (
                       <img
                         src={photoPreview}
@@ -337,10 +429,10 @@ export default function RegisterPage() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center text-[#2C5F4F]">
-                        {/* Book Reader Icon */}
+                      <div className="w-full h-full flex flex-col items-center justify-center text-[#C9A86A] group-hover:text-[#B89858]">
+                        {/* User Icon */}
                         <svg
-                          className="w-12 h-12 mb-1 group-hover:scale-110 transition-transform"
+                          className="w-10 h-10 mb-1 group-hover:scale-110 transition-transform"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -348,29 +440,27 @@ export default function RegisterPage() {
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            strokeWidth={1.5}
+                            strokeWidth={2}
                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                           />
                         </svg>
-                        <span className="text-xs font-medium text-[#85817B]">
-                          Upload
-                        </span>
+                        <span className="text-xs font-semibold">Upload</span>
                       </div>
                     )}
                   </div>
                   {/* Decorative Ring */}
-                  <div className="absolute inset-0 rounded-full border-2 border-[#C9A86A]/0 group-hover:border-[#C9A86A]/20 scale-110 transition-all"></div>
+                  <div className="absolute inset-0 rounded-full border-2 border-[#C9A86A]/30 group-hover:border-[#C9A86A]/50 scale-110 transition-all"></div>
                 </label>
               </div>
             </div>
 
             {/* Name */}
-            <div className="group">
-              <label className="block text-sm font-semibold text-[#1F242E] mb-2 group-focus-within:text-[#2C5F4F] transition">
+            <div className="group cursor-text">
+              <label className="block text-sm font-semibold text-white mb-1.5 group-focus-within:text-[#C9A86A] transition">
                 Full Name
               </label>
               <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4a4543] group-focus-within:text-[#2C5F4F] transition">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/70 group-focus-within:text-[#C9A86A] transition-colors">
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -392,19 +482,19 @@ export default function RegisterPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className="w-full pl-12 pr-4 py-4 bg-[#FAF7F0] border-2 border-[#E8E3D6] rounded-2xl focus:border-[#2C5F4F] focus:bg-white outline-none transition-all text-[#1F242E]"
+                  className="w-full pl-11 pr-4 py-3 bg-white/20 backdrop-blur-sm border-2 border-white/30 rounded-xl focus:border-[#C9A86A] focus:bg-white/30 outline-none transition-all text-white placeholder:text-white/50 text-sm"
                   placeholder="John Doe"
                 />
               </div>
             </div>
 
             {/* Email */}
-            <div className="group">
-              <label className="block text-sm font-semibold text-[#1F242E] mb-2 group-focus-within:text-[#2C5F4F] transition">
+            <div className="group cursor-text">
+              <label className="block text-sm font-semibold text-white mb-1.5 group-focus-within:text-[#C9A86A] transition">
                 Email Address
               </label>
               <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4a4543] group-focus-within:text-[#2C5F4F] transition">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/70 group-focus-within:text-[#C9A86A] transition-colors">
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -426,19 +516,19 @@ export default function RegisterPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="w-full pl-12 pr-4 py-4 bg-[#FAF7F0] border-2 border-[#E8E3D6] rounded-2xl focus:border-[#2C5F4F] focus:bg-white outline-none transition-all text-[#1F242E]"
+                  className="w-full pl-11 pr-4 py-3 bg-white/20 backdrop-blur-sm border-2 border-white/30 rounded-xl focus:border-[#C9A86A] focus:bg-white/30 outline-none transition-all text-white placeholder:text-white/50 text-sm"
                   placeholder="you@example.com"
                 />
               </div>
             </div>
 
             {/* Password */}
-            <div className="group">
-              <label className="block text-sm font-semibold text-[#1F242E] mb-2 group-focus-within:text-[#2C5F4F] transition">
+            <div className="group cursor-text">
+              <label className="block text-sm font-semibold text-white mb-1.5 group-focus-within:text-[#C9A86A] transition">
                 Password
               </label>
               <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4a4543] group-focus-within:text-[#2C5F4F] transition">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/70 group-focus-within:text-[#C9A86A] transition z-10">
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -460,13 +550,13 @@ export default function RegisterPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
-                  className="w-full pl-12 pr-12 py-4 bg-[#FAF7F0] border-2 border-[#E8E3D6] rounded-2xl focus:border-[#2C5F4F] focus:bg-white outline-none transition-all text-[#1F242E]"
+                  className="w-full pl-11 pr-11 py-3 bg-white/20 backdrop-blur-sm border-2 border-white/30 rounded-xl focus:border-[#C9A86A] focus:bg-white/30 outline-none transition-all text-white placeholder:text-white/50 text-sm"
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#85817B] hover:text-[#2C5F4F] transition cursor-pointer"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-[#C9A86A] transition cursor-pointer z-10"
                 >
                   {showPassword ? (
                     <svg
@@ -558,12 +648,12 @@ export default function RegisterPage() {
             </div>
 
             {/* Confirm Password */}
-            <div className="group">
-              <label className="block text-sm font-semibold text-[#1F242E] mb-2 group-focus-within:text-[#2C5F4F] transition">
+            <div className="group cursor-text">
+              <label className="block text-sm font-semibold text-white mb-1.5 group-focus-within:text-[#C9A86A] transition">
                 Confirm Password
               </label>
               <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4a4543] group-focus-within:text-[#2C5F4F] transition">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/70 group-focus-within:text-[#C9A86A] transition z-10">
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -588,13 +678,13 @@ export default function RegisterPage() {
                       confirmPassword: e.target.value,
                     })
                   }
-                  className="w-full pl-12 pr-12 py-4 bg-[#FAF7F0] border-2 border-[#E8E3D6] rounded-2xl focus:border-[#2C5F4F] focus:bg-white outline-none transition-all text-[#1F242E]"
+                  className="w-full pl-11 pr-11 py-3 bg-white/20 backdrop-blur-sm border-2 border-white/30 rounded-xl focus:border-[#C9A86A] focus:bg-white/30 outline-none transition-all text-white placeholder:text-white/50 text-sm"
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#85817B] hover:text-[#2C5F4F] transition cursor-pointer"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-[#C9A86A] transition cursor-pointer z-10"
                 >
                   {showConfirmPassword ? (
                     <svg
@@ -652,12 +742,12 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-[#2C5F4F] to-[#3A7868] text-white py-4 rounded-2xl font-semibold text-lg hover:shadow-2xl hover:shadow-[#2C5F4F]/20 transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-6 cursor-pointer"
+              className="w-full bg-[#C9A86A] hover:bg-[#B89858] text-white py-3 rounded-xl font-semibold text-base hover:shadow-2xl hover:shadow-[#C9A86A]/30 transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-4 cursor-pointer"
             >
               {loading ? (
-                <span className="flex items-center justify-center gap-3">
+                <span className="flex items-center justify-center gap-2">
                   <svg
-                    className="animate-spin h-5 w-5"
+                    className="animate-spin h-4 w-4"
                     fill="none"
                     viewBox="0 0 24 24"
                   >
@@ -675,7 +765,7 @@ export default function RegisterPage() {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  Creating your account...
+                  Creating...
                 </span>
               ) : (
                 "Create Account"
@@ -683,13 +773,13 @@ export default function RegisterPage() {
             </button>
 
             {/* Divider */}
-            <div className="relative my-8">
+            <div className="relative my-4">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t-2 border-[#E8E3D6]"></div>
+                <div className="w-full border-t border-white/20"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white/90 text-[#85817B] font-medium backdrop-blur-sm">
-                  or continue with
+                <span className="px-3 py-0.5 bg-[#1F242E]/80 text-white/90 font-medium rounded-full border border-white/20">
+                  or
                 </span>
               </div>
             </div>
@@ -697,9 +787,11 @@ export default function RegisterPage() {
             {/* Social Login */}
             <button
               type="button"
-              className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-white border-2 border-[#E8E3D6] rounded-2xl hover:border-[#2C5F4F] hover:bg-[#FAF7F0] transition-all duration-300 group cursor-pointer"
+              onClick={handleGoogleSignIn}
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white border-2 border-[#E8E3D6] rounded-xl hover:border-[#2C5F4F] hover:bg-[#FAF7F0] transition-all duration-300 group cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path
                   fill="#4285F4"
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -717,18 +809,18 @@ export default function RegisterPage() {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
-              <span className="font-semibold text-[#1F242E] group-hover:text-[#2C5F4F] transition">
+              <span className="font-semibold text-[#1F242E] group-hover:text-[#2C5F4F] transition text-sm">
                 Continue with Google
               </span>
             </button>
           </form>
 
           {/* Sign In Link */}
-          <p className="mt-8 text-center text-[#85817B]">
+          <p className="mt-4 text-center text-white/80 text-sm">
             Already have an account?{" "}
             <a
               href="/login"
-              className="text-[#2C5F4F] font-semibold hover:text-[#3A7868] transition"
+              className="text-[#C9A86A] font-semibold hover:text-[#B89858] transition underline decoration-[#C9A86A]/50 hover:decoration-[#B89858]"
             >
               Sign in
             </a>

@@ -1,5 +1,6 @@
 "use client"
 
+import { signInWithGoogle } from "@/lib/auth"
 import axios from "axios"
 import gsap from "gsap"
 import { useRouter } from "next/navigation"
@@ -87,7 +88,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex">
+    <div className="min-h-screen bg-gradient-to-br from-[#1F242E] via-[#2C5F4F] to-[#1F242E] flex relative overflow-hidden">
       <Toaster
         position="top-right"
         toastOptions={{
@@ -96,73 +97,119 @@ export default function LoginPage() {
         }}
       />
 
+      {/* Floating Book Covers - Behind Both Panels */}
+      <div className="absolute inset-0 overflow-hidden opacity-40">
+        {/* Large Books */}
+        <img
+          src="https://covers.openlibrary.org/b/id/8235886-L.jpg"
+          alt=""
+          className="absolute top-20 left-20 w-40 h-56 rounded-lg shadow-2xl transform rotate-12 animate-float object-cover"
+        />
+        <img
+          src="https://covers.openlibrary.org/b/id/10387084-L.jpg"
+          alt=""
+          className="absolute bottom-40 left-40 w-44 h-60 rounded-lg shadow-2xl transform -rotate-6 animate-float object-cover"
+        />
+        <img
+          src="https://covers.openlibrary.org/b/id/12549326-L.jpg"
+          alt=""
+          className="absolute top-40 right-16 w-40 h-56 rounded-lg shadow-2xl transform rotate-[-15deg] animate-float-delayed object-cover"
+        />
+
+        {/* Medium Books */}
+        <img
+          src="https://covers.openlibrary.org/b/id/12583098-L.jpg"
+          alt=""
+          className="absolute top-60 right-32 w-32 h-44 rounded-lg shadow-2xl animate-float-delayed object-cover transform rotate-3"
+        />
+        <img
+          src="https://covers.openlibrary.org/b/id/10677563-L.jpg"
+          alt=""
+          className="absolute bottom-1/3 left-1/4 w-32 h-48 rounded-lg shadow-2xl transform -rotate-12 animate-float-delayed object-cover"
+        />
+        <img
+          src="https://covers.openlibrary.org/b/id/7884916-L.jpg"
+          alt=""
+          className="absolute top-1/3 right-1/4 w-28 h-40 rounded-lg shadow-2xl animate-float object-cover transform rotate-6"
+        />
+        <img
+          src="https://covers.openlibrary.org/b/id/8465165-L.jpg"
+          alt=""
+          className="absolute bottom-32 right-1/3 w-32 h-46 rounded-lg shadow-2xl transform rotate-8 animate-float object-cover"
+        />
+        <img
+          src="https://covers.openlibrary.org/b/id/10521270-L.jpg"
+          alt=""
+          className="absolute top-1/2 left-16 w-30 h-42 rounded-lg shadow-2xl transform -rotate-8 animate-float-delayed object-cover"
+        />
+
+        {/* Small Books */}
+        <img
+          src="https://covers.openlibrary.org/b/id/8225261-L.jpg"
+          alt=""
+          className="absolute bottom-20 right-20 w-20 h-32 rounded-lg shadow-2xl animate-float-delayed object-cover transform rotate-[-5deg]"
+        />
+        <img
+          src="https://covers.openlibrary.org/b/id/8231357-L.jpg"
+          alt=""
+          className="absolute top-1/4 left-1/3 w-24 h-34 rounded-lg shadow-2xl animate-float object-cover transform rotate-12"
+        />
+        <img
+          src="https://covers.openlibrary.org/b/id/7659574-L.jpg"
+          alt=""
+          className="absolute bottom-1/4 right-1/4 w-22 h-32 rounded-lg shadow-2xl animate-float-delayed object-cover transform -rotate-10"
+        />
+        <img
+          src="https://covers.openlibrary.org/b/id/8418735-L.jpg"
+          alt=""
+          className="absolute top-3/4 left-1/2 w-20 h-30 rounded-lg shadow-2xl animate-float object-cover transform rotate-15"
+        />
+
+        {/* Center Feature Book */}
+        <img
+          src="https://covers.openlibrary.org/b/id/12919193-L.jpg"
+          alt=""
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-64 rounded-lg shadow-2xl animate-float object-cover transform rotate-[-8deg] opacity-40"
+        />
+      </div>
+
       {/* Left Panel - Illustration & Branding */}
       <div
         ref={leftPanelRef}
-        className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#1F242E] via-[#2C5F4F] to-[#1F242E] p-12 flex-col justify-between relative overflow-hidden"
+        className="hidden lg:flex lg:w-1/2 p-12 flex-col justify-between relative z-10"
       >
-        {/* Floating Book Covers */}
-        <div className="absolute inset-0 overflow-hidden opacity-50">
-          <img
-            src="https://covers.openlibrary.org/b/id/8235886-L.jpg"
-            alt=""
-            className="absolute top-20 left-20 w-32 h-48 rounded-lg shadow-2xl transform rotate-12 animate-float object-cover"
-          />
-          <img
-            src="https://covers.openlibrary.org/b/id/12583098-L.jpg"
-            alt=""
-            className="absolute top-60 right-32 w-24 h-36 rounded-lg shadow-2xl animate-float-delayed object-cover"
-          />
-          <img
-            src="https://covers.openlibrary.org/b/id/10387084-L.jpg"
-            alt=""
-            className="absolute bottom-40 left-40 w-36 h-52 rounded-lg shadow-2xl transform -rotate-6 animate-float object-cover"
-          />
-          <img
-            src="https://covers.openlibrary.org/b/id/8225261-L.jpg"
-            alt=""
-            className="absolute bottom-20 right-20 w-20 h-32 rounded-lg shadow-2xl animate-float-delayed object-cover"
-          />
+        <div className="flex items-center gap-3 mb-12">
+          <div className="w-12 h-12 bg-[#C9A86A] rounded-xl flex items-center justify-center">
+            <svg
+              className="w-7 h-7 text-white"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+            </svg>
+          </div>
+          <span className="text-2xl font-heading font-bold text-white">
+            BookWorm
+          </span>
         </div>
 
-        <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-12">
-            <div className="w-12 h-12 bg-[#C9A86A] rounded-xl flex items-center justify-center">
-              <svg
-                className="w-7 h-7 text-white"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
-              </svg>
+        <div className="space-y-6 max-w-md">
+          <h2 className="text-4xl font-heading font-bold text-white leading-tight">
+            Your Personal Library, Reimagined
+          </h2>
+          <p className="text-lg text-gray-300">
+            Track your reading journey, discover new favorites, and connect with
+            a community of book lovers.
+          </p>
+
+          <div className="grid grid-cols-2 gap-4 pt-8">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+              <div className="text-3xl font-bold text-[#C9A86A] mb-1">10K+</div>
+              <div className="text-sm text-gray-300">Active Readers</div>
             </div>
-            <span className="text-2xl font-heading font-bold text-white">
-              BookWorm
-            </span>
-          </div>
-
-          <div className="space-y-6 max-w-md">
-            <h2 className="text-4xl font-heading font-bold text-white leading-tight">
-              Your Personal Library, Reimagined
-            </h2>
-            <p className="text-lg text-gray-300">
-              Track your reading journey, discover new favorites, and connect
-              with a community of book lovers.
-            </p>
-
-            <div className="grid grid-cols-2 gap-4 pt-8">
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
-                <div className="text-3xl font-bold text-[#C9A86A] mb-1">
-                  10K+
-                </div>
-                <div className="text-sm text-gray-300">Active Readers</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
-                <div className="text-3xl font-bold text-[#C9A86A] mb-1">
-                  50K+
-                </div>
-                <div className="text-sm text-gray-300">Books Tracked</div>
-              </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+              <div className="text-3xl font-bold text-[#C9A86A] mb-1">50K+</div>
+              <div className="text-sm text-gray-300">Books Tracked</div>
             </div>
           </div>
         </div>
@@ -177,11 +224,14 @@ export default function LoginPage() {
       </div>
 
       {/* Right Panel - Form */}
-      <div className="flex-1 flex items-center justify-center p-10 lg:p-14 bg-white/90 backdrop-blur-xl border-l border-white/20 shadow-2xl">
-        <div className="w-full max-w-md" ref={formRef}>
-          {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#2C5F4F] to-[#3A7868] rounded-lg flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center p-10 lg:p-14 relative z-10">
+        <div
+          className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 shadow-2xl"
+          ref={formRef}
+        >
+          {/* Logo */}
+          <div className="lg:hidden flex items-center gap-3 mb-8 justify-center">
+            <div className="w-10 h-10 bg-[#C9A86A] rounded-lg flex items-center justify-center">
               <svg
                 className="w-6 h-6 text-white"
                 fill="currentColor"
@@ -190,16 +240,16 @@ export default function LoginPage() {
                 <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
               </svg>
             </div>
-            <span className="text-xl font-heading font-bold text-[#1F242E]">
+            <span className="text-xl font-heading font-bold text-white">
               BookWorm
             </span>
           </div>
 
-          <div className="mb-10">
-            <h1 className="text-4xl font-heading font-bold text-[#1F242E] mb-3">
+          <div className="mb-8 text-center">
+            <h1 className="text-4xl font-heading font-bold text-white mb-3">
               Welcome Back
             </h1>
-            <p className="text-[#85817B] text-lg">
+            <p className="text-gray-200 text-lg">
               Continue your reading adventure
             </p>
           </div>
@@ -207,11 +257,11 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email Field */}
             <div className="group cursor-text">
-              <label className="block text-sm font-semibold text-[#1F242E] mb-2 group-focus-within:text-[#2C5F4F] transition">
+              <label className="block text-sm font-semibold text-white mb-2 group-focus-within:text-[#C9A86A] transition">
                 Email Address
               </label>
               <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1F242E] group-focus-within:text-[#2C5F4F] transition-colors">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 group-focus-within:text-[#C9A86A] transition-colors">
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -233,7 +283,7 @@ export default function LoginPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="w-full pl-12 pr-4 py-5 bg-white/60 backdrop-blur-sm border-2 border-[#E8E3D6] rounded-xl focus:border-[#2C5F4F] focus:bg-white focus:shadow-lg focus:shadow-[#2C5F4F]/5 outline-none transition-all text-[#1F242E] placeholder:text-[#85817B]/50"
+                  className="w-full pl-12 pr-4 py-4 bg-white/20 backdrop-blur-sm border-2 border-white/30 rounded-xl focus:border-[#C9A86A] focus:bg-white/30 outline-none transition-all text-white placeholder:text-white/50"
                   placeholder="you@example.com"
                 />
               </div>
@@ -242,18 +292,18 @@ export default function LoginPage() {
             {/* Password Field */}
             <div className="group cursor-text">
               <div className="flex justify-between items-center mb-2">
-                <label className="text-sm font-semibold text-[#1F242E] group-focus-within:text-[#2C5F4F] transition">
+                <label className="text-sm font-semibold text-white group-focus-within:text-[#C9A86A] transition">
                   Password
                 </label>
                 <button
                   type="button"
-                  className="text-sm text-[#2C5F4F] hover:text-[#3A7868] font-medium transition cursor-pointer"
+                  className="text-sm text-white/80 hover:text-[#C9A86A] font-medium transition cursor-pointer"
                 >
                   Forgot?
                 </button>
               </div>
               <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#85817B] group-focus-within:text-[#2C5F4F] transition">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 group-focus-within:text-[#C9A86A] transition z-10">
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -275,13 +325,13 @@ export default function LoginPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
-                  className="w-full pl-12 pr-12 py-5 bg-white/60 backdrop-blur-sm border-2 border-[#E8E3D6] rounded-xl focus:border-[#2C5F4F] focus:bg-white focus:shadow-lg focus:shadow-[#2C5F4F]/5 outline-none transition-all text-[#1F242E] placeholder:text-[#85817B]/50"
+                  className="w-full pl-12 pr-12 py-4 bg-white/20 backdrop-blur-sm border-2 border-white/30 rounded-xl focus:border-[#C9A86A] focus:bg-white/30 outline-none transition-all text-white placeholder:text-white/50"
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#85817B] hover:text-[#2C5F4F] transition cursor-pointer"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-[#C9A86A] transition cursor-pointer z-10"
                 >
                   {showPassword ? (
                     <svg
@@ -326,7 +376,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-[#2C5F4F] to-[#3A7868] text-white py-4 rounded-2xl font-semibold text-lg hover:shadow-2xl hover:shadow-[#2C5F4F]/20 transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-8 cursor-pointer"
+              className="w-full bg-[#C9A86A] hover:bg-[#B89858] text-white py-4 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-[#C9A86A]/30 transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-6 cursor-pointer"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-3">
@@ -359,11 +409,11 @@ export default function LoginPage() {
             {/* Divider */}
             <div className="relative my-8">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t-2 border-[#E8E3D6]"></div>
+                <div className="w-full border-t border-white/20"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4  text-[#85817B] font-medium backdrop-blur-sm">
-                  or continue with
+                <span className="px-3 py-1 bg-[#1F242E]/80 text-white/90 font-medium rounded-full border border-white/20">
+                  or
                 </span>
               </div>
             </div>
@@ -400,44 +450,17 @@ export default function LoginPage() {
           </form>
 
           {/* Sign Up Link */}
-          <p className="mt-8 text-center text-[#85817B]">
+          <p className="mt-8 text-center text-white/80">
             New to BookWorm?{" "}
             <a
               href="/register"
-              className="text-[#2C5F4F] font-semibold hover:text-[#3A7868] transition"
+              className="text-[#C9A86A] font-semibold hover:text-[#B89858] transition underline decoration-[#C9A86A]/50 hover:decoration-[#B89858]"
             >
               Create an account
             </a>
           </p>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0) rotate(0deg);
-          }
-          50% {
-            transform: translateY(-20px) rotate(5deg);
-          }
-        }
-        @keyframes float-delayed {
-          0%,
-          100% {
-            transform: translateY(0) rotate(0deg);
-          }
-          50% {
-            transform: translateY(-30px) rotate(-5deg);
-          }
-        }
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-        .animate-float-delayed {
-          animation: float-delayed 8s ease-in-out infinite;
-        }
-      `}</style>
     </div>
   )
 }

@@ -183,7 +183,7 @@ export default function LoginPage() {
                 Email Address
               </label>
               <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4a4543] group-focus-within:text-[#2C5F4F] transition">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#85817B] group-focus-within:text-[#2C5F4F] transition">
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -225,7 +225,7 @@ export default function LoginPage() {
                 </button>
               </div>
               <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4a4543] group-focus-within:text-[#2C5F4F] transition">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#85817B] group-focus-within:text-[#2C5F4F] transition">
                   <svg
                     className="w-5 h-5"
                     fill="none"

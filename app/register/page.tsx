@@ -23,18 +23,29 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [loading, setLoading] = useState(false)
 
+  const leftPanelRef = useRef<HTMLDivElement>(null)
   const formRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (formRef.current) {
-      gsap.from(formRef.current.children, {
+    const ctx = gsap.context(() => {
+      gsap.from(leftPanelRef.current, {
+        x: -100,
         opacity: 0,
-        y: 30,
-        duration: 0.8,
-        stagger: 0.12,
+        duration: 1,
         ease: "power3.out",
       })
-    }
+
+      gsap.from(formRef.current?.children || [], {
+        y: 30,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.08,
+        ease: "power3.out",
+        delay: 0.3,
+      })
+    })
+
+    return () => ctx.revert()
   }, [])
 
   const passwordChecks = {
@@ -92,7 +103,7 @@ export default function RegisterPage() {
         photoURL,
       })
       localStorage.setItem("token", response.data.token)
-      toast.success("Registration successful!")
+      toast.success("Account created successfully!")
       setTimeout(() => {
         router.push(
           response.data.user.role === "admin" ? "/admin/genres" : "/library"
@@ -106,56 +117,207 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream flex items-center justify-center p-4 relative overflow-hidden">
-      <Toaster position="top-right" />
-
-      {/* Decorative Background */}
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232C5F4F' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+    <div className="min-h-screen bg-white flex flex-row-reverse">
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: { background: "#1F242E", color: "#FAF7F0" },
+          success: { iconTheme: { primary: "#2C5F4F", secondary: "#FAF7F0" } },
         }}
-      ></div>
+      />
 
-      <div className="w-full max-w-md relative z-10" ref={formRef}>
-        {/* Header */}
-        <div className="text-center mb-10">
-          <h1 className="text-5xl font-heading font-bold text-[#1F242E] mb-3">
-            Join BookWorm
-          </h1>
-          <p className="text-[#85817B] text-lg">
-            Create your account to get started
-          </p>
+      {/* Right Panel - Illustration & Benefits */}
+      <div
+        ref={leftPanelRef}
+        className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#2C5F4F] via-[#3A7868] to-[#2C5F4F] p-12 flex-col justify-between relative overflow-hidden"
+      >
+        {/* Floating Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-32 right-20 text-6xl opacity-10 animate-float">
+            🎯
+          </div>
+          <div className="absolute top-60 left-32 text-5xl opacity-10 animate-float-delayed">
+            ⭐
+          </div>
+          <div className="absolute bottom-40 right-40 text-7xl opacity-10 animate-float">
+            🌟
+          </div>
+          <div className="absolute bottom-24 left-24 text-4xl opacity-10 animate-float-delayed">
+            ✨
+          </div>
         </div>
 
-        {/* Card */}
-        <div className="bg-white rounded-3xl shadow-2xl p-10 border border-gray-100 relative">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-1 bg-gradient-to-r from-transparent via-[#C9A86A] to-transparent rounded-b-full"></div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-12">
+            <div className="w-12 h-12 bg-[#C9A86A] rounded-xl flex items-center justify-center text-2xl">
+              📚
+            </div>
+            <span className="text-2xl font-heading font-bold text-white">
+              BookWorm
+            </span>
+          </div>
+
+          <div className="space-y-6 max-w-md">
+            <h2 className="text-4xl font-heading font-bold text-white leading-tight">
+              Start Your Reading Journey Today
+            </h2>
+            <p className="text-lg text-gray-200">
+              Join thousands of readers who are transforming the way they
+              discover and track books.
+            </p>
+
+            <div className="space-y-4 pt-8">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
+                  <svg
+                    className="w-6 h-6 text-[#C9A86A]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold mb-1">
+                    Track Your Progress
+                  </h3>
+                  <p className="text-gray-300 text-sm">
+                    Monitor your reading journey with detailed statistics and
+                    insights
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
+                  <svg
+                    className="w-6 h-6 text-[#C9A86A]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold mb-1">
+                    Personalized Recommendations
+                  </h3>
+                  <p className="text-gray-300 text-sm">
+                    Discover books tailored to your reading preferences
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
+                  <svg
+                    className="w-6 h-6 text-[#C9A86A]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold mb-1">
+                    Join the Community
+                  </h3>
+                  <p className="text-gray-300 text-sm">
+                    Connect with fellow book lovers and share reviews
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative z-10 text-center">
+          <p className="text-white/60 text-sm">
+            Trusted by 10,000+ readers worldwide
+          </p>
+        </div>
+      </div>
+
+      {/* Left Panel - Form */}
+      <div className="flex-1 flex items-center justify-center p-8 lg:p-12 overflow-y-auto">
+        <div className="w-full max-w-md" ref={formRef}>
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex items-center gap-3 mb-8">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#2C5F4F] to-[#3A7868] rounded-lg flex items-center justify-center text-xl">
+              📚
+            </div>
+            <span className="text-xl font-heading font-bold text-[#1F242E]">
+              BookWorm
+            </span>
+          </div>
+
+          <div className="mb-10">
+            <h1 className="text-4xl font-heading font-bold text-[#1F242E] mb-3">
+              Create Account
+            </h1>
+            <p className="text-[#85817B] text-lg">
+              Begin your literary adventure
+            </p>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Photo Upload */}
-            <div className="flex flex-col items-center pb-6 border-b border-gray-100">
-              <div className="relative group">
-                <div className="w-24 h-24 rounded-full overflow-hidden bg-gradient-to-br from-[#2C5F4F] to-[#3A7868] border-4 border-white shadow-lg">
-                  {photoPreview ? (
-                    <img
-                      src={photoPreview}
-                      alt="Preview"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-white">
-                      <svg
-                        className="w-10 h-10"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                      </svg>
-                    </div>
-                  )}
-                </div>
-                <label className="absolute bottom-0 right-0 bg-[#C9A86A] w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-[#b89960] transition shadow-md">
+            <div className="flex justify-center mb-6">
+              <div className="relative group cursor-pointer">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoChange}
+                  className="hidden"
+                  id="photo-upload"
+                />
+                <label htmlFor="photo-upload" className="cursor-pointer">
+                  <div className="w-24 h-24 rounded-full overflow-hidden bg-gradient-to-br from-[#2C5F4F] to-[#3A7868] flex items-center justify-center border-4 border-white shadow-xl group-hover:shadow-2xl transition-shadow">
+                    {photoPreview ? (
+                      <img
+                        src={photoPreview}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="text-white text-center">
+                        <svg
+                          className="w-10 h-10 mx-auto mb-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 4v16m8-8H4"
+                          />
+                        </svg>
+                        <span className="text-xs">Photo</span>
+                      </div>
+                    )}
+                  </div>
+                </label>
+                <div className="absolute bottom-0 right-0 w-8 h-8 bg-[#C9A86A] rounded-full flex items-center justify-center shadow-lg">
                   <svg
                     className="w-4 h-4 text-white"
                     fill="none"
@@ -166,62 +328,108 @@ export default function RegisterPage() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M12 4v16m8-8H4"
+                      d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
                     />
                   </svg>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handlePhotoChange}
-                    className="hidden"
-                  />
-                </label>
+                </div>
               </div>
-              <p className="mt-3 text-xs text-[#85817B]">
-                Click + to upload photo
-              </p>
             </div>
 
             {/* Name */}
-            <div>
-              <label className="block text-sm font-semibold text-[#1F242E] mb-2.5">
+            <div className="group">
+              <label className="block text-sm font-semibold text-[#1F242E] mb-2 group-focus-within:text-[#2C5F4F] transition">
                 Full Name
               </label>
-              <input
-                type="text"
-                required
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-                className="w-full px-5 py-3.5 bg-[#FAF7F0] border border-[#E8E3D6] rounded-xl focus:ring-2 focus:ring-[#2C5F4F] focus:border-transparent outline-none transition-all text-[#1F242E] placeholder:text-[#A8A5A0]"
-                placeholder="Enter your name"
-              />
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#85817B] group-focus-within:text-[#2C5F4F] transition">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                  className="w-full pl-12 pr-4 py-4 bg-[#FAF7F0] border-2 border-[#E8E3D6] rounded-2xl focus:border-[#2C5F4F] focus:bg-white outline-none transition-all text-[#1F242E]"
+                  placeholder="John Doe"
+                />
+              </div>
             </div>
 
             {/* Email */}
-            <div>
-              <label className="block text-sm font-semibold text-[#1F242E] mb-2.5">
-                Email
+            <div className="group">
+              <label className="block text-sm font-semibold text-[#1F242E] mb-2 group-focus-within:text-[#2C5F4F] transition">
+                Email Address
               </label>
-              <input
-                type="email"
-                required
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                className="w-full px-5 py-3.5 bg-[#FAF7F0] border border-[#E8E3D6] rounded-xl focus:ring-2 focus:ring-[#2C5F4F] focus:border-transparent outline-none transition-all text-[#1F242E] placeholder:text-[#A8A5A0]"
-                placeholder="your@email.com"
-              />
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#85817B] group-focus-within:text-[#2C5F4F] transition">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  className="w-full pl-12 pr-4 py-4 bg-[#FAF7F0] border-2 border-[#E8E3D6] rounded-2xl focus:border-[#2C5F4F] focus:bg-white outline-none transition-all text-[#1F242E]"
+                  placeholder="you@example.com"
+                />
+              </div>
             </div>
 
             {/* Password */}
-            <div>
-              <label className="block text-sm font-semibold text-[#1F242E] mb-2.5">
+            <div className="group">
+              <label className="block text-sm font-semibold text-[#1F242E] mb-2 group-focus-within:text-[#2C5F4F] transition">
                 Password
               </label>
               <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#85817B] group-focus-within:text-[#2C5F4F] transition">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                </div>
                 <input
                   type={showPassword ? "text" : "password"}
                   required
@@ -229,8 +437,8 @@ export default function RegisterPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
-                  className="w-full px-5 py-3.5 pr-12 bg-[#FAF7F0] border border-[#E8E3D6] rounded-xl focus:ring-2 focus:ring-[#2C5F4F] focus:border-transparent outline-none transition-all text-[#1F242E] placeholder:text-[#A8A5A0]"
-                  placeholder="Min 6 characters"
+                  className="w-full pl-12 pr-12 py-4 bg-[#FAF7F0] border-2 border-[#E8E3D6] rounded-2xl focus:border-[#2C5F4F] focus:bg-white outline-none transition-all text-[#1F242E]"
+                  placeholder="••••••••"
                 />
                 <button
                   type="button"
@@ -275,45 +483,49 @@ export default function RegisterPage() {
                 </button>
               </div>
               {formData.password && (
-                <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                <div className="mt-3 flex flex-wrap gap-2">
                   {Object.entries({
-                    "6+ characters": passwordChecks.minLength,
+                    "6+ chars": passwordChecks.minLength,
                     Uppercase: passwordChecks.hasUpperCase,
                     Lowercase: passwordChecks.hasLowerCase,
                     Number: passwordChecks.hasNumber,
                   }).map(([text, passed]) => (
-                    <div
+                    <span
                       key={text}
-                      className={`flex items-center gap-1.5 ${
-                        passed ? "text-green-600" : "text-[#A8A5A0]"
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${
+                        passed
+                          ? "bg-green-100 text-green-700"
+                          : "bg-gray-100 text-gray-400"
                       }`}
                     >
-                      <svg
-                        className={`w-4 h-4 ${
-                          passed ? "opacity-100" : "opacity-30"
-                        }`}
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      <span className="font-medium">{text}</span>
-                    </div>
+                      {passed ? "✓" : "○"} {text}
+                    </span>
                   ))}
                 </div>
               )}
             </div>
 
             {/* Confirm Password */}
-            <div>
-              <label className="block text-sm font-semibold text-[#1F242E] mb-2.5">
+            <div className="group">
+              <label className="block text-sm font-semibold text-[#1F242E] mb-2 group-focus-within:text-[#2C5F4F] transition">
                 Confirm Password
               </label>
               <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#85817B] group-focus-within:text-[#2C5F4F] transition">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                    />
+                  </svg>
+                </div>
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   required
@@ -324,8 +536,8 @@ export default function RegisterPage() {
                       confirmPassword: e.target.value,
                     })
                   }
-                  className="w-full px-5 py-3.5 pr-12 bg-[#FAF7F0] border border-[#E8E3D6] rounded-xl focus:ring-2 focus:ring-[#2C5F4F] focus:border-transparent outline-none transition-all text-[#1F242E] placeholder:text-[#A8A5A0]"
-                  placeholder="Re-enter password"
+                  className="w-full pl-12 pr-12 py-4 bg-[#FAF7F0] border-2 border-[#E8E3D6] rounded-2xl focus:border-[#2C5F4F] focus:bg-white outline-none transition-all text-[#1F242E]"
+                  placeholder="••••••••"
                 />
                 <button
                   type="button"
@@ -363,7 +575,7 @@ export default function RegisterPage() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.25 0 01-4.132 5.411m0 0L21 21"
                       />
                     </svg>
                   )}
@@ -377,48 +589,21 @@ export default function RegisterPage() {
                       : "text-red-600"
                   }`}
                 >
-                  {formData.password === formData.confirmPassword ? (
-                    <>
-                      <svg
-                        className="w-4 h-4"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      Passwords match
-                    </>
-                  ) : (
-                    <>
-                      <svg
-                        className="w-4 h-4"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      Passwords do not match
-                    </>
-                  )}
+                  {formData.password === formData.confirmPassword
+                    ? "✓ Passwords match"
+                    : "✗ Passwords do not match"}
                 </p>
               )}
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-[#2C5F4F] to-[#3A7868] text-white py-4 rounded-xl font-semibold text-base hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg mt-6"
+              className="w-full bg-gradient-to-r from-[#2C5F4F] to-[#3A7868] text-white py-4 rounded-2xl font-semibold text-lg hover:shadow-2xl hover:shadow-[#2C5F4F]/20 transformhover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-2"
             >
               {loading ? (
-                <span className="flex items-center justify-center gap-2">
+                <span className="flex items-center justify-center gap-3">
                   <svg
                     className="animate-spin h-5 w-5"
                     fill="none"
@@ -438,27 +623,27 @@ export default function RegisterPage() {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  Creating Account...
+                  Creating your account...
                 </span>
               ) : (
                 "Create Account"
               )}
             </button>
 
+            {/* Divider */}
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-[#E8E3D6]"></div>
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-[#85817B] font-medium">
-                  Or continue with
-                </span>
+              <div className="relative flex justify-center">
+                <span className="px-4 text-sm text-[#85817B] bg-white">or</span>
               </div>
             </div>
 
+            {/* Social Login */}
             <button
               type="button"
-              className="w-full flex items-center justify-center gap-3 px-5 py-3.5 bg-white border-2 border-[#E8E3D6] rounded-xl hover:border-[#2C5F4F] hover:bg-[#FAF7F0] transition-all duration-300 group"
+              className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-white border-2 border-[#E8E3D6] rounded-2xl hover:border-[#2C5F4F] hover:bg-[#FAF7F0] transition-all duration-300 group"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -479,22 +664,50 @@ export default function RegisterPage() {
                 />
               </svg>
               <span className="font-semibold text-[#1F242E] group-hover:text-[#2C5F4F] transition">
-                Sign up with Google
+                Continue with Google
               </span>
             </button>
           </form>
 
-          <p className="mt-8 text-center text-sm text-[#85817B]">
+          {/* Sign In Link */}
+          <p className="mt-8 text-center text-[#85817B]">
             Already have an account?{" "}
             <a
               href="/login"
-              className="text-[#2C5F4F] font-semibold hover:text-[#3A7868] transition underline-offset-2 hover:underline"
+              className="text-[#2C5F4F] font-semibold hover:text-[#3A7868] transition"
             >
               Sign in
             </a>
           </p>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes float {
+          0%,
+          100% {
+            transform: translateY(0) rotate(0deg);
+          }
+          50% {
+            transform: translateY(-20px) rotate(5deg);
+          }
+        }
+        @keyframes float-delayed {
+          0%,
+          100% {
+            transform: translateY(0) rotate(0deg);
+          }
+          50% {
+            transform: translateY(-30px) rotate(-5deg);
+          }
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+          animation: float-delayed 8s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   )
 }

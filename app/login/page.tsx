@@ -14,18 +14,29 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
 
+  const leftPanelRef = useRef<HTMLDivElement>(null)
   const formRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (formRef.current) {
-      gsap.from(formRef.current.children, {
+    const ctx = gsap.context(() => {
+      gsap.from(leftPanelRef.current, {
+        x: -100,
         opacity: 0,
-        y: 30,
-        duration: 0.8,
-        stagger: 0.15,
+        duration: 1,
         ease: "power3.out",
       })
-    }
+
+      gsap.from(formRef.current?.children || [], {
+        y: 30,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: "power3.out",
+        delay: 0.3,
+      })
+    })
+
+    return () => ctx.revert()
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,74 +45,181 @@ export default function LoginPage() {
     try {
       const response = await axios.post(`${API_URL}/auth/login`, formData)
       localStorage.setItem("token", response.data.token)
-      toast.success("Login successful!")
+      toast.success("Welcome back!")
       setTimeout(() => {
         router.push(
           response.data.user.role === "admin" ? "/admin/genres" : "/library"
         )
       }, 1000)
     } catch (error: any) {
-      toast.error(error.response?.data?.error || "Login failed")
+      toast.error(error.response?.data?.error || "Invalid credentials")
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-cream flex items-center justify-center p-4 relative overflow-hidden">
-      <Toaster position="top-right" />
-
-      {/* Decorative Background Pattern */}
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232C5F4F' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+    <div className="min-h-screen bg-white flex">
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: { background: "#1F242E", color: "#FAF7F0" },
+          success: { iconTheme: { primary: "#2C5F4F", secondary: "#FAF7F0" } },
         }}
-      ></div>
+      />
 
-      <div className="w-full max-w-md relative z-10" ref={formRef}>
-        {/* Header */}
-        <div className="text-center mb-10">
-          <div className="inline-block mb-4">
-            <div className="text-7xl">📚</div>
+      {/* Left Panel - Illustration & Branding */}
+      <div
+        ref={leftPanelRef}
+        className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#1F242E] via-[#2C5F4F] to-[#1F242E] p-12 flex-col justify-between relative overflow-hidden"
+      >
+        {/* Floating Book Icons */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-20 left-20 text-6xl opacity-10 animate-float">
+            📖
           </div>
-          <h1 className="text-5xl font-heading font-bold text-[#1F242E] mb-3">
-            Welcome Back
-          </h1>
-          <p className="text-[#85817B] text-lg">
-            Sign in to continue your reading journey
-          </p>
+          <div className="absolute top-40 right-32 text-5xl opacity-10 animate-float-delayed">
+            📚
+          </div>
+          <div className="absolute bottom-32 left-40 text-7xl opacity-10 animate-float">
+            📕
+          </div>
+          <div className="absolute bottom-20 right-20 text-4xl opacity-10 animate-float-delayed">
+            📗
+          </div>
         </div>
 
-        {/* Card */}
-        <div className="bg-white rounded-3xl shadow-2xl p-10 border border-gray-100 relative">
-          {/* Subtle top border accent */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-1 bg-gradient-to-r from-transparent via-[#C9A86A] to-transparent rounded-b-full"></div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-12">
+            <div className="w-12 h-12 bg-[#C9A86A] rounded-xl flex items-center justify-center text-2xl">
+              📚
+            </div>
+            <span className="text-2xl font-heading font-bold text-white">
+              BookWorm
+            </span>
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-semibold text-[#1F242E] mb-2.5">
+          <div className="space-y-6 max-w-md">
+            <h2 className="text-4xl font-heading font-bold text-white leading-tight">
+              Your Personal Library, Reimagined
+            </h2>
+            <p className="text-lg text-gray-300">
+              Track your reading journey, discover new favorites, and connect
+              with a community of book lovers.
+            </p>
+
+            <div className="grid grid-cols-2 gap-4 pt-8">
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+                <div className="text-3xl font-bold text-[#C9A86A] mb-1">
+                  10K+
+                </div>
+                <div className="text-sm text-gray-300">Active Readers</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+                <div className="text-3xl font-bold text-[#C9A86A] mb-1">
+                  50K+
+                </div>
+                <div className="text-sm text-gray-300">Books Tracked</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative z-10">
+          <blockquote className="text-white/80 italic text-lg">
+            "Reading is a conversation. All books talk. But a good book listens
+            as well."
+          </blockquote>
+          <p className="text-white/60 mt-2">— Mark Haddon</p>
+        </div>
+      </div>
+
+      {/* Right Panel - Form */}
+      <div className="flex-1 flex items-center justify-center p-8 lg:p-12">
+        <div className="w-full max-w-md" ref={formRef}>
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex items-center gap-3 mb-8">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#2C5F4F] to-[#3A7868] rounded-lg flex items-center justify-center text-xl">
+              📚
+            </div>
+            <span className="text-xl font-heading font-bold text-[#1F242E]">
+              BookWorm
+            </span>
+          </div>
+
+          <div className="mb-10">
+            <h1 className="text-4xl font-heading font-bold text-[#1F242E] mb-3">
+              Welcome Back
+            </h1>
+            <p className="text-[#85817B] text-lg">
+              Continue your reading adventure
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Email Field */}
+            <div className="group">
+              <label className="block text-sm font-semibold text-[#1F242E] mb-2 group-focus-within:text-[#2C5F4F] transition">
                 Email Address
               </label>
-              <input
-                type="email"
-                required
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                className="w-full px-5 py-3.5 bg-[#FAF7F0] border border-[#E8E3D6] rounded-xl focus:ring-2 focus:ring-[#2C5F4F] focus:border-transparent outline-none transition-all text-[#1F242E] placeholder:text-[#A8A5A0]"
-                placeholder="your@email.com"
-              />
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#85817B] group-focus-within:text-[#2C5F4F] transition">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  className="w-full pl-12 pr-4 py-4 bg-[#FAF7F0] border-2 border-[#E8E3D6] rounded-2xl focus:border-[#2C5F4F] focus:bg-white outline-none transition-all text-[#1F242E]"
+                  placeholder="you@example.com"
+                />
+              </div>
             </div>
 
-            {/* Password */}
-            <div>
-              <label className="block text-sm font-semibold text-[#1F242E] mb-2.5">
-                Password
-              </label>
+            {/* Password Field */}
+            <div className="group">
+              <div className="flex justify-between items-center mb-2">
+                <label className="text-sm font-semibold text-[#1F242E] group-focus-within:text-[#2C5F4F] transition">
+                  Password
+                </label>
+                <button
+                  type="button"
+                  className="text-sm text-[#2C5F4F] hover:text-[#3A7868] font-medium transition"
+                >
+                  Forgot?
+                </button>
+              </div>
               <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#85817B] group-focus-within:text-[#2C5F4F] transition">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                </div>
                 <input
                   type={showPassword ? "text" : "password"}
                   required
@@ -109,8 +227,8 @@ export default function LoginPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
-                  className="w-full px-5 py-3.5 pr-12 bg-[#FAF7F0] border border-[#E8E3D6] rounded-xl focus:ring-2 focus:ring-[#2C5F4F] focus:border-transparent outline-none transition-all text-[#1F242E] placeholder:text-[#A8A5A0]"
-                  placeholder="Enter your password"
+                  className="w-full pl-12 pr-12 py-4 bg-[#FAF7F0] border-2 border-[#E8E3D6] rounded-2xl focus:border-[#2C5F4F] focus:bg-white outline-none transition-all text-[#1F242E]"
+                  placeholder="••••••••"
                 />
                 <button
                   type="button"
@@ -156,14 +274,14 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Sign In Button */}
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-[#2C5F4F] to-[#3A7868] text-white py-4 rounded-xl font-semibold text-base hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+              className="w-full bg-gradient-to-r from-[#2C5F4F] to-[#3A7868] text-white py-4 rounded-2xl font-semibold text-lg hover:shadow-2xl hover:shadow-[#2C5F4F]/20 transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-8"
             >
               {loading ? (
-                <span className="flex items-center justify-center gap-2">
+                <span className="flex items-center justify-center gap-3">
                   <svg
                     className="animate-spin h-5 w-5"
                     fill="none"
@@ -183,7 +301,7 @@ export default function LoginPage() {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  Signing in...
+                  Signing you in...
                 </span>
               ) : (
                 "Sign In"
@@ -195,17 +313,15 @@ export default function LoginPage() {
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-[#E8E3D6]"></div>
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-[#85817B] font-medium">
-                  Or continue with
-                </span>
+              <div className="relative flex justify-center">
+                <span className="px-4 text-sm text-[#85817B] bg-white">or</span>
               </div>
             </div>
 
-            {/* Google Sign In */}
+            {/* Social Login */}
             <button
               type="button"
-              className="w-full flex items-center justify-center gap-3 px-5 py-3.5 bg-white border-2 border-[#E8E3D6] rounded-xl hover:border-[#2C5F4F] hover:bg-[#FAF7F0] transition-all duration-300 group"
+              className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-white border-2 border-[#E8E3D6] rounded-2xl hover:border-[#2C5F4F] hover:bg-[#FAF7F0] transition-all duration-300 group"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -226,31 +342,50 @@ export default function LoginPage() {
                 />
               </svg>
               <span className="font-semibold text-[#1F242E] group-hover:text-[#2C5F4F] transition">
-                Sign in with Google
+                Continue with Google
               </span>
             </button>
           </form>
 
           {/* Sign Up Link */}
-          <p className="mt-8 text-center text-sm text-[#85817B]">
-            Don't have an account?{" "}
+          <p className="mt-8 text-center text-[#85817B]">
+            New to BookWorm?{" "}
             <a
               href="/register"
-              className="text-[#2C5F4F] font-semibold hover:text-[#3A7868] transition underline-offset-2 hover:underline"
+              className="text-[#2C5F4F] font-semibold hover:text-[#3A7868] transition"
             >
-              Sign up
+              Create an account
             </a>
           </p>
         </div>
-
-        {/* Quote */}
-        <div className="mt-10 text-center px-6">
-          <p className="text-[#1F242E] italic text-lg font-heading mb-2">
-            "A reader lives a thousand lives before he dies."
-          </p>
-          <p className="text-[#85817B] text-sm">— George R.R. Martin</p>
-        </div>
       </div>
+
+      <style jsx>{`
+        @keyframes float {
+          0%,
+          100% {
+            transform: translateY(0) rotate(0deg);
+          }
+          50% {
+            transform: translateY(-20px) rotate(5deg);
+          }
+        }
+        @keyframes float-delayed {
+          0%,
+          100% {
+            transform: translateY(0) rotate(0deg);
+          }
+          50% {
+            transform: translateY(-30px) rotate(-5deg);
+          }
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+          animation: float-delayed 8s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   )
 }

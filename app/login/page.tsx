@@ -76,22 +76,22 @@ export default function LoginPage() {
         {/* Floating Book Covers */}
         <div className="absolute inset-0 overflow-hidden opacity-10">
           <img
-            src="https://covers.openlibrary.org/b/id/8235886-M.jpg"
+            src="https://covers.openlibrary.org/b/id/8235886-L.jpg"
             alt=""
             className="absolute top-20 left-20 w-32 h-48 rounded-lg shadow-2xl transform rotate-12 animate-float object-cover"
           />
           <img
-            src="https://covers.openlibrary.org/b/id/12583098-M.jpg"
+            src="https://covers.openlibrary.org/b/id/12583098-L.jpg"
             alt=""
             className="absolute top-60 right-32 w-24 h-36 rounded-lg shadow-2xl animate-float-delayed object-cover"
           />
           <img
-            src="https://covers.openlibrary.org/b/id/10387084-M.jpg"
+            src="https://covers.openlibrary.org/b/id/10387084-L.jpg"
             alt=""
             className="absolute bottom-40 left-40 w-36 h-52 rounded-lg shadow-2xl transform -rotate-6 animate-float object-cover"
           />
           <img
-            src="https://covers.openlibrary.org/b/id/8225261-M.jpg"
+            src="https://covers.openlibrary.org/b/id/8225261-L.jpg"
             alt=""
             className="absolute bottom-20 right-20 w-20 h-32 rounded-lg shadow-2xl animate-float-delayed object-cover"
           />

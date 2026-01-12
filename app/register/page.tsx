@@ -134,22 +134,22 @@ export default function RegisterPage() {
         {/* Floating Book Covers */}
         <div className="absolute inset-0 overflow-hidden opacity-10">
           <img
-            src="https://covers.openlibrary.org/b/id/7884916-M.jpg"
+            src="https://covers.openlibrary.org/b/id/7884916-L.jpg"
             alt=""
             className="absolute top-32 right-20 w-28 h-40 rounded-lg shadow-2xl animate-float object-cover"
           />
           <img
-            src="https://covers.openlibrary.org/b/id/10677563-M.jpg"
+            src="https://covers.openlibrary.org/b/id/10677563-L.jpg"
             alt=""
             className="absolute top-60 left-32 w-32 h-48 rounded-lg shadow-2xl transform rotate-45 animate-float-delayed object-cover"
           />
           <img
-            src="https://covers.openlibrary.org/b/id/8231346-M.jpg"
+            src="https://covers.openlibrary.org/b/id/8231346-L.jpg"
             alt=""
             className="absolute bottom-40 right-40 w-36 h-52 rounded-lg shadow-2xl animate-float object-cover"
           />
           <img
-            src="https://covers.openlibrary.org/b/id/12677815-M.jpg"
+            src="https://covers.openlibrary.org/b/id/12677815-L.jpg"
             alt=""
             className="absolute bottom-24 left-24 w-24 h-36 rounded-lg shadow-2xl transform -rotate-12 animate-float-delayed object-cover"
           />

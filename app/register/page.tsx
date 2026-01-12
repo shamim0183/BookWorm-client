@@ -131,12 +131,28 @@ export default function RegisterPage() {
         ref={leftPanelRef}
         className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#2C5F4F] via-[#3A7868] to-[#2C5F4F] p-12 flex-col justify-between relative overflow-hidden"
       >
-        {/* Decorative Shapes */}
-        <div className="absolute inset-0 overflow-hidden opacity-5">
-          <div className="absolute top-32 right-20 w-32 h-32 border-4 border-[#C9A86A] rounded-full animate-float"></div>
-          <div className="absolute top-60 left-32 w-28 h-28 bg-[#C9A86A]/20 rounded-lg transform rotate-45 animate-float-delayed"></div>
-          <div className="absolute bottom-40 right-40 w-36 h-36 border-4 border-white/30 rounded-full animate-float"></div>
-          <div className="absolute bottom-24 left-24 w-24 h-24 bg-white/10 rounded-lg transform -rotate-12 animate-float-delayed"></div>
+        {/* Floating Book Covers */}
+        <div className="absolute inset-0 overflow-hidden opacity-10">
+          <img
+            src="https://covers.openlibrary.org/b/id/7884916-M.jpg"
+            alt=""
+            className="absolute top-32 right-20 w-28 h-40 rounded-lg shadow-2xl animate-float object-cover"
+          />
+          <img
+            src="https://covers.openlibrary.org/b/id/10677563-M.jpg"
+            alt=""
+            className="absolute top-60 left-32 w-32 h-48 rounded-lg shadow-2xl transform rotate-45 animate-float-delayed object-cover"
+          />
+          <img
+            src="https://covers.openlibrary.org/b/id/8231346-M.jpg"
+            alt=""
+            className="absolute bottom-40 right-40 w-36 h-52 rounded-lg shadow-2xl animate-float object-cover"
+          />
+          <img
+            src="https://covers.openlibrary.org/b/id/12677815-M.jpg"
+            alt=""
+            className="absolute bottom-24 left-24 w-24 h-36 rounded-lg shadow-2xl transform -rotate-12 animate-float-delayed object-cover"
+          />
         </div>
 
         <div className="relative z-10">

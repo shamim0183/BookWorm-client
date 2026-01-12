@@ -466,7 +466,7 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#85817B] hover:text-[#2C5F4F] transition"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#85817B] hover:text-[#2C5F4F] transition cursor-pointer"
                 >
                   {showPassword ? (
                     <svg
@@ -594,7 +594,7 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#85817B] hover:text-[#2C5F4F] transition"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#85817B] hover:text-[#2C5F4F] transition cursor-pointer"
                 >
                   {showConfirmPassword ? (
                     <svg
@@ -652,7 +652,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-[#2C5F4F] to-[#3A7868] text-white py-4 rounded-2xl font-semibold text-lg hover:shadow-2xl hover:shadow-[#2C5F4F]/20 transformhover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-2"
+              className="w-full bg-gradient-to-r from-[#2C5F4F] to-[#3A7868] text-white py-4 rounded-2xl font-semibold text-lg hover:shadow-2xl hover:shadow-[#2C5F4F]/20 transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-6 cursor-pointer"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-3">
@@ -695,7 +695,7 @@ export default function RegisterPage() {
             {/* Social Login */}
             <button
               type="button"
-              className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-white border-2 border-[#E8E3D6] rounded-2xl hover:border-[#2C5F4F] hover:bg-[#FAF7F0] transition-all duration-300 group"
+              className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-white border-2 border-[#E8E3D6] rounded-2xl hover:border-[#2C5F4F] hover:bg-[#FAF7F0] transition-all duration-300 group cursor-pointer"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path

@@ -58,6 +58,34 @@ export default function LoginPage() {
     }
   }
 
+  const handleGoogleSignIn = async () => {
+    setLoading(true)
+    try {
+      const { user, idToken } = await signInWithGoogle()
+
+      // Sync with backend
+      const response = await axios.post(`${API_URL}/auth/firebase`, {
+        firebaseToken: idToken,
+        email: user.email,
+        name: user.displayName,
+        photoURL: user.photoURL,
+      })
+
+      localStorage.setItem("token", response.data.token)
+      toast.success(`Welcome back, ${user.displayName}!`)
+
+      setTimeout(() => {
+        router.push(
+          response.data.user.role === "admin" ? "/admin/genres" : "/library"
+        )
+      }, 1000)
+    } catch (error: any) {
+      toast.error(error.message || "Google sign-in failed")
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white flex">
       <Toaster
@@ -343,7 +371,9 @@ export default function LoginPage() {
             {/* Social Login */}
             <button
               type="button"
-              className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-white border-2 border-[#E8E3D6] rounded-2xl hover:border-[#2C5F4F] hover:bg-[#FAF7F0] transition-all duration-300 group cursor-pointer"
+              onClick={handleGoogleSignIn}
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-white border-2 border-[#E8E3D6] rounded-2xl hover:border-[#2C5F4F] hover:bg-[#FAF7F0] transition-all duration-300 group cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path

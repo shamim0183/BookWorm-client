@@ -75,10 +75,10 @@ export default function LoginPage() {
       >
         {/* Decorative Shapes */}
         <div className="absolute inset-0 overflow-hidden opacity-5">
-          <div className="absolute top-20 left-20 w-32 h-32 border-4 border-[#C9A86A] rounded-lg transform rotate-12"></div>
-          <div className="absolute top-60 right-32 w-24 h-24 bg-[#C9A86A]/20 rounded-full"></div>
-          <div className="absolute bottom-40 left-40 w-40 h-40 border-4 border-white/30 rounded-lg transform -rotate-6"></div>
-          <div className="absolute bottom-20 right-20 w-20 h-20 bg-white/10 rounded-full"></div>
+          <div className="absolute top-20 left-20 w-32 h-32 border-4 border-[#C9A86A] rounded-lg transform rotate-12 animate-float"></div>
+          <div className="absolute top-60 right-32 w-24 h-24 bg-[#C9A86A]/20 rounded-full animate-float-delayed"></div>
+          <div className="absolute bottom-40 left-40 w-40 h-40 border-4 border-white/30 rounded-lg transform -rotate-6 animate-float"></div>
+          <div className="absolute bottom-20 right-20 w-20 h-20 bg-white/10 rounded-full animate-float-delayed"></div>
         </div>
 
         <div className="relative z-10">

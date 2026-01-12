@@ -133,10 +133,10 @@ export default function RegisterPage() {
       >
         {/* Decorative Shapes */}
         <div className="absolute inset-0 overflow-hidden opacity-5">
-          <div className="absolute top-32 right-20 w-32 h-32 border-4 border-[#C9A86A] rounded-full"></div>
-          <div className="absolute top-60 left-32 w-28 h-28 bg-[#C9A86A]/20 rounded-lg transform rotate-45"></div>
-          <div className="absolute bottom-40 right-40 w-36 h-36 border-4 border-white/30 rounded-full"></div>
-          <div className="absolute bottom-24 left-24 w-24 h-24 bg-white/10 rounded-lg transform -rotate-12"></div>
+          <div className="absolute top-32 right-20 w-32 h-32 border-4 border-[#C9A86A] rounded-full animate-float"></div>
+          <div className="absolute top-60 left-32 w-28 h-28 bg-[#C9A86A]/20 rounded-lg transform rotate-45 animate-float-delayed"></div>
+          <div className="absolute bottom-40 right-40 w-36 h-36 border-4 border-white/30 rounded-full animate-float"></div>
+          <div className="absolute bottom-24 left-24 w-24 h-24 bg-white/10 rounded-lg transform -rotate-12 animate-float-delayed"></div>
         </div>
 
         <div className="relative z-10">

@@ -130,10 +130,9 @@ export default function RegisterPage() {
       })
       localStorage.setItem("token", response.data.token)
       toast.success("Account created successfully!")
+      const userRole = response.data.user.role
       setTimeout(() => {
-        router.push(
-          response.data.user.role === "admin" ? "/admin/genres" : "/library"
-        )
+        router.push(userRole === "admin" ? "/admin/dashboard" : "/library")
       }, 1000)
     } catch (error: any) {
       toast.error(error.response?.data?.error || "Registration failed")
@@ -158,10 +157,9 @@ export default function RegisterPage() {
       localStorage.setItem("token", response.data.token)
       toast.success(`Welcome, ${user.displayName}!`)
 
+      const userRole = response.data.user.role
       setTimeout(() => {
-        router.push(
-          response.data.user.role === "admin" ? "/admin/genres" : "/library"
-        )
+        router.push(userRole === "admin" ? "/admin/dashboard" : "/library")
       }, 1000)
     } catch (error: any) {
       toast.error(error.message || "Google sign-in failed")

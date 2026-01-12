@@ -105,7 +105,7 @@ BookWorm is a modern, full-stack web application designed to help book lovers tr
 
 5. **Open your browser**
 
-   Navigate to [http://localhost:3000](http://localhost:3000)
+   Navigate to [http://localhost:3001](http://localhost:3001)
 
 ## 🚀 Available Scripts
 

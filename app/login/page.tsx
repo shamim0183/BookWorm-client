@@ -45,16 +45,14 @@ export default function LoginPage() {
     setLoading(true)
     try {
       const response = await axios.post(`${API_URL}/auth/login`, formData)
-      localStorage.setItem("token", response.data.token)
-      toast.success("Welcome back!")
-      setTimeout(() => {
-        router.push(
-          response.data.user.role === "admin" ? "/admin/genres" : "/library"
-        )
-      }, 1000)
+      const token = response.data.token
+      localStorage.setItem("token", token)
+
+      // Redirect based on role - navigate immediately without toast
+      const userRole = response.data.user.role
+      router.push(userRole === "admin" ? "/admin/dashboard" : "/library")
     } catch (error: any) {
       toast.error(error.response?.data?.error || "Invalid credentials")
-    } finally {
       setLoading(false)
     }
   }
@@ -73,16 +71,12 @@ export default function LoginPage() {
       })
 
       localStorage.setItem("token", response.data.token)
-      toast.success(`Welcome back, ${user.displayName}!`)
 
-      setTimeout(() => {
-        router.push(
-          response.data.user.role === "admin" ? "/admin/genres" : "/library"
-        )
-      }, 1000)
+      // Redirect based on role - navigate immediately without toast
+      const userRole = response.data.user.role
+      router.push(userRole === "admin" ? "/admin/dashboard" : "/library")
     } catch (error: any) {
       toast.error(error.message || "Google sign-in failed")
-    } finally {
       setLoading(false)
     }
   }
@@ -295,12 +289,6 @@ export default function LoginPage() {
                 <label className="text-sm font-semibold text-white group-focus-within:text-[#C9A86A] transition">
                   Password
                 </label>
-                <button
-                  type="button"
-                  className="text-sm text-white/80 hover:text-[#C9A86A] font-medium transition cursor-pointer"
-                >
-                  Forgot?
-                </button>
               </div>
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 group-focus-within:text-[#C9A86A] transition z-10">
@@ -370,6 +358,12 @@ export default function LoginPage() {
                   )}
                 </button>
               </div>
+              <button
+                type="button"
+                className="text-sm text-white/80 hover:text-[#C9A86A] font-medium transition cursor-pointer mt-2 text-right w-full"
+              >
+                Forgot Password?
+              </button>
             </div>
 
             {/* Submit Button */}

@@ -132,7 +132,7 @@ export default function RegisterPage() {
         className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#2C5F4F] via-[#3A7868] to-[#2C5F4F] p-12 flex-col justify-between relative overflow-hidden"
       >
         {/* Floating Book Covers */}
-        <div className="absolute inset-0 overflow-hidden opacity-10">
+        <div className="absolute inset-0 overflow-hidden opacity-100">
           <img
             src="https://covers.openlibrary.org/b/id/7884916-L.jpg"
             alt=""
@@ -303,8 +303,8 @@ export default function RegisterPage() {
                   className="hidden"
                   id="photo-upload"
                 />
-                <label htmlFor="photo-upload" className="cursor-pointer">
-                  <div className="w-24 h-24 rounded-full overflow-hidden bg-gradient-to-br from-[#2C5F4F] to-[#3A7868] flex items-center justify-center border-4 border-white shadow-xl group-hover:shadow-2xl transition-shadow">
+                <label htmlFor="photo-upload" className="cursor-pointer block">
+                  <div className="relative w-28 h-28 rounded-full overflow-hidden bg-gradient-to-br from-[#2C5F4F]/10 to-[#C9A86A]/10 border-4 border-dashed border-[#C9A86A]/30 group-hover:border-[#2C5F4F] transition-all duration-300">
                     {photoPreview ? (
                       <img
                         src={photoPreview}
@@ -312,9 +312,10 @@ export default function RegisterPage() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="text-white text-center">
+                      <div className="w-full h-full flex flex-col items-center justify-center text-[#2C5F4F]">
+                        {/* Book Reader Icon */}
                         <svg
-                          className="w-10 h-10 mx-auto mb-1"
+                          className="w-12 h-12 mb-1 group-hover:scale-110 transition-transform"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -322,36 +323,19 @@ export default function RegisterPage() {
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 4v16m8-8H4"
+                            strokeWidth={1.5}
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                           />
                         </svg>
-                        <span className="text-xs">Photo</span>
+                        <span className="text-xs font-medium text-[#85817B]">
+                          Upload
+                        </span>
                       </div>
                     )}
                   </div>
+                  {/* Decorative Ring */}
+                  <div className="absolute inset-0 rounded-full border-2 border-[#C9A86A]/0 group-hover:border-[#C9A86A]/20 scale-110 transition-all"></div>
                 </label>
-                <div className="absolute bottom-0 right-0 w-8 h-8 bg-[#C9A86A] rounded-full flex items-center justify-center shadow-lg">
-                  <svg
-                    className="w-4 h-4 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                </div>
               </div>
             </div>
 

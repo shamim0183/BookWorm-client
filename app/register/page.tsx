@@ -23,33 +23,20 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const containerRef = useRef<HTMLDivElement>(null)
-  const formRef = useRef<HTMLFormElement>(null)
+  const formRef = useRef<HTMLDivElement>(null)
 
-  // GSAP Animations on mount
+  // Subtle GSAP animation
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(containerRef.current, {
-        opacity: 0,
-        y: 30,
-        duration: 0.8,
-        ease: "power3.out",
-      })
-
-      gsap.from(formRef.current?.children || [], {
+    if (formRef.current) {
+      gsap.from(formRef.current, {
         opacity: 0,
         y: 20,
         duration: 0.6,
-        stagger: 0.1,
         ease: "power2.out",
-        delay: 0.3,
       })
-    })
-
-    return () => ctx.revert()
+    }
   }, [])
 
-  // Password validation
   const passwordChecks = {
     minLength: formData.password.length >= 6,
     hasUpperCase: /[A-Z]/.test(formData.password),
@@ -71,10 +58,8 @@ export default function RegisterPage() {
 
   const uploadToImgBB = async () => {
     if (!photoFile) return ""
-
     const formData = new FormData()
     formData.append("image", photoFile)
-
     try {
       const response = await axios.post(
         `https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`,
@@ -89,32 +74,25 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
     if (!allChecksPassed) {
       toast.error("Please meet all password requirements")
       return
     }
-
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match")
       return
     }
-
     setLoading(true)
-
     try {
       const photoURL = await uploadToImgBB()
-
       const response = await axios.post(`${API_URL}/auth/register`, {
         name: formData.name,
         email: formData.email,
         password: formData.password,
         photoURL,
       })
-
       localStorage.setItem("token", response.data.token)
       toast.success("Registration successful!")
-
       setTimeout(() => {
         router.push(response.data.user.role === "admin" ? "/admin" : "/library")
       }, 1000)
@@ -126,222 +104,245 @@ export default function RegisterPage() {
   }
 
   return (
-    <div
-      className="min-h-screen relative flex items-center justify-center py-12 px-4"
-      style={{
-        backgroundImage:
-          'url("https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1920&q=80")',
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-      }}
-    >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1F242E]/95 via-[#2C5F4F]/90 to-[#1F242E]/95 backdrop-blur-sm"></div>
-
+    <div className="min-h-screen" style={{ backgroundColor: "#FAF7F0" }}>
       <Toaster position="top-right" />
 
-      <div ref={containerRef} className="max-w-md w-full relative z-10">
-        <h1 className="text-5xl font-heading font-bold text-white text-center mb-8">
-          Join BookWorm
-        </h1>
-
-        <div className="bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl p-8 border border-white/20">
-          <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
-            {/* Photo Upload */}
-            <div className="flex flex-col items-center">
-              <div className="w-24 h-24 rounded-full overflow-hidden bg-gradient-to-br from-[#084935] to-[#2C5F4F] mb-4 border-4 border-white shadow-lg">
-                {photoPreview ? (
-                  <img
-                    src={photoPreview}
-                    alt="Preview"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-white">
-                    <svg
-                      className="w-12 h-12"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                    </svg>
-                  </div>
-                )}
-              </div>
-              <label className="cursor-pointer px-6 py-2.5 bg-gradient-to-r from-[#084935] to-[#2C5F4F] text-white rounded-full hover:shadow-lg transform hover:-translate-y-0.5 transition text-sm font-medium">
-                Upload Photo
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handlePhotoChange}
-                  className="hidden"
-                />
-              </label>
-            </div>
-
-            {/* Name */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Full Name
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#084935] focus:border-transparent outline-none transition"
-                placeholder="Enter your name"
+      <div className="container mx-auto px-4 py-16">
+        <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+          {/* Left: Decorative Bookshelf */}
+          <div className="hidden lg:block">
+            <div className="relative h-[600px] rounded-2xl overflow-hidden shadow-2xl">
+              <img
+                src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80"
+                alt="Library"
+                className="w-full h-full object-cover"
               />
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                required
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#084935] focus:border-transparent outline-none transition"
-                placeholder="your@email.com"
-              />
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
-                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#084935] focus:border-transparent outline-none transition"
-                  placeholder="Min 6 characters"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition"
-                >
-                  {showPassword ? "👁️" : "👁️‍🗨️"}
-                </button>
-              </div>
-              {formData.password && (
-                <div className="mt-3 space-y-1.5 text-xs bg-gray-50 p-3 rounded-lg">
-                  <p
-                    className={
-                      passwordChecks.minLength
-                        ? "text-green-600 font-medium"
-                        : "text-gray-400"
-                    }
-                  >
-                    {passwordChecks.minLength ? "✓" : "○"} At least 6 characters
-                  </p>
-                  <p
-                    className={
-                      passwordChecks.hasUpperCase
-                        ? "text-green-600 font-medium"
-                        : "text-gray-400"
-                    }
-                  >
-                    {passwordChecks.hasUpperCase ? "✓" : "○"} One uppercase
-                    letter
-                  </p>
-                  <p
-                    className={
-                      passwordChecks.hasLowerCase
-                        ? "text-green-600 font-medium"
-                        : "text-gray-400"
-                    }
-                  >
-                    {passwordChecks.hasLowerCase ? "✓" : "○"} One lowercase
-                    letter
-                  </p>
-                  <p
-                    className={
-                      passwordChecks.hasNumber
-                        ? "text-green-600 font-medium"
-                        : "text-gray-400"
-                    }
-                  >
-                    {passwordChecks.hasNumber ? "✓" : "○"} One number
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1F242E]/90 via-[#1F242E]/50 to-transparent flex items-end p-12">
+                <div>
+                  <h2 className="text-4xl font-heading font-bold text-white mb-4">
+                    Start Your Reading Journey
+                  </h2>
+                  <p className="text-gray-200 text-lg">
+                    Track your books, discover new favorites, and connect with
+                    fellow readers.
                   </p>
                 </div>
-              )}
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Confirm Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  required
-                  value={formData.confirmPassword}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      confirmPassword: e.target.value,
-                    })
-                  }
-                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#084935] focus:border-transparent outline-none transition"
-                  placeholder="Re-enter password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition"
-                >
-                  {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
-                </button>
               </div>
-              {formData.confirmPassword && (
-                <p
-                  className={`mt-2 text-xs font-medium ${
-                    formData.password === formData.confirmPassword
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                >
-                  {formData.password === formData.confirmPassword
-                    ? "✓ Passwords match"
-                    : "✗ Passwords do not match"}
-                </p>
-              )}
+            </div>
+          </div>
+
+          {/* Right: Form */}
+          <div ref={formRef}>
+            <div className="text-center lg:text-left mb-8">
+              <h1
+                className="text-5xl font-heading font-bold mb-3"
+                style={{ color: "#1F242E" }}
+              >
+                Join BookWorm
+              </h1>
+              <p className="text-lg" style={{ color: "#85817B" }}>
+                Create your account to get started
+              </p>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-[#084935] to-[#2C5F4F] text-white py-3.5 rounded-full font-medium text-lg hover:shadow-xl transform hover:-translate-y-0.5 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            <div
+              className="bg-white rounded-2xl shadow-lg p-8 border"
+              style={{ borderColor: "#E8E3D6" }}
             >
-              {loading ? "Creating Account..." : "Create Account"}
-            </button>
-          </form>
+              <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Photo Upload - Minimal */}
+                <div
+                  className="flex items-center gap-4 pb-5 border-b"
+                  style={{ borderColor: "#F5F2EB" }}
+                >
+                  <div
+                    className="w-16 h-16 rounded-full overflow-hidden"
+                    style={{ backgroundColor: "#F5F2EB" }}
+                  >
+                    {photoPreview ? (
+                      <img
+                        src={photoPreview}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div
+                        className="w-full h-full flex items-center justify-center"
+                        style={{ color: "#85817B" }}
+                      >
+                        <svg
+                          className="w-8 h-8"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <label
+                    className="cursor-pointer px-5 py-2 rounded-lg text-sm font-medium transition hover:opacity-80"
+                    style={{ backgroundColor: "#084935", color: "white" }}
+                  >
+                    Upload Photo
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handlePhotoChange}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
 
-          <p className="mt-6 text-center text-sm text-gray-600">
-            Already have an account?{" "}
-            <a
-              href="/login"
-              className="text-[#084935] font-semibold hover:underline"
-            >
-              Sign in
-            </a>
-          </p>
+                {/* Name */}
+                <div>
+                  <label
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: "#1F242E" }}
+                  >
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
+                    className="w-full px-4 py-3 rounded-lg border outline-none focus:ring-2 transition"
+                    style={{ borderColor: "#E0DDD8", backgroundColor: "white" }}
+                    placeholder="Enter your name"
+                  />
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: "#1F242E" }}
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    className="w-full px-4 py-3 rounded-lg border outline-none focus:ring-2 transition"
+                    style={{ borderColor: "#E0DDD8" }}
+                    placeholder="your@email.com"
+                  />
+                </div>
+
+                {/* Password */}
+                <div>
+                  <label
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: "#1F242E" }}
+                  >
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      required
+                      value={formData.password}
+                      onChange={(e) =>
+                        setFormData({ ...formData, password: e.target.value })
+                      }
+                      className="w-full px-4 py-3 pr-12 rounded-lg border outline-none focus:ring-2 transition"
+                      style={{ borderColor: "#E0DDD8" }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2"
+                      style={{ color: "#85817B" }}
+                    >
+                      {showPassword ? "👁️" : "👁️‍🗨️"}
+                    </button>
+                  </div>
+                  {formData.password && (
+                    <div className="mt-3 text-xs space-y-1">
+                      {Object.entries({
+                        "At least 6 characters": passwordChecks.minLength,
+                        "One uppercase letter": passwordChecks.hasUpperCase,
+                        "One lowercase letter": passwordChecks.hasLowerCase,
+                        "One number": passwordChecks.hasNumber,
+                      }).map(([text, passed]) => (
+                        <p
+                          key={text}
+                          style={{ color: passed ? "#10b981" : "#9ca3af" }}
+                        >
+                          {passed ? "✓" : "○"} {text}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Confirm Password */}
+                <div>
+                  <label
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: "#1F242E" }}
+                  >
+                    Confirm Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      required
+                      value={formData.confirmPassword}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          confirmPassword: e.target.value,
+                        })
+                      }
+                      className="w-full px-4 py-3 pr-12 rounded-lg border outline-none focus:ring-2 transition"
+                      style={{ borderColor: "#E0DDD8" }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                      className="absolute right-4 top-1/2 -translate-y-1/2"
+                      style={{ color: "#85817B" }}
+                    >
+                      {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-3.5 rounded-lg font-medium text-white transition hover:opacity-90 disabled:opacity-50"
+                  style={{ backgroundColor: "#084935" }}
+                >
+                  {loading ? "Creating Account..." : "Create Account"}
+                </button>
+              </form>
+
+              <p
+                className="mt-6 text-center text-sm"
+                style={{ color: "#85817B" }}
+              >
+                Already have an account?{" "}
+                <a
+                  href="/login"
+                  className="font-semibold hover:underline"
+                  style={{ color: "#084935" }}
+                >
+                  Sign in
+                </a>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

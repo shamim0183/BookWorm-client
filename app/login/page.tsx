@@ -14,41 +14,26 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const containerRef = useRef<HTMLDivElement>(null)
-  const formRef = useRef<HTMLFormElement>(null)
+  const formRef = useRef<HTMLDivElement>(null)
 
-  // GSAP Animations
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(containerRef.current, {
+    if (formRef.current) {
+      gsap.from(formRef.current, {
         opacity: 0,
-        scale: 0.95,
-        duration: 0.8,
-        ease: "power3.out",
-      })
-
-      gsap.from(formRef.current?.children || [], {
-        opacity: 0,
-        x: -20,
-        duration: 0.5,
-        stagger: 0.1,
+        y: 20,
+        duration: 0.6,
         ease: "power2.out",
-        delay: 0.4,
       })
-    })
-
-    return () => ctx.revert()
+    }
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-
     try {
       const response = await axios.post(`${API_URL}/auth/login`, formData)
       localStorage.setItem("token", response.data.token)
       toast.success("Login successful!")
-
       setTimeout(() => {
         router.push(response.data.user.role === "admin" ? "/admin" : "/library")
       }, 1000)
@@ -60,106 +45,132 @@ export default function LoginPage() {
   }
 
   return (
-    <div
-      className="min-h-screen relative flex items-center justify-center py-12 px-4"
-      style={{
-        backgroundImage:
-          'url("https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1920&q=80")',
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-      }}
-    >
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1F242E]/95 via-[#084935]/90 to-[#1F242E]/95 backdrop-blur-sm"></div>
-
+    <div className="min-h-screen" style={{ backgroundColor: "#FAF7F0" }}>
       <Toaster position="top-right" />
 
-      <div ref={containerRef} className="max-w-md w-full relative z-10">
-        {/* Logo/Title Animation */}
-        <div className="text-center mb-8">
-          <h1 className="text-6xl font-heading font-bold text-white mb-2">
-            📚
-          </h1>
-          <h2 className="text-4xl font-heading font-bold text-white">
-            Welcome Back
-          </h2>
-          <p className="text-gray-300 mt-2">
-            Sign in to continue your reading journey
-          </p>
-        </div>
-
-        <div className="bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl p-8 border border-white/20">
-          <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
-              </label>
-              <input
-                type="email"
-                required
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#084935] focus:border-transparent outline-none transition"
-                placeholder="your@email.com"
+      <div className="container mx-auto px-4 py-16">
+        <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+          {/* Left: Decorative Bookshelf */}
+          <div className="hidden lg:block">
+            <div className="relative h-[500px] rounded-2xl overflow-hidden shadow-2xl">
+              <img
+                src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80"
+                alt="Library"
+                className="w-full h-full object-cover"
               />
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
-                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#084935] focus:border-transparent outline-none transition"
-                  placeholder="Enter your password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition"
-                >
-                  {showPassword ? "👁️" : "👁️‍🗨️"}
-                </button>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1F242E]/90 via-[#1F242E]/50 to-transparent flex items-end p-12">
+                <div>
+                  <h2 className="text-4xl font-heading font-bold text-white mb-4">
+                    Welcome Back, Reader
+                  </h2>
+                  <p className="text-gray-200 text-lg">
+                    Continue your literary adventure where you left off.
+                  </p>
+                  <p className="text-gray-300 text-sm mt-4 italic">
+                    "A reader lives a thousand lives before he dies."
+                  </p>
+                </div>
               </div>
             </div>
+          </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-[#084935] to-[#2C5F4F] text-white py-3.5 rounded-full font-medium text-lg hover:shadow-xl transform hover:-translate-y-0.5 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          {/* Right: Form */}
+          <div ref={formRef}>
+            <div className="text-center lg:text-left mb-8">
+              <div className="text-6xl mb-4">📚</div>
+              <h1
+                className="text-5xl font-heading font-bold mb-3"
+                style={{ color: "#1F242E" }}
+              >
+                Welcome Back
+              </h1>
+              <p className="text-lg" style={{ color: "#85817B" }}>
+                Sign in to continue your reading journey
+              </p>
+            </div>
+
+            <div
+              className="bg-white rounded-2xl shadow-lg p-8 border"
+              style={{ borderColor: "#E8E3D6" }}
             >
-              {loading ? "Signing in..." : "Sign In"}
-            </button>
-          </form>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Email */}
+                <div>
+                  <label
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: "#1F242E" }}
+                  >
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    className="w-full px-4 py-3 rounded-lg border outline-none focus:ring-2 transition"
+                    style={{ borderColor: "#E0DDD8" }}
+                    placeholder="your@email.com"
+                  />
+                </div>
 
-          <p className="mt-6 text-center text-sm text-gray-600">
-            Don't have an account?{" "}
-            <a
-              href="/register"
-              className="text-[#084935] font-semibold hover:underline"
-            >
-              Sign up
-            </a>
-          </p>
-        </div>
+                {/* Password */}
+                <div>
+                  <label
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: "#1F242E" }}
+                  >
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      required
+                      value={formData.password}
+                      onChange={(e) =>
+                        setFormData({ ...formData, password: e.target.value })
+                      }
+                      className="w-full px-4 py-3 pr-12 rounded-lg border outline-none focus:ring-2 transition"
+                      style={{ borderColor: "#E0DDD8" }}
+                      placeholder="Enter your password"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2"
+                      style={{ color: "#85817B" }}
+                    >
+                      {showPassword ? "👁️" : "👁️‍🗨️"}
+                    </button>
+                  </div>
+                </div>
 
-        {/* Decorative Element */}
-        <div className="mt-8 text-center">
-          <p className="text-gray-300 text-sm">
-            "A reader lives a thousand lives before he dies"
-          </p>
-          <p className="text-gray-400 text-xs mt-1">- George R.R. Martin</p>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-3.5 rounded-lg font-medium text-white transition hover:opacity-90 disabled:opacity-50"
+                  style={{ backgroundColor: "#084935" }}
+                >
+                  {loading ? "Signing in..." : "Sign In"}
+                </button>
+              </form>
+
+              <p
+                className="mt-6 text-center text-sm"
+                style={{ color: "#85817B" }}
+              >
+                Don't have an account?{" "}
+                <a
+                  href="/register"
+                  className="font-semibold hover:underline"
+                  style={{ color: "#084935" }}
+                >
+                  Sign up
+                </a>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

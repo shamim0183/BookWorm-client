@@ -2,6 +2,7 @@
 
 import axios from "axios"
 import gsap from "gsap"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import toast, { Toaster } from "react-hot-toast"
@@ -25,14 +26,15 @@ export default function RegisterPage() {
 
   const formRef = useRef<HTMLDivElement>(null)
 
-  // Subtle GSAP animation
+  // GSAP Animation
   useEffect(() => {
     if (formRef.current) {
-      gsap.from(formRef.current, {
+      gsap.from(formRef.current.children, {
         opacity: 0,
-        y: 20,
-        duration: 0.6,
-        ease: "power2.out",
+        y: 30,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: "power3.out",
       })
     }
   }, [])
@@ -94,7 +96,9 @@ export default function RegisterPage() {
       localStorage.setItem("token", response.data.token)
       toast.success("Registration successful!")
       setTimeout(() => {
-        router.push(response.data.user.role === "admin" ? "/admin" : "/library")
+        router.push(
+          response.data.user.role === "admin" ? "/admin/genres" : "/library"
+        )
       }, 1000)
     } catch (error: any) {
       toast.error(error.response?.data?.error || "Registration failed")
@@ -104,244 +108,244 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#FAF7F0" }}>
+    <div className="min-h-screen bg-cream relative">
       <Toaster position="top-right" />
 
-      <div className="container mx-auto px-4 py-16">
-        <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-          {/* Left: Decorative Bookshelf */}
-          <div className="hidden lg:block">
-            <div className="relative h-[600px] rounded-2xl overflow-hidden shadow-2xl">
-              <img
-                src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80"
-                alt="Library"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1F242E]/90 via-[#1F242E]/50 to-transparent flex items-end p-12">
-                <div>
-                  <h2 className="text-4xl font-heading font-bold text-white mb-4">
-                    Start Your Reading Journey
-                  </h2>
-                  <p className="text-gray-200 text-lg">
-                    Track your books, discover new favorites, and connect with
-                    fellow readers.
-                  </p>
-                </div>
-              </div>
-            </div>
+      {/* Background Image */}
+      <div className="absolute inset-0 opacity-5">
+        <Image
+          src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&q=80"
+          alt="Background"
+          fill
+          className="object-cover"
+          priority
+        />
+      </div>
+
+      <div className="container mx-auto px-4 py-16 relative z-10">
+        <div className="max-w-md mx-auto" ref={formRef}>
+          <div className="text-center mb-8">
+            <h1 className="text-5xl font-heading font-bold text-charcoal-dark mb-2">
+              Join BookWorm
+            </h1>
+            <p className="text-charcoal">Create your account to get started</p>
           </div>
 
-          {/* Right: Form */}
-          <div ref={formRef}>
-            <div className="text-center lg:text-left mb-8">
-              <h1
-                className="text-5xl font-heading font-bold mb-3"
-                style={{ color: "#1F242E" }}
-              >
-                Join BookWorm
-              </h1>
-              <p className="text-lg" style={{ color: "#85817B" }}>
-                Create your account to get started
-              </p>
-            </div>
-
-            <div
-              className="bg-white rounded-2xl shadow-lg p-8 border"
-              style={{ borderColor: "#E8E3D6" }}
-            >
-              <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Photo Upload - Minimal */}
-                <div
-                  className="flex items-center gap-4 pb-5 border-b"
-                  style={{ borderColor: "#F5F2EB" }}
-                >
-                  <div
-                    className="w-16 h-16 rounded-full overflow-hidden"
-                    style={{ backgroundColor: "#F5F2EB" }}
-                  >
-                    {photoPreview ? (
-                      <img
-                        src={photoPreview}
-                        alt="Preview"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div
-                        className="w-full h-full flex items-center justify-center"
-                        style={{ color: "#85817B" }}
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Photo Upload */}
+              <div className="flex flex-col items-center pb-6 border-b border-gray-100">
+                <div className="w-24 h-24 rounded-full overflow-hidden bg-cream-dark mb-4 border-4 border-forest">
+                  {photoPreview ? (
+                    <img
+                      src={photoPreview}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-charcoal">
+                      <svg
+                        className="w-12 h-12"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
                       >
-                        <svg
-                          className="w-8 h-8"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                  <label
-                    className="cursor-pointer px-5 py-2 rounded-lg text-sm font-medium transition hover:opacity-80"
-                    style={{ backgroundColor: "#084935", color: "white" }}
-                  >
-                    Upload Photo
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handlePhotoChange}
-                      className="hidden"
-                    />
-                  </label>
-                </div>
-
-                {/* Name */}
-                <div>
-                  <label
-                    className="block text-sm font-medium mb-2"
-                    style={{ color: "#1F242E" }}
-                  >
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    className="w-full px-4 py-3 rounded-lg border outline-none focus:ring-2 transition"
-                    style={{ borderColor: "#E0DDD8", backgroundColor: "white" }}
-                    placeholder="Enter your name"
-                  />
-                </div>
-
-                {/* Email */}
-                <div>
-                  <label
-                    className="block text-sm font-medium mb-2"
-                    style={{ color: "#1F242E" }}
-                  >
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    className="w-full px-4 py-3 rounded-lg border outline-none focus:ring-2 transition"
-                    style={{ borderColor: "#E0DDD8" }}
-                    placeholder="your@email.com"
-                  />
-                </div>
-
-                {/* Password */}
-                <div>
-                  <label
-                    className="block text-sm font-medium mb-2"
-                    style={{ color: "#1F242E" }}
-                  >
-                    Password
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      required
-                      value={formData.password}
-                      onChange={(e) =>
-                        setFormData({ ...formData, password: e.target.value })
-                      }
-                      className="w-full px-4 py-3 pr-12 rounded-lg border outline-none focus:ring-2 transition"
-                      style={{ borderColor: "#E0DDD8" }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2"
-                      style={{ color: "#85817B" }}
-                    >
-                      {showPassword ? "👁️" : "👁️‍🗨️"}
-                    </button>
-                  </div>
-                  {formData.password && (
-                    <div className="mt-3 text-xs space-y-1">
-                      {Object.entries({
-                        "At least 6 characters": passwordChecks.minLength,
-                        "One uppercase letter": passwordChecks.hasUpperCase,
-                        "One lowercase letter": passwordChecks.hasLowerCase,
-                        "One number": passwordChecks.hasNumber,
-                      }).map(([text, passed]) => (
-                        <p
-                          key={text}
-                          style={{ color: passed ? "#10b981" : "#9ca3af" }}
-                        >
-                          {passed ? "✓" : "○"} {text}
-                        </p>
-                      ))}
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                      </svg>
                     </div>
                   )}
                 </div>
+                <label className="cursor-pointer px-6 py-2.5 bg-forest text-white rounded-full hover:bg-forest-light transition-all transform hover:-translate-y-0.5 font-medium text-sm shadow-md">
+                  Upload Photo
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoChange}
+                    className="hidden"
+                  />
+                </label>
+              </div>
 
-                {/* Confirm Password */}
-                <div>
-                  <label
-                    className="block text-sm font-medium mb-2"
-                    style={{ color: "#1F242E" }}
+              {/* Name */}
+              <div>
+                <label className="block text-sm font-medium text-charcoal-dark mb-2">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forest focus:border-transparent outline-none transition"
+                  placeholder="Enter your name"
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium text-charcoal-dark mb-2">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forest focus:border-transparent outline-none transition"
+                  placeholder="your@email.com"
+                />
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-medium text-charcoal-dark mb-2">
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forest focus:border-transparent outline-none transition"
+                    placeholder="Min 6 characters"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-charcoal hover:text-charcoal-dark transition"
                   >
-                    Confirm Password
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={showConfirmPassword ? "text" : "password"}
-                      required
-                      value={formData.confirmPassword}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          confirmPassword: e.target.value,
-                        })
-                      }
-                      className="w-full px-4 py-3 pr-12 rounded-lg border outline-none focus:ring-2 transition"
-                      style={{ borderColor: "#E0DDD8" }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                      className="absolute right-4 top-1/2 -translate-y-1/2"
-                      style={{ color: "#85817B" }}
-                    >
-                      {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
-                    </button>
-                  </div>
+                    {showPassword ? "👁️" : "👁️‍🗨️"}
+                  </button>
                 </div>
+                {formData.password && (
+                  <div className="mt-3 space-y-1.5 text-xs bg-gray-50 p-3 rounded-lg">
+                    {Object.entries({
+                      "At least 6 characters": passwordChecks.minLength,
+                      "One uppercase letter": passwordChecks.hasUpperCase,
+                      "One lowercase letter": passwordChecks.hasLowerCase,
+                      "One number": passwordChecks.hasNumber,
+                    }).map(([text, passed]) => (
+                      <p
+                        key={text}
+                        className={
+                          passed
+                            ? "text-green-600 font-medium"
+                            : "text-gray-400"
+                        }
+                      >
+                        {passed ? "✓" : "○"} {text}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-3.5 rounded-lg font-medium text-white transition hover:opacity-90 disabled:opacity-50"
-                  style={{ backgroundColor: "#084935" }}
-                >
-                  {loading ? "Creating Account..." : "Create Account"}
-                </button>
-              </form>
+              {/* Confirm Password */}
+              <div>
+                <label className="block text-sm font-medium text-charcoal-dark mb-2">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    required
+                    value={formData.confirmPassword}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        confirmPassword: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forest focus:border-transparent outline-none transition"
+                    placeholder="Re-enter password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-charcoal hover:text-charcoal-dark transition"
+                  >
+                    {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+                  </button>
+                </div>
+                {formData.confirmPassword && (
+                  <p
+                    className={`mt-2 text-xs font-medium ${
+                      formData.password === formData.confirmPassword
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {formData.password === formData.confirmPassword
+                      ? "✓ Passwords match"
+                      : "✗ Passwords do not match"}
+                  </p>
+                )}
+              </div>
 
-              <p
-                className="mt-6 text-center text-sm"
-                style={{ color: "#85817B" }}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-forest text-white py-3.5 rounded-full font-medium text-base hover:bg-forest-light transform hover:-translate-y-0.5 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Already have an account?{" "}
-                <a
-                  href="/login"
-                  className="font-semibold hover:underline"
-                  style={{ color: "#084935" }}
-                >
-                  Sign in
-                </a>
-              </p>
-            </div>
+                {loading ? "Creating Account..." : "Create Account"}
+              </button>
+
+              {/* Divider */}
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-4 bg-white text-charcoal">
+                    Or continue with
+                  </span>
+                </div>
+              </div>
+
+              {/* Gmail Login */}
+              <button
+                type="button"
+                className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24">
+                  <path
+                    fill="#4285F4"
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                  />
+                </svg>
+                <span className="font-medium text-charcoal-dark">
+                  Sign up with Google
+                </span>
+              </button>
+            </form>
+
+            <p className="mt-6 text-center text-sm text-charcoal">
+              Already have an account?{" "}
+              <a
+                href="/login"
+                className="text-forest font-semibold hover:underline"
+              >
+                Sign in
+              </a>
+            </p>
           </div>
         </div>
       </div>

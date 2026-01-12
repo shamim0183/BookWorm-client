@@ -2,6 +2,7 @@
 
 import axios from "axios"
 import gsap from "gsap"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import toast, { Toaster } from "react-hot-toast"
@@ -18,11 +19,12 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (formRef.current) {
-      gsap.from(formRef.current, {
+      gsap.from(formRef.current.children, {
         opacity: 0,
-        y: 20,
-        duration: 0.6,
-        ease: "power2.out",
+        y: 30,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: "power3.out",
       })
     }
   }, [])
@@ -35,7 +37,9 @@ export default function LoginPage() {
       localStorage.setItem("token", response.data.token)
       toast.success("Login successful!")
       setTimeout(() => {
-        router.push(response.data.user.role === "admin" ? "/admin" : "/library")
+        router.push(
+          response.data.user.role === "admin" ? "/admin/genres" : "/library"
+        )
       }, 1000)
     } catch (error: any) {
       toast.error(error.response?.data?.error || "Login failed")
@@ -45,131 +49,145 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#FAF7F0" }}>
+    <div className="min-h-screen bg-cream relative">
       <Toaster position="top-right" />
 
-      <div className="container mx-auto px-4 py-16">
-        <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-          {/* Left: Decorative Bookshelf */}
-          <div className="hidden lg:block">
-            <div className="relative h-[500px] rounded-2xl overflow-hidden shadow-2xl">
-              <img
-                src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80"
-                alt="Library"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1F242E]/90 via-[#1F242E]/50 to-transparent flex items-end p-12">
-                <div>
-                  <h2 className="text-4xl font-heading font-bold text-white mb-4">
-                    Welcome Back, Reader
-                  </h2>
-                  <p className="text-gray-200 text-lg">
-                    Continue your literary adventure where you left off.
-                  </p>
-                  <p className="text-gray-300 text-sm mt-4 italic">
-                    "A reader lives a thousand lives before he dies."
-                  </p>
-                </div>
-              </div>
-            </div>
+      {/* Background Image */}
+      <div className="absolute inset-0 opacity-5">
+        <Image
+          src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&q=80"
+          alt="Background"
+          fill
+          className="object-cover"
+          priority
+        />
+      </div>
+
+      <div className="container mx-auto px-4 py-16 relative z-10">
+        <div className="max-w-md mx-auto" ref={formRef}>
+          <div className="text-center mb-8">
+            <div className="text-6xl mb-4">📚</div>
+            <h1 className="text-5xl font-heading font-bold text-charcoal-dark mb-2">
+              Welcome Back
+            </h1>
+            <p className="text-charcoal">
+              Sign in to continue your reading journey
+            </p>
           </div>
 
-          {/* Right: Form */}
-          <div ref={formRef}>
-            <div className="text-center lg:text-left mb-8">
-              <div className="text-6xl mb-4">📚</div>
-              <h1
-                className="text-5xl font-heading font-bold mb-3"
-                style={{ color: "#1F242E" }}
-              >
-                Welcome Back
-              </h1>
-              <p className="text-lg" style={{ color: "#85817B" }}>
-                Sign in to continue your reading journey
-              </p>
-            </div>
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium text-charcoal-dark mb-2">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forest focus:border-transparent outline-none transition"
+                  placeholder="your@email.com"
+                />
+              </div>
 
-            <div
-              className="bg-white rounded-2xl shadow-lg p-8 border"
-              style={{ borderColor: "#E8E3D6" }}
-            >
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Email */}
-                <div>
-                  <label
-                    className="block text-sm font-medium mb-2"
-                    style={{ color: "#1F242E" }}
-                  >
-                    Email Address
-                  </label>
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-medium text-charcoal-dark mb-2">
+                  Password
+                </label>
+                <div className="relative">
                   <input
-                    type="email"
+                    type={showPassword ? "text" : "password"}
                     required
-                    value={formData.email}
+                    value={formData.password}
                     onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
+                      setFormData({ ...formData, password: e.target.value })
                     }
-                    className="w-full px-4 py-3 rounded-lg border outline-none focus:ring-2 transition"
-                    style={{ borderColor: "#E0DDD8" }}
-                    placeholder="your@email.com"
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forest focus:border-transparent outline-none transition"
+                    placeholder="Enter your password"
                   />
-                </div>
-
-                {/* Password */}
-                <div>
-                  <label
-                    className="block text-sm font-medium mb-2"
-                    style={{ color: "#1F242E" }}
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-charcoal hover:text-charcoal-dark transition"
                   >
-                    Password
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      required
-                      value={formData.password}
-                      onChange={(e) =>
-                        setFormData({ ...formData, password: e.target.value })
-                      }
-                      className="w-full px-4 py-3 pr-12 rounded-lg border outline-none focus:ring-2 transition"
-                      style={{ borderColor: "#E0DDD8" }}
-                      placeholder="Enter your password"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2"
-                      style={{ color: "#85817B" }}
-                    >
-                      {showPassword ? "👁️" : "👁️‍🗨️"}
-                    </button>
-                  </div>
+                    {showPassword ? "👁️" : "👁️‍🗨️"}
+                  </button>
                 </div>
+              </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-3.5 rounded-lg font-medium text-white transition hover:opacity-90 disabled:opacity-50"
-                  style={{ backgroundColor: "#084935" }}
-                >
-                  {loading ? "Signing in..." : "Sign In"}
-                </button>
-              </form>
-
-              <p
-                className="mt-6 text-center text-sm"
-                style={{ color: "#85817B" }}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-forest text-white py-3.5 rounded-full font-medium text-base hover:bg-forest-light transform hover:-translate-y-0.5 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Don't have an account?{" "}
-                <a
-                  href="/register"
-                  className="font-semibold hover:underline"
-                  style={{ color: "#084935" }}
-                >
-                  Sign up
-                </a>
-              </p>
-            </div>
+                {loading ? "Signing in..." : "Sign In"}
+              </button>
+
+              {/* Divider */}
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-4 bg-white text-charcoal">
+                    Or continue with
+                  </span>
+                </div>
+              </div>
+
+              {/* Gmail Login */}
+              <button
+                type="button"
+                className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24">
+                  <path
+                    fill="#4285F4"
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                  />
+                </svg>
+                <span className="font-medium text-charcoal-dark">
+                  Sign in with Google
+                </span>
+              </button>
+            </form>
+
+            <p className="mt-6 text-center text-sm text-charcoal">
+              Don't have an account?{" "}
+              <a
+                href="/register"
+                className="text-forest font-semibold hover:underline"
+              >
+                Sign up
+              </a>
+            </p>
+          </div>
+
+          {/* Quote */}
+          <div className="mt-8 text-center">
+            <p className="text-charcoal italic">
+              "A reader lives a thousand lives before he dies."
+            </p>
+            <p className="text-charcoal-light text-sm mt-1">
+              - George R.R. Martin
+            </p>
           </div>
         </div>
       </div>

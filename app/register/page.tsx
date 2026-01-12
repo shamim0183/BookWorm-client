@@ -2,7 +2,6 @@
 
 import axios from "axios"
 import gsap from "gsap"
-import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import toast, { Toaster } from "react-hot-toast"
@@ -108,19 +107,8 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream relative">
+    <div className="min-h-screen bg-cream">
       <Toaster position="top-right" />
-
-      {/* Background Image */}
-      <div className="absolute inset-0 opacity-5">
-        <Image
-          src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&q=80"
-          alt="Background"
-          fill
-          className="object-cover"
-          priority
-        />
-      </div>
 
       <div className="container mx-auto px-4 py-16 relative z-10">
         <div className="max-w-md mx-auto" ref={formRef}>
@@ -283,7 +271,7 @@ export default function RegisterPage() {
                   >
                     {formData.password === formData.confirmPassword
                       ? "✓ Passwords match"
-                      : "✗ Passwords do not match"}
+                      : "✗ Passwords do not match"}{" "}
                   </p>
                 )}
               </div>

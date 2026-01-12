@@ -18,7 +18,10 @@ export default {
           dark: "#4A4543",
           light: "#A8A5A0",
         },
-        forest: "#2C5F4F",
+        forest: {
+          DEFAULT: "#2C5F4F",
+          light: "#3a7868",
+        },
         teal: "#3A7A9E",
         gold: "#C9A86A",
       },

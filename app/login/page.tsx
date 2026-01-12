@@ -149,7 +149,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right Panel - Form */}
-      <div className="flex-1 flex items-center justify-center p-8 lg:p-12 bg-[#FAF7F0]/80 backdrop-blur-md">
+      <div className="flex-1 flex items-center justify-center p-10 lg:p-14 bg-[#FAF7F0]/90 backdrop-blur-xl border-l border-white/20">
         <div className="w-full max-w-md" ref={formRef}>
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center gap-3 mb-8">
@@ -205,7 +205,7 @@ export default function LoginPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="w-full pl-12 pr-4 py-4 bg-[#FAF7F0] border-2 border-[#E8E3D6] rounded-2xl focus:border-[#2C5F4F] focus:bg-white outline-none transition-all text-[#1F242E]"
+                  className="w-full pl-12 pr-4 py-5 bg-white/60 backdrop-blur-sm border-2 border-[#E8E3D6] rounded-xl focus:border-[#2C5F4F] focus:bg-white focus:shadow-lg focus:shadow-[#2C5F4F]/5 outline-none transition-all text-[#1F242E] placeholder:text-[#85817B]/50"
                   placeholder="you@example.com"
                 />
               </div>
@@ -247,7 +247,7 @@ export default function LoginPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
-                  className="w-full pl-12 pr-12 py-4 bg-[#FAF7F0] border-2 border-[#E8E3D6] rounded-2xl focus:border-[#2C5F4F] focus:bg-white outline-none transition-all text-[#1F242E]"
+                  className="w-full pl-12 pr-12 py-5 bg-white/60 backdrop-blur-sm border-2 border-[#E8E3D6] rounded-xl focus:border-[#2C5F4F] focus:bg-white focus:shadow-lg focus:shadow-[#2C5F4F]/5 outline-none transition-all text-[#1F242E] placeholder:text-[#85817B]/50"
                   placeholder="••••••••"
                 />
                 <button
@@ -331,10 +331,12 @@ export default function LoginPage() {
             {/* Divider */}
             <div className="relative my-8">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#E8E3D6]"></div>
+                <div className="w-full border-t-2 border-[#E8E3D6]"></div>
               </div>
-              <div className="relative flex justify-center">
-                <span className="px-4 text-sm text-[#85817B] bg-white">or</span>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-4 bg-[#FAF7F0]/90 text-[#85817B] font-medium backdrop-blur-sm">
+                  or continue with
+                </span>
               </div>
             </div>
 

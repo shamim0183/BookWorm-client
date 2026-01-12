@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Literata:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Merriweather:wght@300;400;700;900&display=swap");
 
 @theme {
   /* Blacks Theme Colors */
@@ -14,9 +14,9 @@
   --color-teal: #3a7a9e;
   --color-gold: #c9a86a;
 
-  /* Font Families */
-  --font-family-heading: "Playfair Display", serif;
-  --font-family-body: "Literata", serif;
+  /* Font Families - Optimized for Readability */
+  --font-family-heading: "Lato", sans-serif;
+  --font-family-body: "Merriweather", serif;
 }
 
 body {

@@ -73,26 +73,24 @@ export default function LoginPage() {
         ref={leftPanelRef}
         className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#1F242E] via-[#2C5F4F] to-[#1F242E] p-12 flex-col justify-between relative overflow-hidden"
       >
-        {/* Floating Book Icons */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-20 text-6xl opacity-10 animate-float">
-            📖
-          </div>
-          <div className="absolute top-40 right-32 text-5xl opacity-10 animate-float-delayed">
-            📚
-          </div>
-          <div className="absolute bottom-32 left-40 text-7xl opacity-10 animate-float">
-            📕
-          </div>
-          <div className="absolute bottom-20 right-20 text-4xl opacity-10 animate-float-delayed">
-            📗
-          </div>
+        {/* Decorative Shapes */}
+        <div className="absolute inset-0 overflow-hidden opacity-5">
+          <div className="absolute top-20 left-20 w-32 h-32 border-4 border-[#C9A86A] rounded-lg transform rotate-12"></div>
+          <div className="absolute top-60 right-32 w-24 h-24 bg-[#C9A86A]/20 rounded-full"></div>
+          <div className="absolute bottom-40 left-40 w-40 h-40 border-4 border-white/30 rounded-lg transform -rotate-6"></div>
+          <div className="absolute bottom-20 right-20 w-20 h-20 bg-white/10 rounded-full"></div>
         </div>
 
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-12">
-            <div className="w-12 h-12 bg-[#C9A86A] rounded-xl flex items-center justify-center text-2xl">
-              📚
+            <div className="w-12 h-12 bg-[#C9A86A] rounded-xl flex items-center justify-center">
+              <svg
+                className="w-7 h-7 text-white"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+              </svg>
             </div>
             <span className="text-2xl font-heading font-bold text-white">
               BookWorm
@@ -139,8 +137,14 @@ export default function LoginPage() {
         <div className="w-full max-w-md" ref={formRef}>
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#2C5F4F] to-[#3A7868] rounded-lg flex items-center justify-center text-xl">
-              📚
+            <div className="w-10 h-10 bg-gradient-to-br from-[#2C5F4F] to-[#3A7868] rounded-lg flex items-center justify-center">
+              <svg
+                className="w-6 h-6 text-white"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+              </svg>
             </div>
             <span className="text-xl font-heading font-bold text-[#1F242E]">
               BookWorm

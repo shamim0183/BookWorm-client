@@ -54,6 +54,7 @@ export default function RegisterPage() {
     hasUpperCase: /[A-Z]/.test(formData.password),
     hasLowerCase: /[a-z]/.test(formData.password),
     hasNumber: /\d/.test(formData.password),
+    hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(formData.password),
   }
 
   const allChecksPassed = Object.values(passwordChecks).every(Boolean)
@@ -504,25 +505,54 @@ export default function RegisterPage() {
                   )}
                 </button>
               </div>
+              {/* Password Strength Indicators */}
               {formData.password && (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {Object.entries({
-                    "6+ chars": passwordChecks.minLength,
-                    Uppercase: passwordChecks.hasUpperCase,
-                    Lowercase: passwordChecks.hasLowerCase,
-                    Number: passwordChecks.hasNumber,
-                  }).map(([text, passed]) => (
-                    <span
-                      key={text}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${
-                        passed
-                          ? "bg-green-100 text-green-700"
-                          : "bg-gray-100 text-gray-400"
-                      }`}
-                    >
-                      {passed ? "✓" : "○"} {text}
-                    </span>
-                  ))}
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <span
+                    className={`text-xs px-3 py-1.5 rounded-full font-medium transition ${
+                      passwordChecks.minLength
+                        ? "bg-green-100 text-green-700"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                    ✓ 6+ chars
+                  </span>
+                  <span
+                    className={`text-xs px-3 py-1.5 rounded-full font-medium transition ${
+                      passwordChecks.hasUpperCase
+                        ? "bg-green-100 text-green-700"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                    ✓ Uppercase
+                  </span>
+                  <span
+                    className={`text-xs px-3 py-1.5 rounded-full font-medium transition ${
+                      passwordChecks.hasLowerCase
+                        ? "bg-green-100 text-green-700"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                    ✓ Lowercase
+                  </span>
+                  <span
+                    className={`text-xs px-3 py-1.5 rounded-full font-medium transition ${
+                      passwordChecks.hasNumber
+                        ? "bg-green-100 text-green-700"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                    ✓ Number
+                  </span>
+                  <span
+                    className={`text-xs px-3 py-1.5 rounded-full font-medium transition ${
+                      passwordChecks.hasSpecialChar
+                        ? "bg-green-100 text-green-700"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                    ✓ Special (!@#$)
+                  </span>
                 </div>
               )}
             </div>

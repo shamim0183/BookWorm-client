@@ -74,7 +74,7 @@ export default function LoginPage() {
         className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#1F242E] via-[#2C5F4F] to-[#1F242E] p-12 flex-col justify-between relative overflow-hidden"
       >
         {/* Floating Book Covers */}
-        <div className="absolute inset-0 overflow-hidden opacity-10">
+        <div className="absolute inset-0 overflow-hidden opacity-50">
           <img
             src="https://covers.openlibrary.org/b/id/8235886-L.jpg"
             alt=""
@@ -149,7 +149,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right Panel - Form */}
-      <div className="flex-1 flex items-center justify-center p-8 lg:p-12">
+      <div className="flex-1 flex items-center justify-center p-8 lg:p-12 bg-[#FAF7F0]/80 backdrop-blur-md">
         <div className="w-full max-w-md" ref={formRef}>
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center gap-3 mb-8">
@@ -178,7 +178,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email Field */}
-            <div className="group">
+            <div className="group cursor-text">
               <label className="block text-sm font-semibold text-[#1F242E] mb-2 group-focus-within:text-[#2C5F4F] transition">
                 Email Address
               </label>
@@ -212,14 +212,14 @@ export default function LoginPage() {
             </div>
 
             {/* Password Field */}
-            <div className="group">
+            <div className="group cursor-text">
               <div className="flex justify-between items-center mb-2">
                 <label className="text-sm font-semibold text-[#1F242E] group-focus-within:text-[#2C5F4F] transition">
                   Password
                 </label>
                 <button
                   type="button"
-                  className="text-sm text-[#2C5F4F] hover:text-[#3A7868] font-medium transition"
+                  className="text-sm text-[#2C5F4F] hover:text-[#3A7868] font-medium transition cursor-pointer"
                 >
                   Forgot?
                 </button>
@@ -253,7 +253,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#85817B] hover:text-[#2C5F4F] transition"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#85817B] hover:text-[#2C5F4F] transition cursor-pointer"
                 >
                   {showPassword ? (
                     <svg
@@ -298,7 +298,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-[#2C5F4F] to-[#3A7868] text-white py-4 rounded-2xl font-semibold text-lg hover:shadow-2xl hover:shadow-[#2C5F4F]/20 transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-8"
+              className="w-full bg-gradient-to-r from-[#2C5F4F] to-[#3A7868] text-white py-4 rounded-2xl font-semibold text-lg hover:shadow-2xl hover:shadow-[#2C5F4F]/20 transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-8 cursor-pointer"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-3">
@@ -341,7 +341,7 @@ export default function LoginPage() {
             {/* Social Login */}
             <button
               type="button"
-              className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-white border-2 border-[#E8E3D6] rounded-2xl hover:border-[#2C5F4F] hover:bg-[#FAF7F0] transition-all duration-300 group"
+              className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-white border-2 border-[#E8E3D6] rounded-2xl hover:border-[#2C5F4F] hover:bg-[#FAF7F0] transition-all duration-300 group cursor-pointer"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path

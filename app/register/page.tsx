@@ -22,6 +22,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [emailError, setEmailError] = useState("")
 
   const leftPanelRef = useRef<HTMLDivElement>(null)
   const formRef = useRef<HTMLDivElement>(null)
@@ -57,6 +58,22 @@ export default function RegisterPage() {
 
   const allChecksPassed = Object.values(passwordChecks).every(Boolean)
 
+  // Email regex validation
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const email = e.target.value
+    setFormData({ ...formData, email })
+    if (email && !validateEmail(email)) {
+      setEmailError("Please enter a valid email address")
+    } else {
+      setEmailError("")
+    }
+  }
+
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -85,6 +102,13 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Validate email
+    if (!validateEmail(formData.email)) {
+      toast.error("Please enter a valid email address")
+      return
+    }
+
     if (!allChecksPassed) {
       toast.error("Please meet all password requirements")
       return
@@ -132,7 +156,7 @@ export default function RegisterPage() {
         className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#2C5F4F] via-[#3A7868] to-[#2C5F4F] p-12 flex-col justify-between relative overflow-hidden"
       >
         {/* Floating Book Covers */}
-        <div className="absolute inset-0 overflow-hidden opacity-100">
+        <div className="absolute inset-0 overflow-hidden opacity-50">
           <img
             src="https://covers.openlibrary.org/b/id/7884916-L.jpg"
             alt=""
@@ -271,7 +295,7 @@ export default function RegisterPage() {
       </div>
 
       {/* Left Panel - Form */}
-      <div className="flex-1 flex items-center justify-center p-8 lg:p-12 overflow-y-auto">
+      <div className="flex-1 flex items-center justify-center p-8 lg:p-12 overflow-y-auto bg-[#FAF7F0]/80 backdrop-blur-md">
         <div className="w-full max-w-md" ref={formRef}>
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center gap-3 mb-8">

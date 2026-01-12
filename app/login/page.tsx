@@ -149,7 +149,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right Panel - Form */}
-      <div className="flex-1 flex items-center justify-center p-10 lg:p-14 bg-[#FAF7F0]/90 backdrop-blur-xl border-l border-white/20">
+      <div className="flex-1 flex items-center justify-center p-10 lg:p-14 bg-white/90 backdrop-blur-xl border-l border-white/20 shadow-2xl">
         <div className="w-full max-w-md" ref={formRef}>
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center gap-3 mb-8">

@@ -296,7 +296,7 @@ export default function RegisterPage() {
       </div>
 
       {/* Left Panel - Form */}
-      <div className="flex-1 flex items-center justify-center p-8 lg:p-12 overflow-y-auto bg-[#FAF7F0]/80 backdrop-blur-md">
+      <div className="flex-1 flex items-center justify-center p-10 lg:p-14 overflow-y-auto bg-white/90 backdrop-blur-xl border-r border-white/20 shadow-2xl">
         <div className="w-full max-w-md" ref={formRef}>
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center gap-3 mb-8">
@@ -683,12 +683,14 @@ export default function RegisterPage() {
             </button>
 
             {/* Divider */}
-            <div className="relative my-6">
+            <div className="relative my-8">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#E8E3D6]"></div>
+                <div className="w-full border-t-2 border-[#E8E3D6]"></div>
               </div>
-              <div className="relative flex justify-center">
-                <span className="px-4 text-sm text-[#85817B] bg-white">or</span>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-4 bg-white/90 text-[#85817B] font-medium backdrop-blur-sm">
+                  or continue with
+                </span>
               </div>
             </div>
 

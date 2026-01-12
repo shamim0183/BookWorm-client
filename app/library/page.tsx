@@ -2,6 +2,7 @@
 
 import AddBookModal from "@/components/AddBookModal"
 import BookCard from "@/components/BookCard"
+import PageWrapper from "@/components/PageWrapper"
 import ProgressUpdateModal from "@/components/ProgressUpdateModal"
 import ProtectedLayout from "@/components/ProtectedLayout"
 import { getLibrary, getStats, removeFromLibrary } from "@/lib/api"
@@ -71,8 +72,7 @@ export default function LibraryPage() {
 
   return (
     <ProtectedLayout>
-      {/* Override background to match login page */}
-      <div className="min-h-screen bg-gradient-to-br from-[#1F242E] via-[#2C5F4F] to-[#1F242E] -mt-16 pt-16">
+      <PageWrapper className="-mt-16 pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header with glassmorphism */}
           <div className="mb-8 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8">
@@ -242,7 +242,7 @@ export default function LibraryPage() {
           onSuccess={loadData}
           libraryEntry={progressModalEntry}
         />
-      </div>
+      </PageWrapper>
     </ProtectedLayout>
   )
 }

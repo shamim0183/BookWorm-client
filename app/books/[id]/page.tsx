@@ -109,12 +109,17 @@ export default function BookDetailsPage() {
       const allReviews = response.data.reviews || []
       setReviews(allReviews)
 
-      // Find user's own review
-      const userId = localStorage.getItem("userId")
-      const existingUserReview = allReviews.find(
-        (review: Review) => review.user._id === userId
-      )
-      setUserReview(existingUserReview || null)
+      // Find user's own review - get user from token/auth context
+      if (token) {
+        // Decode token to get user ID (simple base64 decode of JWT payload)
+        const payload = JSON.parse(atob(token.split(".")[1]))
+        const userId = payload.userId || payload.id || payload._id
+
+        const existingUserReview = allReviews.find(
+          (review: Review) => review.user._id === userId
+        )
+        setUserReview(existingUserReview || null)
+      }
     } catch (error) {
       console.error("Failed to load reviews:", error)
     }

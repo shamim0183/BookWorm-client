@@ -274,7 +274,7 @@ export default function AdminBooksPage() {
               <div className="flex-1 relative">
                 <input
                   type="text"
-                  value={search Query}
+                  value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border-2 border-white/30 rounded-xl focus:border-[#C9A86A] focus:bg-white/30 outline-none transition-all text-white placeholder:text-white/50"
                   placeholder="Search by title, author, or ISBN..."

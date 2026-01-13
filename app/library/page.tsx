@@ -1,6 +1,7 @@
 "use client"
 
 import BookCard from "@/components/BookCard"
+import ConfirmModal from "@/components/ConfirmModal"
 import PageWrapper from "@/components/PageWrapper"
 import ProgressUpdateModal from "@/components/ProgressUpdateModal"
 import ProtectedLayout from "@/components/ProtectedLayout"

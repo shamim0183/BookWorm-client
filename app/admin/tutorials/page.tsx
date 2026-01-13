@@ -328,6 +328,21 @@ export default function ManageTutorialsPage() {
                   <p className="text-white/50 text-xs mt-1">
                     Paste YouTube or Vimeo URL for video tutorials
                   </p>
+
+                  {/* Live Video Preview */}
+                  {formData.videoUrl && getVideoEmbedUrl(formData.videoUrl) && (
+                    <div className="mt-3">
+                      <p className="text-white/70 text-sm mb-2">
+                        Video Preview:
+                      </p>
+                      <iframe
+                        src={getVideoEmbedUrl(formData.videoUrl) || ""}
+                        className="w-full h-64 rounded-xl border-2 border-[#C9A86A]/30"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">

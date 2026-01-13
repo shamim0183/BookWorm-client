@@ -186,7 +186,10 @@ export default function BookDetailsPage() {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       )
-      toast.success("Review submitted!")
+      toast.success(
+        "✨ Review Submitted Successfully!\n📝 Your review is pending admin approval and will appear shortly.",
+        { duration: 4000 }
+      )
       setShowReviewForm(false)
       setReviewForm({ rating: 5, reviewText: "" })
       fetchReviews()

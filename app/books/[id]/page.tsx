@@ -628,6 +628,17 @@ export default function BookDetailsPage() {
             )}
           </div>
         </div>
+
+        {/* Success Modal */}
+        <SuccessModal
+          isOpen={successModal.isOpen}
+          onClose={() => setSuccessModal({ ...successModal, isOpen: false })}
+          title={successModal.title}
+          message={successModal.message}
+          type="success"
+        />
+
+        <Toaster />
       </PageWrapper>
     </ProtectedLayout>
   )

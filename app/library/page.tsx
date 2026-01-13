@@ -346,22 +346,25 @@ export default function LibraryPage() {
                         className="px-4 py-3 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 font-medium rounded-xl transition border border-blue-400/30 cursor-pointer text-left"
                       >
                         📘 Want to Read
-                          <div className="flex gap-2 mt-3">
-                            {entry.shelf === "currently-reading" && (
-                              <button
-                                onClick={() => setProgressModalEntry(entry)}
-                                className="flex-1 px-6 py-2.5 bg-[#C9A86A] hover:bg-[#B89858] text-white font-semibold rounded-lg transition-all shadow-lg hover:shadow-[#C9A86A]/50 hover:-translate-y-0.5 cursor-pointer"
-                              >
-                                Update
-                              </button>
-                            )}
-                            <button
-                              onClick={() => handleDelete(entry)}
-                              className="flex-1 px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-all shadow-lg hover:shadow-red-600/50 hover:-translate-y-0.5 cursor-pointer"
-                            >
-                              Remove
-                            </button>
-                          </div>                </div>
+                      </button>
+                    )}
+                    {selectedEntry.shelf !== "currentlyReading" && (
+                      <button
+                        onClick={() => handleShelfChange("currentlyReading")}
+                        className="px-4 py-3 bg-green-600/20 hover:bg-green-600/30 text-green-300 font-medium rounded-xl transition border border-green-400/30 cursor-pointer text-left"
+                      >
+                        📖 Currently Reading
+                      </button>
+                    )}
+                    {selectedEntry.shelf !== "read" && (
+                      <button
+                        onClick={() => handleShelfChange("read")}
+                        className="px-4 py-3 bg-[#C9A86A]/20 hover:bg-[#C9A86A]/30 text-[#C9A86A] font-medium rounded-xl transition border border-[#C9A86A]/30 cursor-pointer text-left"
+                      >
+                        ✅ Read
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <div className="pt-4 border-t border-white/20 flex gap-3">

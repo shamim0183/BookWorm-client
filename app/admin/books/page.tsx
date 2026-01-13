@@ -51,6 +51,11 @@ export default function AdminBooksPage() {
     message: string
     onConfirm: () => void
   }>({ isOpen: false, title: "", message: "", onConfirm: () => {} })
+  const [successModal, setSuccessModal] = useState<{
+    isOpen: boolean
+    title: string
+    message: string
+  }>({ isOpen: false, title: "", message: "" })
 
   useEffect(() => {
     if (user && user.role !== "admin") {
@@ -164,10 +169,18 @@ export default function AdminBooksPage() {
 
       if (editingBook) {
         await updateBook(editingBook._id, bookData)
-        toast.success("Book updated!")
+        setSuccessModal({
+          isOpen: true,
+          title: "Book Updated!",
+          message: `"${selectedBook.title}" has been updated successfully.`,
+        })
       } else {
         await createBook(bookData)
-        toast.success("Book added!")
+        setSuccessModal({
+          isOpen: true,
+          title: "Book Added!",
+          message: `"${selectedBook.title}" has been added to your library.`,
+        })
       }
 
       setSelectedBook(null)
@@ -554,6 +567,15 @@ export default function AdminBooksPage() {
           title={confirmModal.title}
           message={confirmModal.message}
           type="danger"
+        />
+
+        {/* Success Modal */}
+        <SuccessModal
+          isOpen={successModal.isOpen}
+          onClose={() => setSuccessModal({ ...successModal, isOpen: false })}
+          title={successModal.title}
+          message={successModal.message}
+          type="success"
         />
       </PageWrapper>
     </ProtectedLayout>

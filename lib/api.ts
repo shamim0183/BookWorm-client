@@ -180,3 +180,44 @@ export const getGenres = async () => {
     throw new Error(error.response?.data?.error || "Failed to fetch genres")
   }
 }
+
+export const createGenre = async (genreData: {
+  name: string
+  description?: string
+}) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/genres`, genreData, {
+      headers: authHeaders(),
+    })
+    return response.data
+  } catch (error: any) {
+    throw new Error(error.response?.data?.error || "Failed to create genre")
+  }
+}
+
+export const updateGenre = async (
+  genreId: string,
+  genreData: { name?: string; description?: string }
+) => {
+  try {
+    const response = await axios.put(
+      `${API_BASE_URL}/genres/${genreId}`,
+      genreData,
+      { headers: authHeaders() }
+    )
+    return response.data
+  } catch (error: any) {
+    throw new Error(error.response?.data?.error || "Failed to update genre")
+  }
+}
+
+export const deleteGenre = async (genreId: string) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/genres/${genreId}`, {
+      headers: authHeaders(),
+    })
+    return response.data
+  } catch (error: any) {
+    throw new Error(error.response?.data?.error || "Failed to delete genre")
+  }
+}

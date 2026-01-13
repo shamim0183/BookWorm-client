@@ -24,6 +24,7 @@ interface Tutorial {
   title: string
   description: string
   content: string
+  videoUrl?: string
   category: string
   status: "draft" | "published"
   views: number
@@ -45,6 +46,7 @@ export default function ManageTutorialsPage() {
     title: "",
     description: "",
     content: "",
+    videoUrl: "",
     category: "Getting Started",
     status: "draft" as "draft" | "published",
   })
@@ -130,6 +132,7 @@ export default function ManageTutorialsPage() {
         title: "",
         description: "",
         content: "",
+        videoUrl: "",
         category: "Getting Started",
         status: "draft",
       })
@@ -147,6 +150,7 @@ export default function ManageTutorialsPage() {
       title: tutorial.title,
       description: tutorial.description,
       content: tutorial.content,
+      videoUrl: tutorial.videoUrl || "",
       category: tutorial.category,
       status: tutorial.status,
     })
@@ -191,6 +195,7 @@ export default function ManageTutorialsPage() {
       title: "",
       description: "",
       content: "",
+      videoUrl: "",
       category: "Getting Started",
       status: "draft",
     })
@@ -285,6 +290,24 @@ export default function ManageTutorialsPage() {
                     className="w-full px-4 py-2 bg-white/20 border-2 border-white/30 rounded-xl focus:border-[#C9A86A] outline-none text-white placeholder:text-white/50"
                     placeholder="Write your tutorial content here..."
                   />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-white/80 mb-2">
+                    Video URL (Optional)
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.videoUrl}
+                    onChange={(e) =>
+                      setFormData({ ...formData, videoUrl: e.target.value })
+                    }
+                    className="w-full px-4 py-2 bg-white/20 border-2 border-white/30 rounded-xl focus:border-[#C9A86A] outline-none text-white placeholder:text-white/50"
+                    placeholder="https://youtube.com/watch?v=..."
+                  />
+                  <p className="text-white/50 text-xs mt-1">
+                    Paste YouTube or Vimeo URL for video tutorials
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">

@@ -206,6 +206,10 @@ export default function BookDetailsPage() {
           },
           { headers: { Authorization: `Bearer ${token}` } }
         )
+
+        // Immediately show success and close form
+        setShowReviewForm(false)
+        setReviewForm({ rating: 0, reviewText: "" })
         setSuccessModal({
           isOpen: true,
           title: "Review Updated Successfully!",
@@ -223,6 +227,10 @@ export default function BookDetailsPage() {
           },
           { headers: { Authorization: `Bearer ${token}` } }
         )
+
+        // Immediately show success and close form
+        setShowReviewForm(false)
+        setReviewForm({ rating: 0, reviewText: "" })
         setSuccessModal({
           isOpen: true,
           title: "Review Submitted Successfully!",
@@ -231,17 +239,16 @@ export default function BookDetailsPage() {
         })
       }
 
-      setShowReviewForm(false)
-      setReviewForm({ rating: 0, reviewText: "" })
-      // Try to reload reviews, but don't show error if it fails
-      try {
-        await fetchReviews()
-      } catch (error) {
-        // Silently fail - the review was successful, just the display might be slightly out of date
-        console.log(
-          "Note: Could not reload reviews, but review was submitted successfully"
-        )
-      }
+      // Try to reload reviews in background, but don't let errors affect UI
+      setTimeout(async () => {
+        try {
+          await fetchReviews()
+        } catch (error) {
+          console.log(
+            "Note: Could not reload reviews, but review was submitted successfully"
+          )
+        }
+      }, 100)
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.error || "Failed to submit review"

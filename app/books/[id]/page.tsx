@@ -91,7 +91,10 @@ export default function BookDetailsPage() {
 
   const fetchReviews = async () => {
     try {
-      const response = await axios.get(`${API_URL}/reviews?bookId=${bookId}`)
+      const token = localStorage.getItem("token")
+      const response = await axios.get(`${API_URL}/reviews?bookId=${bookId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       setReviews(response.data.reviews || [])
     } catch (error) {
       console.error("Failed to load reviews:", error)

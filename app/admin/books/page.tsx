@@ -3,6 +3,7 @@
 import ConfirmModal from "@/components/ConfirmModal"
 import PageWrapper from "@/components/PageWrapper"
 import ProtectedLayout from "@/components/ProtectedLayout"
+import SuccessModal from "@/components/SuccessModal"
 import {
   createBook,
   deleteBook,

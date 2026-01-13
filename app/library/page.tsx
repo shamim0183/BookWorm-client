@@ -333,7 +333,7 @@ export default function LibraryPage() {
                       ? "Want to Read"
                       : selectedEntry.shelf === "currentlyReading"
                       ? "Currently Reading"
-                      : "Finished"}
+                      : "Read"}
                   </p>
                 </div>
 

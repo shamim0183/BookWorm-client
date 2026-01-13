@@ -2,82 +2,57 @@
 
 import PageWrapper from "@/components/PageWrapper"
 import ProtectedLayout from "@/components/ProtectedLayout"
+import axios from "axios"
 import { useEffect, useState } from "react"
+import toast, { Toaster } from "react-hot-toast"
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
 
 export default function TutorialsPage() {
   const [tutorials, setTutorials] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // TODO: Load from API when backend is ready
-    // For now, use placeholder data
-    const placeholderTutorials = [
-      {
-        _id: "1",
-        title: "How to Build a Reading Habit",
-        videoId: "dQw4w9WgXcQ", // Replace with real YouTube video IDs
-        description:
-          "Learn effective strategies to build and maintain a consistent reading habit.",
-      },
-      {
-        _id: "2",
-        title: "Speed Reading Techniques",
-        videoId: "dQw4w9WgXcQ",
-        description:
-          "Discover how to read faster while maintaining comprehension.",
-      },
-      {
-        _id: "3",
-        title: "Book Review Writing Tips",
-        videoId: "dQw4w9WgXcQ",
-        description: "Learn how to write engaging and helpful book reviews.",
-      },
-      {
-        _id: "4",
-        title: "Finding Your Next Great Read",
-        videoId: "dQw4w9WgXcQ",
-        description: "Tips for discovering books you'll love.",
-      },
-      {
-        _id: "5",
-        title: "Note-Taking for Readers",
-        videoId: "dQw4w9WgXcQ",
-        description: "Effective methods for taking notes while reading.",
-      },
-      {
-        _id: "6",
-        title: "Classic Literature Guide",
-        videoId: "dQw4w9WgXcQ",
-        description: "Getting started with classic literature.",
-      },
-      {
-        _id: "7",
-        title: "Building a Home Library",
-        videoId: "dQw4w9WgXcQ",
-        description: "Tips for organizing and curating your book collection.",
-      },
-      {
-        _id: "8",
-        title: "Reading Multiple Books at Once",
-        videoId: "dQw4w9WgXcQ",
-        description: "Strategies for juggling multiple books effectively.",
-      },
-      {
-        _id: "9",
-        title: "Genre Exploration Guide",
-        videoId: "dQw4w9WgXcQ",
-        description: "Discover new genres and expand your reading horizons.",
-      },
-      {
-        _id: "10",
-        title: "Book Club Best Practices",
-        videoId: "dQw4w9WgXcQ",
-        description: "How to run a successful book club.",
-      },
-    ]
-    setTutorials(placeholderTutorials)
-    setLoading(false)
+    fetchTutorials()
   }, [])
+
+  const fetchTutorials = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/tutorials`)
+      setTutorials(response.data.tutorials || [])
+    } catch (error: any) {
+      toast.error("Failed to load tutorials")
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Extract YouTube video ID from URL
+  const getYouTubeId = (url: string) => {
+    if (!url) return ""
+
+    // If it's already just an ID (11 characters, alphanumeric with dash/underscore)
+    if (/^[a-zA-Z0-9_-]{11}$/.test(url)) {
+      return url
+    }
+
+    // Extract from youtube.com URLs
+    const youtubeMatch = url.match(
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+    )
+    if (youtubeMatch) {
+      return youtubeMatch[1]
+    }
+
+    // Extract from embed URLs
+    const embedMatch = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/)
+    if (embedMatch) {
+      return embedMatch[1]
+    }
+
+    return url // Return as-is if no pattern matches
+  }
 
   if (loading) {
     return (
@@ -93,6 +68,13 @@ export default function TutorialsPage() {
 
   return (
     <ProtectedLayout>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: { background: "#1F242E", color: "#FAF7F0" },
+          error: { iconTheme: { primary: "#ef4444", secondary: "#FAF7F0" } },
+        }}
+      />
       <PageWrapper className="-mt-16 pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
@@ -115,7 +97,9 @@ export default function TutorialsPage() {
                 {/* Video Embed */}
                 <div className="relative aspect-video bg-black/30">
                   <iframe
-                    src={`https://www.youtube.com/embed/${tutorial.videoId}`}
+                    src={`https://www.youtube.com/embed/${getYouTubeId(
+                      tutorial.videoUrl
+                    )}`}
                     title={tutorial.title}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen

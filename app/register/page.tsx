@@ -1,5 +1,6 @@
 "use client"
 
+import { useAuth } from "@/lib/AuthContext"
 import { signInWithGoogle } from "@/lib/auth"
 import axios from "axios"
 import gsap from "gsap"
@@ -12,6 +13,7 @@ const IMGBB_KEY = process.env.NEXT_PUBLIC_IMGBB_API_KEY
 
 export default function RegisterPage() {
   const router = useRouter()
+  const { login: authLogin } = useAuth()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -132,14 +134,14 @@ export default function RegisterPage() {
       const token = response.data.token
       const user = response.data.user
 
-      // Store both token and user data
+      // Store token and user data in localStorage
       localStorage.setItem("token", token)
       localStorage.setItem("user", JSON.stringify(user))
 
-      toast.success("Account created successfully!")
-      setTimeout(() => {
-        router.push(user.role === "admin" ? "/admin/dashboard" : "/library")
-      }, 1000)
+      // Update AuthContext to sync state
+      await authLogin(token)
+
+      router.push(user.role === "admin" ? "/admin/dashboard" : "/library")
     } catch (error: any) {
       toast.error(error.response?.data?.error || "Registration failed")
     } finally {
@@ -163,14 +165,14 @@ export default function RegisterPage() {
       const token = response.data.token
       const userData = response.data.user
 
-      // Store both token and user data
+      // Store token and user data in localStorage
       localStorage.setItem("token", token)
       localStorage.setItem("user", JSON.stringify(userData))
 
-      toast.success(`Welcome, ${user.displayName}!`)
-      setTimeout(() => {
-        router.push(userData.role === "admin" ? "/admin/dashboard" : "/library")
-      }, 1000)
+      // Update AuthContext to sync state
+      await authLogin(token)
+
+      router.push(userData.role === "admin" ? "/admin/dashboard" : "/library")
     } catch (error: any) {
       toast.error(error.message || "Google sign-in failed")
     } finally {

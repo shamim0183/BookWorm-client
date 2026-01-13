@@ -47,7 +47,7 @@ export default function ManageTutorialsPage() {
     description: "",
     content: "",
     videoUrl: "",
-    category: "Getting Started",
+    category: "General",
     status: "draft" as "draft" | "published",
   })
   const [confirmModal, setConfirmModal] = useState<{
@@ -133,7 +133,7 @@ export default function ManageTutorialsPage() {
         description: "",
         content: "",
         videoUrl: "",
-        category: "Getting Started",
+        category: "General",
         status: "draft",
       })
       setShowForm(false)
@@ -216,7 +216,7 @@ export default function ManageTutorialsPage() {
       description: "",
       content: "",
       videoUrl: "",
-      category: "Getting Started",
+      category: "General",
       status: "draft",
     })
   }
@@ -350,19 +350,15 @@ export default function ManageTutorialsPage() {
                     <label className="block text-sm font-medium text-white/80 mb-2">
                       Category *
                     </label>
-                    <select
+                    <input
+                      type="text"
                       value={formData.category}
                       onChange={(e) =>
                         setFormData({ ...formData, category: e.target.value })
                       }
-                      className="w-full px-4 py-2 bg-white/20 border-2 border-white/30 rounded-xl focus:border-[#C9A86A] outline-none text-white"
-                    >
-                      {CATEGORIES.map((cat) => (
-                        <option key={cat} value={cat} className="bg-[#1F242E]">
-                          {cat}
-                        </option>
-                      ))}
-                    </select>
+                      className="w-full px-4 py-2 bg-white/20 border-2 border-white/30 rounded-xl focus:border-[#C9A86A] outline-none text-white placeholder:text-white/50"
+                      placeholder="e.g., Reading Tips, Book Reviews"
+                    />
                   </div>
 
                   <div>

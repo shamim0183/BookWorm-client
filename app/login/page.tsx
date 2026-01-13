@@ -1,5 +1,6 @@
 "use client"
 
+import { useAuth } from "@/lib/AuthContext"
 import { signInWithGoogle } from "@/lib/auth"
 import axios from "axios"
 import gsap from "gsap"
@@ -11,6 +12,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
 
 export default function LoginPage() {
   const router = useRouter()
+  const { login: authLogin } = useAuth()
   const [formData, setFormData] = useState({ email: "", password: "" })
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -48,9 +50,12 @@ export default function LoginPage() {
       const token = response.data.token
       const user = response.data.user
 
-      // Store both token and user data
+      // Store token and user data in localStorage
       localStorage.setItem("token", token)
       localStorage.setItem("user", JSON.stringify(user))
+
+      // Update AuthContext to sync state
+      await authLogin(token)
 
       // Redirect based on role
       router.push(user.role === "admin" ? "/admin/dashboard" : "/library")
@@ -76,9 +81,12 @@ export default function LoginPage() {
       const token = response.data.token
       const userData = response.data.user
 
-      // Store both token and user data
+      // Store token and user data in localStorage
       localStorage.setItem("token", token)
       localStorage.setItem("user", JSON.stringify(userData))
+
+      // Update AuthContext to sync state
+      await authLogin(token)
 
       // Redirect based on role
       router.push(userData.role === "admin" ? "/admin/dashboard" : "/library")

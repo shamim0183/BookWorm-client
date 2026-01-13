@@ -5,19 +5,57 @@ import ProtectedLayout from "@/components/ProtectedLayout"
 import { useAuth } from "@/lib/AuthContext"
 import axios from "axios"
 import { useState } from "react"
-import toast from "react-hot-toast"
+import toast, { Toaster } from "react-hot-toast"
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
+const IMGBB_KEY = process.env.NEXT_PUBLIC_IMGBB_API_KEY
 
 export default function ProfilePage() {
-  const { user, login } = useAuth()
+  const { user, updateUser } = useAuth()
   const [editing, setEditing] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [photoFile, setPhotoFile] = useState<File | null>(null)
+  const [photoPreview, setPhotoPreview] = useState("")
+  const [showPhotoModal, setShowPhotoModal] = useState(false)
   const [formData, setFormData] = useState({
     name: user?.name || "",
     email: user?.email || "",
     photoURL: user?.photoURL || "",
   })
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setPhotoFile(file)
+      const reader = new FileReader()
+      reader.onloadend = () => setPhotoPreview(reader.result as string)
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const uploadToImgBB = async () => {
+    if (!photoFile) return formData.photoURL
+    const data = new FormData()
+    data.append("image", photoFile)
+    try {
+      const response = await axios.post(
+        `https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`,
+        data
+      )
+      return response.data.data.url
+    } catch (error) {
+      toast.error("Image upload failed")
+      return formData.photoURL
+    }
+  }
+
+  const handlePhotoUpload = () => {
+    if (!photoFile) return
+    setShowPhotoModal(false)
+    toast.success(
+      "Photo selected! Click 'Save Changes' below to update your profile."
+    )
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -25,9 +63,13 @@ export default function ProfilePage() {
 
     try {
       const token = localStorage.getItem("token")
+
+      // Upload photo if changed
+      const photoURL = await uploadToImgBB()
+
       const response = await axios.put(
-        `${API_URL}/api/auth/profile`,
-        formData,
+        `${API_URL}/auth/profile`,
+        { ...formData, photoURL },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -37,10 +79,12 @@ export default function ProfilePage() {
       localStorage.setItem("user", JSON.stringify(response.data.user))
 
       // Update auth context
-      login(response.data.user, token!)
+      updateUser(response.data.user)
 
       toast.success("Profile updated successfully!")
       setEditing(false)
+      setPhotoFile(null)
+      setPhotoPreview("")
     } catch (error: any) {
       toast.error(error.response?.data?.error || "Failed to update profile")
     } finally {
@@ -55,10 +99,19 @@ export default function ProfilePage() {
       photoURL: user?.photoURL || "",
     })
     setEditing(false)
+    setPhotoFile(null)
+    setPhotoPreview("")
   }
 
   return (
     <ProtectedLayout>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: { background: "#1F242E", color: "#FAF7F0" },
+          success: { iconTheme: { primary: "#2C5F4F", secondary: "#FAF7F0" } },
+        }}
+      />
       <PageWrapper className="-mt-16 pt-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Header */}
@@ -76,21 +129,63 @@ export default function ProfilePage() {
             <div className="relative px-8 pb-8">
               {/* Avatar */}
               <div className="absolute -top-16 left-8">
-                <div className="w-32 h-32 rounded-full bg-white/10 border-4 border-[#1F242E] overflow-hidden">
-                  {formData.photoURL ? (
-                    <img
-                      src={formData.photoURL}
-                      alt={formData.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-[#C9A86A] flex items-center justify-center">
-                      <span className="text-4xl font-bold text-white">
-                        {formData.name.charAt(0).toUpperCase()}
-                      </span>
+                {editing ? (
+                  <button
+                    onClick={() => setShowPhotoModal(true)}
+                    className="relative w-32 h-32 rounded-full bg-white/10 border-4 border-[#1F242E] overflow-hidden cursor-pointer hover:border-[#C9A86A] transition-all group"
+                  >
+                    {formData.photoURL ? (
+                      <img
+                        src={formData.photoURL}
+                        alt={formData.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-[#C9A86A] flex items-center justify-center">
+                        <span className="text-4xl font-bold text-white">
+                          {formData.name.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <svg
+                        className="w-10 h-10 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
                     </div>
-                  )}
-                </div>
+                  </button>
+                ) : (
+                  <div className="w-32 h-32 rounded-full bg-white/10 border-4 border-[#1F242E] overflow-hidden">
+                    {formData.photoURL ? (
+                      <img
+                        src={formData.photoURL}
+                        alt={formData.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-[#C9A86A] flex items-center justify-center">
+                        <span className="text-4xl font-bold text-white">
+                          {formData.name.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Edit Button */}
@@ -152,79 +247,6 @@ export default function ProfilePage() {
                       </span>
                     </div>
                   </div>
-
-                  {/* Stats Section */}
-                  {user?.role === "admin" ? (
-                    <div className="mt-8 pt-8 border-t border-white/10">
-                      <h3 className="text-2xl font-bold text-white mb-6">
-                        Admin Statistics
-                      </h3>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="bg-white/5 rounded-xl p-4 text-center">
-                          <p className="text-3xl font-bold text-[#C9A86A]">
-                            --
-                          </p>
-                          <p className="text-sm text-gray-400 mt-1">
-                            Total Users
-                          </p>
-                        </div>
-                        <div className="bg-white/5 rounded-xl p-4 text-center">
-                          <p className="text-3xl font-bold text-[#C9A86A]">
-                            --
-                          </p>
-                          <p className="text-sm text-gray-400 mt-1">
-                            Total Books
-                          </p>
-                        </div>
-                        <div className="bg-white/5 rounded-xl p-4 text-center">
-                          <p className="text-3xl font-bold text-[#C9A86A]">
-                            --
-                          </p>
-                          <p className="text-sm text-gray-400 mt-1">
-                            Tutorials
-                          </p>
-                        </div>
-                        <div className="bg-white/5 rounded-xl p-4 text-center">
-                          <p className="text-3xl font-bold text-[#C9A86A]">
-                            --
-                          </p>
-                          <p className="text-sm text-gray-400 mt-1">Reviews</p>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="mt-8 pt-8 border-t border-white/10">
-                      <h3 className="text-2xl font-bold text-white mb-6">
-                        Reading Statistics
-                      </h3>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <div className="bg-white/5 rounded-xl p-4 text-center">
-                          <p className="text-3xl font-bold text-[#C9A86A]">
-                            --
-                          </p>
-                          <p className="text-sm text-gray-400 mt-1">
-                            Books Read
-                          </p>
-                        </div>
-                        <div className="bg-white/5 rounded-xl p-4 text-center">
-                          <p className="text-3xl font-bold text-[#C9A86A]">
-                            --
-                          </p>
-                          <p className="text-sm text-gray-400 mt-1">
-                            Books Reading
-                          </p>
-                        </div>
-                        <div className="bg-white/5 rounded-xl p-4 text-center">
-                          <p className="text-3xl font-bold text-[#C9A86A]">
-                            --
-                          </p>
-                          <p className="text-sm text-gray-400 mt-1">
-                            Reviews Written
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6 mt-4">
@@ -299,6 +321,91 @@ export default function ProfilePage() {
           </div>
         </div>
       </PageWrapper>
+
+      {/* Photo Upload Modal */}
+      {showPhotoModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 max-w-md w-full shadow-2xl">
+            <h2 className="text-2xl font-bold text-white mb-6">
+              Upload Profile Photo
+            </h2>
+
+            {/* File Input */}
+            <div className="mb-6">
+              <label
+                htmlFor="photo-upload"
+                className="block w-full cursor-pointer"
+              >
+                <div className="border-2 border-dashed border-white/30 rounded-xl p-8 text-center hover:border-[#C9A86A] transition-colors">
+                  {photoPreview ? (
+                    <img
+                      src={photoPreview}
+                      alt="Preview"
+                      className="w-32 h-32 rounded-full mx-auto object-cover border-4 border-[#C9A86A]"
+                    />
+                  ) : (
+                    <div className="space-y-3">
+                      <svg
+                        className="w-16 h-16 mx-auto text-white/50"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                      <p className="text-white font-medium">
+                        Click to upload or drag and drop
+                      </p>
+                      <p className="text-white/60 text-sm">
+                        PNG, JPG, GIF up to 10MB
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </label>
+              <input
+                id="photo-upload"
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChange}
+                className="hidden"
+              />
+            </div>
+
+            {/* Buttons */}
+            <div className="flex gap-3">
+              <button
+                onClick={handlePhotoUpload}
+                disabled={!photoFile}
+                className="flex-1 px-6 py-3 bg-[#C9A86A] hover:bg-[#B89858] text-white font-semibold rounded-xl transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Select Photo
+              </button>
+              <button
+                onClick={() => {
+                  setShowPhotoModal(false)
+                  setPhotoFile(null)
+                  setPhotoPreview("")
+                }}
+                className="px-6 py-3 bg-white/20 hover:bg-white/30 text-white font-semibold rounded-xl transition cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </ProtectedLayout>
   )
 }

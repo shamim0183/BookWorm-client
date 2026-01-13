@@ -275,9 +275,10 @@ export default function AdminBooksPage() {
     const sorted = [...filtered].sort((a, b) => {
       switch (sortBy) {
         case "newest":
-          return new Date(b._id).getTime() - new Date(a._id).getTime()
+          // MongoDB ObjectIds are chronologically sortable as strings
+          return b._id.localeCompare(a._id)
         case "oldest":
-          return new Date(a._id).getTime() - new Date(b._id).getTime()
+          return a._id.localeCompare(b._id)
         case "titleAZ":
           return a.title.localeCompare(b.title)
         case "titleZA":

@@ -87,7 +87,7 @@ export default function SuccessModal({
         <div className="flex justify-center">
           <button
             onClick={onClose}
-            className="px-8 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-semibold rounded-xl transition-all"
+            className="px-8 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-semibold rounded-xl transition-all cursor-pointer"
           >
             Got it!
           </button>

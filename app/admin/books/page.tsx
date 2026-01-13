@@ -40,6 +40,7 @@ export default function AdminBooksPage() {
   const [books, setBooks] = useState<Book[]>([])
   const [genres, setGenres] = useState<Genre[]>([])
   const [searchQuery, setSearchQuery] = useState("")
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("")
   const [searchResults, setSearchResults] = useState<any[]>([])
   const [searching, setSearching] = useState(false)
   const [selectedBook, setSelectedBook] = useState<any>(null)
@@ -57,6 +58,24 @@ export default function AdminBooksPage() {
     title: string
     message: string
   }>({ isOpen: false, title: "", message: "" })
+
+  // Debounce OpenLibrary search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery)
+    }, 500) // 500ms delay
+
+    return () => clearTimeout(timer)
+  }, [searchQuery])
+
+  // Auto-search when debounced query changes
+  useEffect(() => {
+    if (debouncedSearchQuery.trim()) {
+      handleSearch()
+    } else {
+      setSearchResults([])
+    }
+  }, [debouncedSearchQuery])
 
   useEffect(() => {
     if (user && user.role !== "admin") {
@@ -86,15 +105,17 @@ export default function AdminBooksPage() {
     }
   }
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!searchQuery.trim()) return
+  const handleSearch = async () => {
+    if (!debouncedSearchQuery.trim()) {
+      setSearchResults([])
+      return
+    }
 
     setSearching(true)
     try {
       const response = await axios.get(
         `https://openlibrary.org/search.json?q=${encodeURIComponent(
-          searchQuery
+          debouncedSearchQuery
         )}&limit=10`
       )
       setSearchResults(response.data.docs || [])
@@ -249,21 +270,21 @@ export default function AdminBooksPage() {
             <h2 className="text-2xl font-semibold text-white mb-4">
               Search OpenLibrary
             </h2>
-            <form onSubmit={handleSearch} className="flex gap-2">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 px-4 py-3 bg-white/20 backdrop-blur-sm border-2 border-white/30 rounded-xl focus:border-[#C9A86A] focus:bg-white/30 outline-none transition-all text-white placeholder:text-white/50"
-                placeholder="Search by title, author, or ISBN..."
-              />
-              <button
-                type="submit"
-                disabled={searching}
-                className="px-6 py-3 bg-[#C9A86A] hover:bg-[#B89858] disabled:opacity-50 text-white font-semibold rounded-xl transition-all"
-              >
-                {searching ? "Searching..." : "Search"}
-              </button>
+            <div className="flex gap-2">
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  value={search Query}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border-2 border-white/30 rounded-xl focus:border-[#C9A86A] focus:bg-white/30 outline-none transition-all text-white placeholder:text-white/50"
+                  placeholder="Search by title, author, or ISBN..."
+                />
+                {searching && (
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                    <div className="w-5 h-5 border-2 border-[#C9A86A] border-t-transparent rounded-full animate-spin" />
+                  </div>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={handleStartManualAdd}
@@ -271,7 +292,7 @@ export default function AdminBooksPage() {
               >
                 + Manual Add
               </button>
-            </form>
+            </div>
 
             {searchResults.length > 0 && (
               <div className="mt-6 space-y-3 max-h-96 overflow-y-auto">

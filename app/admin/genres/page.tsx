@@ -1,5 +1,6 @@
 "use client"
 
+import ConfirmModal from "@/components/ConfirmModal"
 import PageWrapper from "@/components/PageWrapper"
 import ProtectedLayout from "@/components/ProtectedLayout"
 import { createGenre, deleteGenre, getGenres, updateGenre } from "@/lib/api"

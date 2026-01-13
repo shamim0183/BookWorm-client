@@ -1,5 +1,6 @@
 "use client"
 
+import ConfirmModal from "@/components/ConfirmModal"
 import PageWrapper from "@/components/PageWrapper"
 import ProtectedLayout from "@/components/ProtectedLayout"
 import {
@@ -363,7 +364,7 @@ export default function AdminBooksPage() {
                 </label>
                 <input
                   type="number"
-                  value={selectedBook.totalPages || ""}
+                  value={selectedBook.totalPages ?? ""}
                   onChange={(e) =>
                     setSelectedBook({
                       ...selectedBook,
@@ -371,6 +372,7 @@ export default function AdminBooksPage() {
                     })
                   }
                   className="w-full px-4 py-2 bg-white/20 border-2 border-white/30 rounded-xl focus:border-[#C9A86A] outline-none text-white placeholder:text-white/50"
+                  placeholder="Enter total pages"
                 />
               </div>
 

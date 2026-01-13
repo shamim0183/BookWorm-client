@@ -235,7 +235,15 @@ export default function BookDetailsPage() {
 
       setShowReviewForm(false)
       setReviewForm({ rating: 5, reviewText: "" })
-      fetchReviews()
+      // Try to reload reviews, but don't show error if it fails
+      try {
+        await fetchReviews()
+      } catch (error) {
+        // Silently fail - the review was successful, just the display might be slightly out of date
+        console.log(
+          "Note: Could not reload reviews, but review was submitted successfully"
+        )
+      }
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.error || "Failed to submit review"

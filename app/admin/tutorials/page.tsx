@@ -392,14 +392,14 @@ export default function ManageTutorialsPage() {
                 <div className="flex gap-3">
                   <button
                     type="submit"
-                    className="px-6 py-3 bg-[#C9A86A] hover:bg-[#B89858] text-white font-semibold rounded-xl transition shadow-lg"
+                    className="px-6 py-3 bg-[#C9A86A] hover:bg-[#B89858] text-white font-semibold rounded-xl transition shadow-lg cursor-pointer"
                   >
                     {editingId ? "Update Tutorial" : "Create Tutorial"}
                   </button>
                   <button
                     type="button"
                     onClick={handleCancel}
-                    className="px-6 py-3 bg-white/20 hover:bg-white/30 text-white font-semibold rounded-xl transition"
+                    className="px-6 py-3 bg-white/20 hover:bg-white/30 text-white font-semibold rounded-xl transition cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -512,13 +512,13 @@ export default function ManageTutorialsPage() {
                         <div className="flex gap-3">
                           <button
                             onClick={() => handleEdit(tutorial)}
-                            className="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition shadow-lg hover:shadow-blue-600/50"
+                            className="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition shadow-lg hover:shadow-blue-600/50 cursor-pointer"
                           >
                             Edit Tutorial
                           </button>
                           <button
                             onClick={() => handleDelete(tutorial._id)}
-                            className="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl transition shadow-lg hover:shadow-red-600/50"
+                            className="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl transition shadow-lg hover:shadow-red-600/50 cursor-pointer"
                           >
                             Delete
                           </button>

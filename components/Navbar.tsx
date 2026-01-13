@@ -111,24 +111,24 @@ export default function Navbar() {
 
             {/* Dropdown Menu */}
             {profileDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-56 bg-white/10 backdrop-blur-xl border border-white/30 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-                <div className="px-4 py-3 border-b border-white/20 bg-white/5">
-                  <p className="text-sm font-semibold text-white">
-                    {user?.name}
-                  </p>
-                  <p className="text-xs text-gray-300 mt-0.5">{user?.email}</p>
-                  <div className="mt-2 inline-flex items-center px-2 py-1 bg-[#C9A86A] rounded-lg">
-                    <span className="text-xs font-bold text-white uppercase">
+              <div className="absolute right-0 mt-2 w-64 bg-[#1F242E] border-2 border-[#C9A86A]/30 rounded-xl shadow-2xl overflow-hidden">
+                {/* User Info */}
+                <div className="px-4 py-4 border-b border-white/10 bg-gradient-to-br from-[#2C5F4F]/20 to-transparent">
+                  <p className="text-base font-bold text-white">{user?.name}</p>
+                  <p className="text-sm text-gray-400 mt-1">{user?.email}</p>
+                  <div className="mt-3">
+                    <span className="inline-block px-3 py-1 bg-[#C9A86A] text-white text-xs font-bold uppercase rounded-lg">
                       {user?.role}
                     </span>
                   </div>
                 </div>
+                {/* Logout Button */}
                 <button
                   onClick={() => {
                     logout()
                     setProfileDropdownOpen(false)
                   }}
-                  className="w-full px-4 py-3 text-left text-sm font-medium text-white hover:bg-white/20 transition-all duration-200 flex items-center gap-3 cursor-pointer group"
+                  className="w-full px-4 py-3 text-left font-medium text-white hover:bg-white/5 transition-all duration-200 flex items-center gap-3 cursor-pointer group"
                 >
                   <svg
                     className="w-5 h-5 text-red-400 group-hover:text-red-300 transition"
@@ -143,7 +143,7 @@ export default function Navbar() {
                       d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                     />
                   </svg>
-                  <span className="group-hover:translate-x-0.5 transition">
+                  <span className="group-hover:translate-x-1 transition-transform">
                     Logout
                   </span>
                 </button>

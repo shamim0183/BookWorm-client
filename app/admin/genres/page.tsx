@@ -21,6 +21,12 @@ export default function AdminGenresPage() {
   const [formData, setFormData] = useState({ name: "", description: "" })
   const [editingId, setEditingId] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean
+    title: string
+    message: string
+    onConfirm: () => void
+  }>({ isOpen: false, title: "", message: "", onConfirm: () => {} })
 
   useEffect(() => {
     if (user && user.role !== "admin") {
@@ -62,15 +68,21 @@ export default function AdminGenresPage() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this genre?")) return
-
-    try {
-      await deleteGenre(id)
-      toast.success("Genre deleted!")
-      fetchGenres()
-    } catch (error: any) {
-      toast.error(error.message)
-    }
+    setConfirmModal({
+      isOpen: true,
+      title: "Delete Genre?",
+      message:
+        "This will remove the genre. Books using this genre will keep their link.",
+      onConfirm: async () => {
+        try {
+          await deleteGenre(id)
+          toast.success("Genre deleted successfully!")
+          fetchGenres()
+        } catch (error: any) {
+          toast.error(error.message)
+        }
+      },
+    })
   }
 
   return (
@@ -197,6 +209,16 @@ export default function AdminGenresPage() {
             )}
           </div>
         </div>
+
+        {/* Confirm Modal */}
+        <ConfirmModal
+          isOpen={confirmModal.isOpen}
+          onClose={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+          onConfirm={confirmModal.onConfirm}
+          title={confirmModal.title}
+          message={confirmModal.message}
+          type="danger"
+        />
       </PageWrapper>
     </ProtectedLayout>
   )

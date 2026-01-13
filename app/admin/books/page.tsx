@@ -44,6 +44,12 @@ export default function AdminBooksPage() {
   const [showManualForm, setShowManualForm] = useState(false)
   const [editingBook, setEditingBook] = useState<Book | null>(null)
   const [uploading, setUploading] = useState(false)
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean
+    title: string
+    message: string
+    onConfirm: () => void
+  }>({ isOpen: false, title: "", message: "", onConfirm: () => {} })
 
   useEffect(() => {
     if (user && user.role !== "admin") {
@@ -187,15 +193,21 @@ export default function AdminBooksPage() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this book?")) return
-
-    try {
-      await deleteBook(id)
-      toast.success("Book deleted!")
-      fetchBooks()
-    } catch (error: any) {
-      toast.error(error.message)
-    }
+    setConfirmModal({
+      isOpen: true,
+      title: "Delete Book?",
+      message:
+        "This action cannot be undone. The book will be permanently removed.",
+      onConfirm: async () => {
+        try {
+          await deleteBook(id)
+          toast.success("Book deleted successfully!")
+          fetchBooks()
+        } catch (error: any) {
+          toast.error(error.message)
+        }
+      },
+    })
   }
 
   const getCoverUrl = (book: any) => {
@@ -531,6 +543,16 @@ export default function AdminBooksPage() {
             )}
           </div>
         </div>
+
+        {/* Confirm Modal */}
+        <ConfirmModal
+          isOpen={confirmModal.isOpen}
+          onClose={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+          onConfirm={confirmModal.onConfirm}
+          title={confirmModal.title}
+          message={confirmModal.message}
+          type="danger"
+        />
       </PageWrapper>
     </ProtectedLayout>
   )

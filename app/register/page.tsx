@@ -160,12 +160,16 @@ export default function RegisterPage() {
         photoURL: user.photoURL,
       })
 
-      localStorage.setItem("token", response.data.token)
-      toast.success(`Welcome, ${user.displayName}!`)
+      const token = response.data.token
+      const userData = response.data.user
 
-      const userRole = response.data.user.role
+      // Store both token and user data
+      localStorage.setItem("token", token)
+      localStorage.setItem("user", JSON.stringify(userData))
+
+      toast.success(`Welcome, ${user.displayName}!`)
       setTimeout(() => {
-        router.push(userRole === "admin" ? "/admin/dashboard" : "/library")
+        router.push(userData.role === "admin" ? "/admin/dashboard" : "/library")
       }, 1000)
     } catch (error: any) {
       toast.error(error.message || "Google sign-in failed")

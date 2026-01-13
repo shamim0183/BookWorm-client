@@ -4,12 +4,8 @@ import BookCard from "@/components/BookCard"
 import PageWrapper from "@/components/PageWrapper"
 import ProgressUpdateModal from "@/components/ProgressUpdateModal"
 import ProtectedLayout from "@/components/ProtectedLayout"
-import {
-  getLibrary,
-  getStats,
-  removeFromLibrary,
-  updateLibrary,
-} from "@/lib/api"
+import { getLibrary, getStats, removeFromLibrary } from "@/lib/api"
+import axios from "axios"
 import { useCallback, useEffect, useState } from "react"
 import toast from "react-hot-toast"
 
@@ -60,12 +56,27 @@ export default function LibraryPage() {
   const handleShelfChange = async (shelf: string) => {
     if (!selectedEntry) return
     try {
-      await updateLibrary(selectedEntry._id, { shelf })
+      const token = localStorage.getItem("token")
+      // Use the POST route which handles updates when entry exists
+      await axios.post(
+        `${
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
+        }/library`,
+        {
+          bookId: selectedEntry.book._id,
+          shelf,
+          totalPages:
+            shelf === "currentlyReading"
+              ? selectedEntry.book.totalPages
+              : undefined,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
       toast.success(`Moved to ${shelf.replace(/([A-Z])/g, " $1")}`)
       loadData()
       setSelectedEntry(null)
     } catch (error: any) {
-      toast.error(error.message)
+      toast.error(error.response?.data?.error || "Failed to update shelf")
     }
   }
 

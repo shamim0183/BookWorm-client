@@ -13,6 +13,21 @@ export default function BrowseBooksPage() {
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [searching, setSearching] = useState(false)
+  const [debouncedQuery, setDebouncedQuery] = useState("")
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery)
+    }, 500) // 500ms delay
+
+    return () => clearTimeout(timer)
+  }, [searchQuery])
+
+  // Auto-search when debounced query changes
+  useEffect(() => {
+    handleSearch()
+  }, [debouncedQuery])
 
   useEffect(() => {
     loadBooks()
@@ -31,14 +46,14 @@ export default function BrowseBooksPage() {
   }
 
   const handleSearch = async () => {
-    if (!searchQuery.trim()) {
+    if (!debouncedQuery.trim()) {
       loadBooks()
       return
     }
 
     try {
       setSearching(true)
-      const data = await searchBooks(searchQuery)
+      const data = await searchBooks(debouncedQuery)
       setBooks(data.books || [])
     } catch (error: any) {
       toast.error(error.message)
@@ -75,33 +90,25 @@ export default function BrowseBooksPage() {
           <div className="mb-8 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6">
             <div className="flex gap-4 flex-wrap">
               {/* Search Bar */}
-              <div className="flex-1 min-w-[300px]">
+              <div className="flex-1 min-w-[300px] relative">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                   placeholder="Search by title or author..."
                   className="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border-2 border-white/30 rounded-xl focus:border-[#C9A86A] focus:bg-white/30 outline-none transition-all text-white placeholder:text-white/50"
                 />
+                {searching && (
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                    <div className="w-5 h-5 border-2 border-[#C9A86A] border-t-transparent rounded-full animate-spin" />
+                  </div>
+                )}
               </div>
-
-              {/* Search Button */}
-              <button
-                onClick={handleSearch}
-                disabled={searching}
-                className="px-8 py-3 bg-[#C9A86A] hover:bg-[#B89858] disabled:opacity-50 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-[#C9A86A]/30 hover:-translate-y-0.5"
-              >
-                {searching ? "Searching..." : "Search"}
-              </button>
 
               {/* Clear Button */}
               {searchQuery && (
                 <button
-                  onClick={() => {
-                    setSearchQuery("")
-                    loadBooks()
-                  }}
+                  onClick={() => setSearchQuery("")}
                   className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition-all border border-white/20"
                 >
                   Clear

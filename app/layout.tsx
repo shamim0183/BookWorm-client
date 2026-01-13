@@ -19,11 +19,38 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col">
         <AuthProvider>
           <Toaster
-            position="top-right"
+            position="top-center"
             toastOptions={{
-              style: { background: "#1F242E", color: "#FAF7F0" },
+              duration: 3000,
+              style: {
+                background: "rgba(31, 36, 46, 0.95)",
+                backdropFilter: "blur(12px)",
+                color: "#fff",
+                padding: "16px 24px",
+                borderRadius: "12px",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                boxShadow: "0 10px 40px rgba(0, 0, 0, 0.3)",
+                fontSize: "15px",
+                fontWeight: "500",
+                maxWidth: "500px",
+              },
               success: {
-                iconTheme: { primary: "#2C5F4F", secondary: "#FAF7F0" },
+                iconTheme: {
+                  primary: "#10B981",
+                  secondary: "#fff",
+                },
+                style: {
+                  border: "1px solid rgba(16, 185, 129, 0.3)",
+                },
+              },
+              error: {
+                iconTheme: {
+                  primary: "#EF4444",
+                  secondary: "#fff",
+                },
+                style: {
+                  border: "1px solid rgba(239, 68, 68, 0.3)",
+                },
               },
             }}
           />

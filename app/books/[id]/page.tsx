@@ -202,7 +202,20 @@ export default function BookDetailsPage() {
       setReviewForm({ rating: 5, reviewText: "" })
       fetchReviews()
     } catch (error: any) {
-      toast.error(error.response?.data?.error || "Failed to submit review")
+      const errorMessage =
+        error.response?.data?.error || "Failed to submit review"
+
+      // Check if it's "already reviewed" error
+      if (errorMessage.includes("already reviewed")) {
+        setSuccessModal({
+          isOpen: true,
+          title: "Already Reviewed",
+          message:
+            "You've already submitted a review for this book. You can only review a book once.",
+        })
+      } else {
+        toast.error(errorMessage)
+      }
     }
   }
 
@@ -630,13 +643,15 @@ export default function BookDetailsPage() {
           </div>
         </div>
 
-        {/* Success Modal */}
+        {/* Success/Warning Modal */}
         <SuccessModal
           isOpen={successModal.isOpen}
           onClose={() => setSuccessModal({ ...successModal, isOpen: false })}
           title={successModal.title}
           message={successModal.message}
-          type="success"
+          type={
+            successModal.title === "Already Reviewed" ? "warning" : "success"
+          }
         />
 
         <Toaster />

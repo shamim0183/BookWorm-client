@@ -3,10 +3,12 @@
 import PageWrapper from "@/components/PageWrapper"
 import ProtectedLayout from "@/components/ProtectedLayout"
 import { searchBooks } from "@/lib/api"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 
 export default function BrowseBooksPage() {
+  const router = useRouter()
   const [books, setBooks] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
@@ -122,10 +124,7 @@ export default function BrowseBooksPage() {
                 <div
                   key={book._id}
                   className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl overflow-hidden hover:bg-white/15 hover:border-[#C9A86A]/50 hover:shadow-2xl hover:shadow-[#C9A86A]/20 transition-all group cursor-pointer"
-                  onClick={() => {
-                    // TODO: Navigate to book details
-                    console.log("View book details", book)
-                  }}
+                  onClick={() => router.push(`/books/${book._id}`)}
                 >
                   {/* Book Cover */}
                   <div className="aspect-[2/3] bg-white/5 overflow-hidden relative">

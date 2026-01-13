@@ -1,21 +1,20 @@
 "use client"
 
 import { updateProgress } from "@/lib/api"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 
 interface ProgressUpdateModalProps {
   isOpen: boolean
   onClose: () => void
   onSuccess: () => void
-  onUpdate: () => void
   libraryEntry: any
 }
 
 export default function ProgressUpdateModal({
   isOpen,
   onClose,
-  onUpdate,
+  onSuccess,
   libraryEntry,
 }: ProgressUpdateModalProps) {
   const currentProgress = libraryEntry?.progress?.pagesRead || 0

@@ -363,25 +363,53 @@ export default function AdminBooksPage() {
               </div>
 
               {showManualForm && (
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-white/80 mb-2">
-                    Cover Image Upload
-                  </label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleCoverUpload}
-                    disabled={uploading}
-                    className="w-full px-4 py-2 bg-white/20 border-2 border-white/30 rounded-xl text-white file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-[#C9A86A] file:text-white hover:file:bg-[#B89858]"
-                  />
-                  {selectedBook.coverImage && (
-                    <img
-                      src={selectedBook.coverImage}
-                      alt="Cover preview"
-                      className="mt-4 w-32 h-48 object-cover rounded-xl shadow-lg"
+                <>
+                  {/* Cover URL Input - Works immediately */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-white/80 mb-2">
+                      Cover Image URL
+                    </label>
+                    <input
+                      type="url"
+                      value={selectedBook.coverImage || ""}
+                      onChange={(e) =>
+                        setSelectedBook({
+                          ...selectedBook,
+                          coverImage: e.target.value,
+                        })
+                      }
+                      className="w-full px-4 py-2 bg-white/20 border-2 border-white/30 rounded-xl focus:border-[#C9A86A] outline-none text-white placeholder:text-white/50"
+                      placeholder="https://example.com/cover.jpg"
                     />
-                  )}
-                </div>
+                    <p className="text-xs text-white/50 mt-1">
+                      Paste any image URL here (works immediately)
+                    </p>
+                  </div>
+
+                  {/* File Upload - Requires Firebase Storage */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-white/80 mb-2">
+                      Or Upload Cover Image
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleCoverUpload}
+                      disabled={uploading}
+                      className="w-full px-4 py-2 bg-white/20 border-2 border-white/30 rounded-xl text-white file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-[#C9A86A] file:text-white hover:file:bg-[#B89858]"
+                    />
+                    <p className="text-xs text-white/50 mt-1">
+                      Upload from your device (requires Firebase Storage setup)
+                    </p>
+                    {selectedBook.coverImage && (
+                      <img
+                        src={selectedBook.coverImage}
+                        alt="Cover preview"
+                        className="mt-4 w-32 h-48 object-cover rounded-xl shadow-lg"
+                      />
+                    )}
+                  </div>
+                </>
               )}
 
               <div className="mb-6">

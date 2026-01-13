@@ -17,6 +17,9 @@ export default function ProgressUpdateModal({
   onSuccess,
   libraryEntry,
 }: ProgressUpdateModalProps) {
+  // Early return BEFORE any hooks to ensure consistent hook count
+  if (!isOpen || !libraryEntry) return null
+
   const currentProgress = libraryEntry?.progress?.pagesRead || 0
 
   const [pagesRead, setPagesRead] = useState(currentProgress)
@@ -53,8 +56,6 @@ export default function ProgressUpdateModal({
       setLoading(false)
     }
   }
-
-  if (!isOpen || !libraryEntry) return null
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">

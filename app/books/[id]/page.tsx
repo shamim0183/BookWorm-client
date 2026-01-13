@@ -102,26 +102,24 @@ export default function BookDetailsPage() {
 
   const fetchReviews = async () => {
     try {
-      const token = localStorage.getItem("token")
-      const response = await axios.get(`${API_URL}/reviews?bookId=${bookId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      const allReviews = response.data.reviews || []
-      setReviews(allReviews)
+      const response = await axios.get(`${API_URL}/reviews/book/${bookId}`)
 
-      // Find user's own review - get user from token/auth context
-      if (token) {
-        // Decode token to get user ID (simple base64 decode of JWT payload)
-        const payload = JSON.parse(atob(token.split(".")[1]))
-        const userId = payload.userId || payload.id || payload._id
+      if (response.data.success && response.data.reviews) {
+        setReviews(response.data.reviews)
 
-        const existingUserReview = allReviews.find(
-          (review: Review) => review.user._id === userId
-        )
-        setUserReview(existingUserReview || null)
+        // Check if current user has reviewed
+        const token = localStorage.getItem("token")
+        if (token) {
+          const payload = JSON.parse(atob(token.split(".")[1]))
+          const existingUserReview = response.data.reviews.find(
+            (r: Review) => r.user._id === payload.id
+          )
+          setUserReview(existingUserReview || null)
+        }
       }
     } catch (error) {
       console.error("Failed to load reviews:", error)
+      // Don't show error to user - reviews section will just be empty
     }
   }
 

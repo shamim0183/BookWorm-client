@@ -59,6 +59,11 @@ export default function BookDetailsPage() {
   const [loading, setLoading] = useState(true)
   const [showReviewForm, setShowReviewForm] = useState(false)
   const [reviewForm, setReviewForm] = useState({ rating: 5, reviewText: "" })
+  const [successModal, setSuccessModal] = useState<{
+    isOpen: boolean
+    title: string
+    message: string
+  }>({ isOpen: false, title: "", message: "" })
   const [pagesRead, setPagesRead] = useState(0)
 
   useEffect(() => {
@@ -186,10 +191,12 @@ export default function BookDetailsPage() {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       )
-      toast.success(
-        "✨ Review Submitted Successfully!\n📝 Your review is pending admin approval and will appear shortly.",
-        { duration: 4000 }
-      )
+      setSuccessModal({
+        isOpen: true,
+        title: "Review Submitted Successfully!",
+        message:
+          "Thank you for your review! It's pending admin approval and will appear on this page shortly.",
+      })
       setShowReviewForm(false)
       setReviewForm({ rating: 5, reviewText: "" })
       fetchReviews()

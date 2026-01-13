@@ -12,10 +12,13 @@ export default function BrowseBooksPage() {
   const [allBooks, setAllBooks] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const booksPerPage = 20
 
   useEffect(() => {
-    loadBooks()
-  }, [])
+    loadBooks(currentPage)
+  }, [currentPage])
 
   // Client-side search filter
   const getFilteredBooks = () => {

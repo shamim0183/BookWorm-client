@@ -47,6 +47,10 @@ export default function AdminBooksPage() {
   const [showManualForm, setShowManualForm] = useState(false)
   const [editingBook, setEditingBook] = useState<Book | null>(null)
   const [uploading, setUploading] = useState(false)
+  const [existingBooksSearch, setExistingBooksSearch] = useState("")
+  const [currentPage, setCurrentPage] = useState(1)
+  const [sortBy, setSortBy] = useState("newest")
+  const booksPerPage = 15
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean
     title: string
@@ -252,6 +256,48 @@ export default function AdminBooksPage() {
       return `https://covers.openlibrary.org/b/id/${book.coverId}-M.jpg`
     return ""
   }
+
+  // Filter and sort existing books
+  const getFilteredAndSortedBooks = () => {
+    let filtered = books
+
+    // Search filter
+    if (existingBooksSearch.trim()) {
+      const query = existingBooksSearch.toLowerCase()
+      filtered = filtered.filter(
+        (book) =>
+          book.title.toLowerCase().includes(query) ||
+          book.author.toLowerCase().includes(query)
+      )
+    }
+
+    // Sort
+    const sorted = [...filtered].sort((a, b) => {
+      switch (sortBy) {
+        case "newest":
+          return new Date(b._id).getTime() - new Date(a._id).getTime()
+        case "oldest":
+          return new Date(a._id).getTime() - new Date(b._id).getTime()
+        case "titleAZ":
+          return a.title.localeCompare(b.title)
+        case "titleZA":
+          return b.title.localeCompare(a.title)
+        default:
+          return 0
+      }
+    })
+
+    return sorted
+  }
+
+  // Pagination
+  const filteredBooks = getFilteredAndSortedBooks()
+  const totalPages = Math.ceil(filteredBooks.length / booksPerPage)
+  const startIndex = (currentPage - 1) * booksPerPage
+  const currentBooks = filteredBooks.slice(
+    startIndex,
+    startIndex + booksPerPage
+  )
 
   return (
     <ProtectedLayout>
@@ -521,62 +567,160 @@ export default function AdminBooksPage() {
             <h2 className="text-2xl font-semibold text-white mb-6">
               All Books ({books.length})
             </h2>
+
+            {/* Search and Sort Controls */}
+            {books.length > 0 && (
+              <div className="mb-6 space-y-4">
+                <div className="flex gap-4 flex-wrap">
+                  {/* Search Existing Books */}
+                  <div className="flex-1 min-w-[300px]">
+                    <input
+                      type="text"
+                      value={existingBooksSearch}
+                      onChange={(e) => {
+                        setExistingBooksSearch(e.target.value)
+                        setCurrentPage(1) // Reset to page 1 when searching
+                      }}
+                      placeholder="Search existing books by title or author..."
+                      className="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border-2 border-white/30 rounded-xl focus:border-[#C9A86A] focus:bg-white/30 outline-none transition-all text-white placeholder:text-white/50"
+                    />
+                  </div>
+
+                  {/* Sort Dropdown */}
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="px-4 py-3 bg-white/20 backdrop-blur-sm border-2 border-white/30 rounded-xl focus:border-[#C9A86A] focus:bg-white/30 outline-none transition-all text-white cursor-pointer"
+                  >
+                    <option value="newest" className="bg-[#1F242E]">
+                      Newest First
+                    </option>
+                    <option value="oldest" className="bg-[#1F242E]">
+                      Oldest First
+                    </option>
+                    <option value="titleAZ" className="bg-[#1F242E]">
+                      Title (A-Z)
+                    </option>
+                    <option value="titleZA" className="bg-[#1F242E]">
+                      Title (Z-A)
+                    </option>
+                  </select>
+                </div>
+
+                {/* Results Count */}
+                <p className="text-white/70 text-sm">
+                  Showing {startIndex + 1}-
+                  {Math.min(startIndex + booksPerPage, filteredBooks.length)} of{" "}
+                  {filteredBooks.length} books
+                  {existingBooksSearch &&
+                    ` (filtered from ${books.length} total)`}
+                </p>
+              </div>
+            )}
+
             {books.length === 0 ? (
               <p className="text-center text-white/60 py-8">
                 No books yet. Add your first one above!
               </p>
+            ) : filteredBooks.length === 0 ? (
+              <p className="text-center text-white/60 py-8">
+                No books match "{existingBooksSearch}"
+              </p>
             ) : (
-              <div className="grid gap-4">
-                {books.map((book) => (
-                  <div
-                    key={book._id}
-                    className="flex items-center gap-4 p-4 bg-white/10 border border-white/20 rounded-xl hover:bg-white/20 transition"
-                  >
-                    {getCoverUrl(book) && (
-                      <img
-                        src={getCoverUrl(book)}
-                        alt={book.title}
-                        className="w-20 h-28 object-cover rounded-xl shadow"
-                      />
-                    )}
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-white">
-                        {book.title}
-                      </h3>
-                      <p className="text-sm text-white/70">by {book.author}</p>
-                      {book.description && (
-                        <p className="text-xs text-white/60 mt-1 line-clamp-2">
-                          {book.description}
-                        </p>
+              <>
+                <div className="grid gap-4 mb-6">
+                  {currentBooks.map((book) => (
+                    <div
+                      key={book._id}
+                      className="flex items-center gap-4 p-4 bg-white/10 border border-white/20 rounded-xl hover:bg-white/20 transition"
+                    >
+                      {getCoverUrl(book) && (
+                        <img
+                          src={getCoverUrl(book)}
+                          alt={book.title}
+                          className="w-20 h-28 object-cover rounded-xl shadow"
+                        />
                       )}
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {book.genres.map((genre) => (
-                          <span
-                            key={genre._id}
-                            className="px-2 py-1 bg-[#C9A86A]/30 text-white text-xs rounded"
-                          >
-                            {genre.name}
-                          </span>
-                        ))}
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-white">
+                          {book.title}
+                        </h3>
+                        <p className="text-sm text-white/70">
+                          by {book.author}
+                        </p>
+                        {book.description && (
+                          <p className="text-xs text-white/60 mt-1 line-clamp-2">
+                            {book.description}
+                          </p>
+                        )}
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          {book.genres.map((genre) => (
+                            <span
+                              key={genre._id}
+                              className="px-2 py-1 bg-[#C9A86A]/30 text-white text-xs rounded"
+                            >
+                              {genre.name}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleEdit(book)}
+                          className="px-4 py-2 bg-blue-500/80 backdrop-blur-sm hover:bg-blue-500 text-white font-medium rounded-xl text-sm transition shadow-lg hover:shadow-blue-500/50"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(book._id)}
+                          className="px-4 py-2 bg-red-500/80 backdrop-blur-sm hover:bg-red-500 text-white font-medium rounded-xl text-sm transition shadow-lg hover:shadow-red-500/50"
+                        >
+                          Delete
+                        </button>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleEdit(book)}
-                        className="px-4 py-2 bg-blue-500/80 backdrop-blur-sm hover:bg-blue-500 text-white font-medium rounded-xl text-sm transition shadow-lg hover:shadow-blue-500/50"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(book._id)}
-                        className="px-4 py-2 bg-red-500/80 backdrop-blur-sm hover:bg-red-500 text-white font-medium rounded-xl text-sm transition shadow-lg hover:shadow-red-500/50"
-                      >
-                        Delete
-                      </button>
-                    </div>
+                  ))}
+                </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 flex-wrap">
+                    <button
+                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      className="px-4 py-2 bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-xl transition"
+                    >
+                      Previous
+                    </button>
+
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (page) => (
+                        <button
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          className={`px-4 py-2 font-medium rounded-xl transition ${
+                            currentPage === page
+                              ? "bg-[#C9A86A] text-white shadow-lg"
+                              : "bg-white/10 hover:bg-white/20 text-white"
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      )
+                    )}
+
+                    <button
+                      onClick={() =>
+                        setCurrentPage((p) => Math.min(totalPages, p + 1))
+                      }
+                      disabled={currentPage === totalPages}
+                      className="px-4 py-2 bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-xl transition"
+                    >
+                      Next
+                    </button>
                   </div>
-                ))}
-              </div>
+                )}
+              </>
             )}
           </div>
         </div>

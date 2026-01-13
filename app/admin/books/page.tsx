@@ -726,6 +726,15 @@ export default function AdminBooksPage() {
           </div>
         </div>
 
+        {/* Edit Book Modal */}
+        <EditBookModal
+          isOpen={!!editingBook}
+          onClose={() => setEditingBook(null)}
+          book={editingBook!}
+          genres={genres}
+          onSuccess={fetchBooks}
+        />
+
         {/* Confirm Modal */}
         <ConfirmModal
           isOpen={confirmModal.isOpen}

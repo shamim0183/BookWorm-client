@@ -347,7 +347,7 @@ export default function BookDetailsPage() {
                 <div className="flex items-center gap-3 mb-6">
                   {renderStars(book.ratings?.average || 0)}
                   <span className="text-white/70">
-                    {book.averageRating?.toFixed(1) || "No ratings"} (
+                    {book.ratings?.average?.toFixed(1) || "No ratings"} (
                     {reviews.length} reviews)
                   </span>
                 </div>

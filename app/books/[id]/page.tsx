@@ -59,7 +59,7 @@ export default function BookDetailsPage() {
   const [libraryEntry, setLibraryEntry] = useState<LibraryEntry | null>(null)
   const [loading, setLoading] = useState(true)
   const [showReviewForm, setShowReviewForm] = useState(false)
-  const [reviewForm, setReviewForm] = useState({ rating: 5, reviewText: "" })
+  const [reviewForm, setReviewForm] = useState({ rating: 0, reviewText: "" })
   const [userReview, setUserReview] = useState<Review | null>(null) // User's existing review
   const [successModal, setSuccessModal] = useState<{
     isOpen: boolean
@@ -232,7 +232,7 @@ export default function BookDetailsPage() {
       }
 
       setShowReviewForm(false)
-      setReviewForm({ rating: 5, reviewText: "" })
+      setReviewForm({ rating: 0, reviewText: "" })
       // Try to reload reviews, but don't show error if it fails
       try {
         await fetchReviews()

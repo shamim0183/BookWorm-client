@@ -105,17 +105,36 @@ export default function EditBookModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Upload cover image if new file selected
-    if (coverFile) {
-      await handleImageUpload(coverFile)
-    }
-
     setSaving(true)
     try {
+      // Upload cover image first if new file selected
+      let finalCoverImage = formData.coverImage
+      if (coverFile) {
+        const uploadFormData = new FormData()
+        uploadFormData.append("image", coverFile)
+        const token = localStorage.getItem("token")
+        const uploadResponse = await axios.post(
+          `${API_URL}/upload/image`,
+          uploadFormData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        finalCoverImage = uploadResponse.data.url
+      }
+
+      // Update book with final cover image URL
       const token = localStorage.getItem("token")
-      await axios.put(`${API_URL}/books/${book._id}`, formData, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      await axios.put(
+        `${API_URL}/books/${book._id}`,
+        { ...formData, coverImage: finalCoverImage },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
       toast.success("Book updated successfully!")
       onSuccess()
       onClose()

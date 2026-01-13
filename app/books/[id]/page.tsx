@@ -60,6 +60,7 @@ export default function BookDetailsPage() {
   const [loading, setLoading] = useState(true)
   const [showReviewForm, setShowReviewForm] = useState(false)
   const [reviewForm, setReviewForm] = useState({ rating: 5, reviewText: "" })
+  const [userReview, setUserReview] = useState<Review | null>(null) // User's existing review
   const [successModal, setSuccessModal] = useState<{
     isOpen: boolean
     title: string
@@ -105,7 +106,15 @@ export default function BookDetailsPage() {
       const response = await axios.get(`${API_URL}/reviews?bookId=${bookId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      setReviews(response.data.reviews || [])
+      const allReviews = response.data.reviews || []
+      setReviews(allReviews)
+
+      // Find user's own review
+      const userId = localStorage.getItem("userId")
+      const existingUserReview = allReviews.find(
+        (review: Review) => review.user._id === userId
+      )
+      setUserReview(existingUserReview || null)
     } catch (error) {
       console.error("Failed to load reviews:", error)
     }
@@ -183,21 +192,42 @@ export default function BookDetailsPage() {
     e.preventDefault()
     try {
       const token = localStorage.getItem("token")
-      await axios.post(
-        `${API_URL}/reviews`,
-        {
-          bookId,
-          rating: reviewForm.rating,
-          comment: reviewForm.reviewText,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-      setSuccessModal({
-        isOpen: true,
-        title: "Review Submitted Successfully!",
-        message:
-          "Thank you for your review! It's pending admin approval and will appear on this page shortly.",
-      })
+
+      if (userReview) {
+        // Update existing review
+        await axios.put(
+          `${API_URL}/reviews/${userReview._id}`,
+          {
+            rating: reviewForm.rating,
+            comment: reviewForm.reviewText,
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        setSuccessModal({
+          isOpen: true,
+          title: "Review Updated Successfully!",
+          message:
+            "Your review has been updated and is pending admin approval.",
+        })
+      } else {
+        // Create new review
+        await axios.post(
+          `${API_URL}/reviews`,
+          {
+            bookId,
+            rating: reviewForm.rating,
+            comment: reviewForm.reviewText,
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        setSuccessModal({
+          isOpen: true,
+          title: "Review Submitted Successfully!",
+          message:
+            "Thank you for your review! It's pending admin approval and will appear on this page shortly.",
+        })
+      }
+
       setShowReviewForm(false)
       setReviewForm({ rating: 5, reviewText: "" })
       fetchReviews()
@@ -538,15 +568,24 @@ export default function BookDetailsPage() {
           {/* Reviews Section */}
           <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-white">
+              <h2 className="text-3xl font-bold text-white">
                 Reviews ({reviews.length})
               </h2>
               {!showReviewForm && (
                 <button
-                  onClick={() => setShowReviewForm(true)}
+                  onClick={() => {
+                    if (userReview) {
+                      // Pre-fill form with existing review
+                      setReviewForm({
+                        rating: userReview.rating,
+                        reviewText: userReview.comment,
+                      })
+                    }
+                    setShowReviewForm(true)
+                  }}
                   className="px-6 py-3 bg-[#C9A86A] hover:bg-[#B89858] text-white font-semibold rounded-xl transition cursor-pointer"
                 >
-                  Write a Review
+                  {userReview ? "Edit Your Review" : "Write a Review"}
                 </button>
               )}
             </div>
@@ -555,10 +594,10 @@ export default function BookDetailsPage() {
             {showReviewForm && (
               <form
                 onSubmit={handleSubmitReview}
-                className="bg-white/10 rounded-xl p-6 mb-6"
+                className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 mb-6"
               >
                 <h3 className="text-xl font-semibold text-white mb-4">
-                  Your Review
+                  {userReview ? "Edit Your Review" : "Your Review"}
                 </h3>
                 <div className="mb-4">
                   <label className="block text-white/80 mb-2">Rating</label>

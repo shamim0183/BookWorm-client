@@ -8,19 +8,27 @@ interface ProgressUpdateModalProps {
   isOpen: boolean
   onClose: () => void
   onSuccess: () => void
+  onUpdate: () => void
   libraryEntry: any
 }
 
 export default function ProgressUpdateModal({
   isOpen,
   onClose,
-  onSuccess,
+  onUpdate,
   libraryEntry,
 }: ProgressUpdateModalProps) {
-  const [pagesRead, setPagesRead] = useState(
-    libraryEntry?.progress?.pagesRead || 0
-  )
+  const currentProgress = libraryEntry?.progress?.pagesRead || 0
+
+  const [pagesRead, setPagesRead] = useState(currentProgress)
   const [loading, setLoading] = useState(false)
+
+  // Update pagesRead when modal opens with different entry
+  useEffect(() => {
+    if (isOpen && libraryEntry) {
+      setPagesRead(libraryEntry.progress?.pagesRead || 0)
+    }
+  }, [isOpen, libraryEntry])
 
   const totalPages = libraryEntry?.progress?.totalPages || 0
   const percentage =

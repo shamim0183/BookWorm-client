@@ -2,7 +2,6 @@
 
 import PageWrapper from "@/components/PageWrapper"
 import ProtectedLayout from "@/components/ProtectedLayout"
-import { searchBooks } from "@/lib/api"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
@@ -36,11 +35,14 @@ export default function BrowseBooksPage() {
 
   const books = getFilteredBooks()
 
-  const loadBooks = async () => {
+  const loadBooks = async (page: number = 1) => {
     try {
       setLoading(true)
-      const data = await searchBooks("") // Get all books
-      setAllBooks(data.books || [])
+      const response = await axios.get(
+        `${API_URL}/books?page=${page}&limit=${booksPerPage}`
+      )
+      setAllBooks(response.data.books || [])
+      setTotalPages(response.data.pagination?.pages || 1)
     } catch (error: any) {
       toast.error(error.message)
     } finally {

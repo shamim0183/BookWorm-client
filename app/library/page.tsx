@@ -19,6 +19,10 @@ export default function LibraryPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedEntry, setSelectedEntry] = useState<any>(null)
   const [progressModalEntry, setProgressModalEntry] = useState<any>(null)
+  const [deleteConfirmModal, setDeleteConfirmModal] = useState<{
+    isOpen: boolean
+    entry: any
+  }>({ isOpen: false, entry: null })
 
   useEffect(() => {
     loadData()
@@ -41,7 +45,12 @@ export default function LibraryPage() {
   }
 
   const handleDelete = async (entry: any) => {
-    if (!confirm("Remove this book from your library?")) return
+    setDeleteConfirmModal({ isOpen: true, entry })
+  }
+
+  const confirmDelete = async () => {
+    const entry = deleteConfirmModal.entry
+    setDeleteConfirmModal({ isOpen: false, entry: null })
 
     try {
       await removeFromLibrary(entry._id)
@@ -388,11 +397,21 @@ export default function LibraryPage() {
           </div>
         )}
 
+        {/* Progress Update Modal */}
         <ProgressUpdateModal
           isOpen={!!progressModalEntry}
           onClose={() => setProgressModalEntry(null)}
           onSuccess={loadData}
           libraryEntry={progressModalEntry}
+        />
+
+        {/* Delete Confirmation Modal */}
+        <ConfirmModal
+          isOpen={deleteConfirmModal.isOpen}
+          onClose={() => setDeleteConfirmModal({ isOpen: false, entry: null })}
+          onConfirm={confirmDelete}
+          title="Remove Book"
+          message="Are you sure you want to remove this book from your library? This action cannot be undone."
         />
       </PageWrapper>
     </ProtectedLayout>

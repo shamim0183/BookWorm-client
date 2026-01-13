@@ -141,7 +141,7 @@ export default function BookCard({
                 e.stopPropagation()
                 onUpdateProgress()
               }}
-              className="flex-1 px-3 py-1.5 bg-[#C9A86A]/20 hover:bg-[#C9A86A]/30 text-[#C9A86A] text-xs font-medium rounded-lg transition border border-[#C9A86A]/30"
+              className="px-6 py-2.5 bg-[#C9A86A] hover:bg-[#B89858] text-white font-semibold rounded-lg transition-all shadow-lg hover:shadow-[#C9A86A]/50 hover:-translate-y-0.5 cursor-pointer"
             >
               Update
             </button>
@@ -152,7 +152,7 @@ export default function BookCard({
                 e.stopPropagation()
                 onDelete()
               }}
-              className="px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-red-300 text-xs font-medium rounded-lg transition border border-red-400/30"
+              className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-all shadow-lg hover:shadow-red-600/50 hover:-translate-y-0.5 cursor-pointer"
             >
               Remove
             </button>

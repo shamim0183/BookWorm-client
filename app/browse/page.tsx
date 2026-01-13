@@ -9,56 +9,39 @@ import toast from "react-hot-toast"
 
 export default function BrowseBooksPage() {
   const router = useRouter()
-  const [books, setBooks] = useState<any[]>([])
+  const [allBooks, setAllBooks] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
-  const [searching, setSearching] = useState(false)
-  const [debouncedQuery, setDebouncedQuery] = useState("")
-
-  // Debounce search query
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(searchQuery)
-    }, 500) // 500ms delay
-
-    return () => clearTimeout(timer)
-  }, [searchQuery])
-
-  // Auto-search when debounced query changes
-  useEffect(() => {
-    handleSearch()
-  }, [debouncedQuery])
 
   useEffect(() => {
     loadBooks()
   }, [])
 
+  // Client-side search filter
+  const getFilteredBooks = () => {
+    if (!searchQuery.trim()) {
+      return allBooks
+    }
+
+    const query = searchQuery.toLowerCase()
+    return allBooks.filter(
+      (book) =>
+        book.title.toLowerCase().includes(query) ||
+        book.author.toLowerCase().includes(query)
+    )
+  }
+
+  const books = getFilteredBooks()
+
   const loadBooks = async () => {
     try {
       setLoading(true)
-      const data = await searchBooks("") // Get all books initially
-      setBooks(data.books || [])
+      const data = await searchBooks("") // Get all books
+      setAllBooks(data.books || [])
     } catch (error: any) {
       toast.error(error.message)
     } finally {
       setLoading(false)
-    }
-  }
-
-  const handleSearch = async () => {
-    if (!debouncedQuery.trim()) {
-      loadBooks()
-      return
-    }
-
-    try {
-      setSearching(true)
-      const data = await searchBooks(debouncedQuery)
-      setBooks(data.books || [])
-    } catch (error: any) {
-      toast.error(error.message)
-    } finally {
-      setSearching(false)
     }
   }
 
@@ -90,7 +73,7 @@ export default function BrowseBooksPage() {
           <div className="mb-8 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6">
             <div className="flex gap-4 flex-wrap">
               {/* Search Bar */}
-              <div className="flex-1 min-w-[300px] relative">
+              <div className="flex-1 min-w-[300px]">
                 <input
                   type="text"
                   value={searchQuery}
@@ -98,11 +81,6 @@ export default function BrowseBooksPage() {
                   placeholder="Search by title or author..."
                   className="w-full px-4 py-3 bg-white/20 backdrop-blur-sm border-2 border-white/30 rounded-xl focus:border-[#C9A86A] focus:bg-white/30 outline-none transition-all text-white placeholder:text-white/50"
                 />
-                {searching && (
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                    <div className="w-5 h-5 border-2 border-[#C9A86A] border-t-transparent rounded-full animate-spin" />
-                  </div>
-                )}
               </div>
 
               {/* Clear Button */}

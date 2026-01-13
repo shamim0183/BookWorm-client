@@ -1,6 +1,7 @@
 "use client"
 
 import ConfirmModal from "@/components/ConfirmModal"
+import EditBookModal from "@/components/EditBookModal"
 import PageWrapper from "@/components/PageWrapper"
 import ProtectedLayout from "@/components/ProtectedLayout"
 import SuccessModal from "@/components/SuccessModal"

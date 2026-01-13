@@ -19,6 +19,10 @@ interface Book {
   totalPages: number
   publishedYear: number
   averageRating?: number
+  ratings?: {
+    average: number
+    count: number
+  }
   totalShelved: number
 }
 

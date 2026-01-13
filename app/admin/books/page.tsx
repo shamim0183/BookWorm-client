@@ -33,6 +33,7 @@ interface Book {
   coverId?: number
   totalPages?: number
   genres: Genre[]
+  publishedYear?: number // Optional - admin can add during edit
 }
 
 export default function AdminBooksPage() {

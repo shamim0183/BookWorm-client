@@ -128,11 +128,17 @@ export default function RegisterPage() {
         password: formData.password,
         photoURL,
       })
-      localStorage.setItem("token", response.data.token)
+
+      const token = response.data.token
+      const user = response.data.user
+
+      // Store both token and user data
+      localStorage.setItem("token", token)
+      localStorage.setItem("user", JSON.stringify(user))
+
       toast.success("Account created successfully!")
-      const userRole = response.data.user.role
       setTimeout(() => {
-        router.push(userRole === "admin" ? "/admin/dashboard" : "/library")
+        router.push(user.role === "admin" ? "/admin/dashboard" : "/library")
       }, 1000)
     } catch (error: any) {
       toast.error(error.response?.data?.error || "Registration failed")

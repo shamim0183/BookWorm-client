@@ -46,11 +46,14 @@ export default function LoginPage() {
     try {
       const response = await axios.post(`${API_URL}/auth/login`, formData)
       const token = response.data.token
-      localStorage.setItem("token", token)
+      const user = response.data.user
 
-      // Redirect based on role - navigate immediately without toast
-      const userRole = response.data.user.role
-      router.push(userRole === "admin" ? "/admin/dashboard" : "/library")
+      // Store both token and user data
+      localStorage.setItem("token", token)
+      localStorage.setItem("user", JSON.stringify(user))
+
+      // Redirect based on role
+      router.push(user.role === "admin" ? "/admin/dashboard" : "/library")
     } catch (error: any) {
       toast.error(error.response?.data?.error || "Invalid credentials")
       setLoading(false)
@@ -70,11 +73,15 @@ export default function LoginPage() {
         photoURL: user.photoURL,
       })
 
-      localStorage.setItem("token", response.data.token)
+      const token = response.data.token
+      const userData = response.data.user
 
-      // Redirect based on role - navigate immediately without toast
-      const userRole = response.data.user.role
-      router.push(userRole === "admin" ? "/admin/dashboard" : "/library")
+      // Store both token and user data
+      localStorage.setItem("token", token)
+      localStorage.setItem("user", JSON.stringify(userData))
+
+      // Redirect based on role
+      router.push(userData.role === "admin" ? "/admin/dashboard" : "/library")
     } catch (error: any) {
       toast.error(error.message || "Google sign-in failed")
       setLoading(false)

@@ -37,18 +37,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Check authentication status on mount
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuth = () => {
       const token = localStorage.getItem("token")
-      if (token) {
+      const userStr = localStorage.getItem("user")
+
+      if (token && userStr) {
         try {
-          // Verify token and get user data
-          const response = await axios.get(`${API_URL}/auth/verify`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          setUser(response.data.user)
+          const userData = JSON.parse(userStr)
+          setUser(userData)
         } catch (error) {
-          console.error("Auth verification failed:", error)
+          console.error("Failed to parse user data:", error)
           localStorage.removeItem("token")
+          localStorage.removeItem("user")
         }
       }
       setLoading(false)
@@ -60,10 +60,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (token: string) => {
     localStorage.setItem("token", token)
     try {
-      const response = await axios.get(`${API_URL}/auth/verify`, {
+      const response = await axios.get(`${API_URL}/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      setUser(response.data.user)
+      const userData = response.data.user
+      localStorage.setItem("user", JSON.stringify(userData))
+      setUser(userData)
     } catch (error) {
       console.error("Login failed:", error)
       localStorage.removeItem("token")
@@ -73,6 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     localStorage.removeItem("token")
+    localStorage.removeItem("user")
     setUser(null)
     router.push("/login")
   }

@@ -62,6 +62,24 @@ export const updateProgress = async (entryId: string, pagesRead: number) => {
   }
 }
 
+export const updateLibrary = async (
+  entryId: string,
+  updates: { shelf?: string; pagesRead?: number }
+) => {
+  try {
+    const response = await axios.put(
+      `${API_BASE_URL}/library/${entryId}`,
+      updates,
+      { headers: authHeaders() }
+    )
+    return response.data
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.error || "Failed to update library entry"
+    )
+  }
+}
+
 export const removeFromLibrary = async (entryId: string) => {
   try {
     const response = await axios.delete(`${API_BASE_URL}/library/${entryId}`, {

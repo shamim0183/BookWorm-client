@@ -1,12 +1,16 @@
 "use client"
 
-import AddBookModal from "@/components/AddBookModal"
 import BookCard from "@/components/BookCard"
 import PageWrapper from "@/components/PageWrapper"
 import ProgressUpdateModal from "@/components/ProgressUpdateModal"
 import ProtectedLayout from "@/components/ProtectedLayout"
-import { getLibrary, getStats, removeFromLibrary } from "@/lib/api"
-import { useEffect, useState } from "react"
+import {
+  getLibrary,
+  getStats,
+  removeFromLibrary,
+  updateLibrary,
+} from "@/lib/api"
+import { useCallback, useEffect, useState } from "react"
 import toast from "react-hot-toast"
 
 export default function LibraryPage() {
@@ -16,7 +20,8 @@ export default function LibraryPage() {
   const [activeShelf, setActiveShelf] = useState<
     "all" | "wantToRead" | "currentlyReading" | "read"
   >("all")
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedEntry, setSelectedEntry] = useState<any>(null)
   const [progressModalEntry, setProgressModalEntry] = useState<any>(null)
 
   useEffect(() => {
@@ -46,15 +51,44 @@ export default function LibraryPage() {
       await removeFromLibrary(entry._id)
       toast.success("Book removed!")
       loadData()
+      setSelectedEntry(null)
     } catch (error: any) {
       toast.error(error.message)
     }
   }
 
-  const filteredLibrary =
-    activeShelf === "all"
-      ? library
-      : library.filter((entry) => entry.shelf === activeShelf)
+  const handleShelfChange = async (shelf: string) => {
+    if (!selectedEntry) return
+    try {
+      await updateLibrary(selectedEntry._id, { shelf })
+      toast.success(`Moved to ${shelf.replace(/([A-Z])/g, " $1")}`)
+      loadData()
+      setSelectedEntry(null)
+    } catch (error: any) {
+      toast.error(error.message)
+    }
+  }
+
+  // Debounced search filter
+  const getFilteredLibrary = useCallback(() => {
+    let filtered =
+      activeShelf === "all"
+        ? library
+        : library.filter((entry) => entry.shelf === activeShelf)
+
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase()
+      filtered = filtered.filter(
+        (entry) =>
+          entry.book.title.toLowerCase().includes(query) ||
+          entry.book.author.toLowerCase().includes(query)
+      )
+    }
+
+    return filtered
+  }, [library, activeShelf, searchQuery])
+
+  const filteredLibrary = getFilteredLibrary()
 
   const getShelfCount = (shelf: string) => {
     return library.filter((entry) => entry.shelf === shelf).length
@@ -118,8 +152,55 @@ export default function LibraryPage() {
             </div>
           )}
 
-          {/* Shelf Tabs */}
-          <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+          {/* Shelf Tabs and Search */}
+          <div className="flex flex-col gap-4 mb-6">
+            {/* Search Bar */}
+            <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-4">
+              <div className="relative">
+                <svg
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search your library by title or author..."
+                  className="w-full pl-12 pr-4 py-3 bg-white/10 border-2 border-white/20 rounded-xl focus:border-[#C9A86A] focus:bg-white/15 outline-none transition-all text-white placeholder:text-white/50"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Shelf Filter Tabs */}
             <div className="flex gap-2 flex-wrap">
               <button
                 onClick={() => setActiveShelf("all")}
@@ -162,14 +243,6 @@ export default function LibraryPage() {
                 Read ({getShelfCount("read")})
               </button>
             </div>
-
-            {/* Add Book Button */}
-            <button
-              onClick={() => setIsAddModalOpen(true)}
-              className="px-6 py-2 bg-[#C9A86A] hover:bg-[#B89858] text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-[#C9A86A]/30 hover:-translate-y-0.5"
-            >
-              + Add Book
-            </button>
           </div>
 
           {/* Book Grid */}
@@ -181,10 +254,7 @@ export default function LibraryPage() {
                   libraryEntry={entry}
                   onUpdateProgress={() => setProgressModalEntry(entry)}
                   onDelete={() => handleDelete(entry)}
-                  onViewDetails={() => {
-                    // TODO: Implement detail modal
-                    console.log("View details", entry)
-                  }}
+                  onViewDetails={() => setSelectedEntry(entry)}
                 />
               ))}
             </div>
@@ -201,12 +271,14 @@ export default function LibraryPage() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
                 </svg>
               </div>
               <h2 className="text-2xl font-bold text-white mb-2">
-                {activeShelf === "all"
+                {searchQuery
+                  ? "No books found"
+                  : activeShelf === "all"
                   ? "Your library is empty"
                   : `No books in "${
                       activeShelf === "wantToRead"
@@ -217,24 +289,93 @@ export default function LibraryPage() {
                     }"`}
               </h2>
               <p className="text-white/60 mb-6">
-                Start building your reading collection!
+                {searchQuery
+                  ? `No books match "${searchQuery}" in your library`
+                  : "Browse books and add them to your collection!"}
               </p>
-              <button
-                onClick={() => setIsAddModalOpen(true)}
-                className="px-8 py-3 bg-[#C9A86A] hover:bg-[#B89858] text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-[#C9A86A]/30 hover:-translate-y-0.5 inline-block"
-              >
-                Add Your First Book
-              </button>
+              {!searchQuery && (
+                <button
+                  onClick={() => (window.location.href = "/browse")}
+                  className="px-8 py-3 bg-[#C9A86A] hover:bg-[#B89858] text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-[#C9A86A]/30 hover:-translate-y-0.5 inline-block"
+                >
+                  Browse Books
+                </button>
+              )}
             </div>
           )}
         </div>
 
         {/* Modals */}
-        <AddBookModal
-          isOpen={isAddModalOpen}
-          onClose={() => setIsAddModalOpen(false)}
-          onSuccess={loadData}
-        />
+        {/* Book Management Modal */}
+        {selectedEntry && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-[#1F242E] border-2 border-[#C9A86A]/30 rounded-3xl p-8 max-w-md w-full shadow-2xl">
+              <h3 className="text-2xl font-bold text-white mb-6">
+                {selectedEntry.book.title}
+              </h3>
+
+              <div className="space-y-4">
+                <div>
+                  <p className="text-white/70 text-sm mb-3">Current shelf:</p>
+                  <p className="text-[#C9A86A] font-semibold mb-4">
+                    {selectedEntry.shelf === "wantToRead"
+                      ? "Want to Read"
+                      : selectedEntry.shelf === "currentlyReading"
+                      ? "Currently Reading"
+                      : "Finished"}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-white/70 text-sm mb-3">Move to:</p>
+                  <div className="flex flex-col gap-2">
+                    {selectedEntry.shelf !== "wantToRead" && (
+                      <button
+                        onClick={() => handleShelfChange("wantToRead")}
+                        className="px-4 py-3 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 font-medium rounded-xl transition border border-blue-400/30 cursor-pointer text-left"
+                      >
+                        📘 Want to Read
+                      </button>
+                    )}
+                    {selectedEntry.shelf !== "currentlyReading" && (
+                      <button
+                        onClick={() => handleShelfChange("currentlyReading")}
+                        className="px-4 py-3 bg-green-600/20 hover:bg-green-600/30 text-green-300 font-medium rounded-xl transition border border-green-400/30 cursor-pointer text-left"
+                      >
+                        📖 Currently Reading
+                      </button>
+                    )}
+                    {selectedEntry.shelf !== "read" && (
+                      <button
+                        onClick={() => handleShelfChange("read")}
+                        className="px-4 py-3 bg-[#C9A86A]/20 hover:bg-[#C9A86A]/30 text-[#C9A86A] font-medium rounded-xl transition border border-[#C9A86A]/30 cursor-pointer text-left"
+                      >
+                        ✅ Finished
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-white/20 flex gap-3">
+                  <button
+                    onClick={() => setSelectedEntry(null)}
+                    className="flex-1 px-4 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl transition cursor-pointer"
+                  >
+                    Close
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleDelete(selectedEntry)
+                    }}
+                    className="px-4 py-3 bg-red-600/20 hover:bg-red-600/30 text-red-300 font-medium rounded-xl transition border border-red-400/30 cursor-pointer"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <ProgressUpdateModal
           isOpen={!!progressModalEntry}

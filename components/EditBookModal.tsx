@@ -15,11 +15,11 @@ interface Book {
   _id: string
   title: string
   author: string
-  description: string
-  totalPages: number
-  publishedYear: number
+  description?: string
+  totalPages?: number
+  publishedYear?: number
   coverImage?: string
-  genres: Genre[]
+  genres: { _id: string; name: string }[]
 }
 
 interface EditBookModalProps {

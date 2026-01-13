@@ -188,6 +188,26 @@ export default function ManageTutorialsPage() {
     })
   }
 
+  const getVideoEmbedUrl = (url: string) => {
+    if (!url) return null
+
+    // YouTube
+    const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/
+    const youtubeMatch = url.match(youtubeRegex)
+    if (youtubeMatch) {
+      return `https://www.youtube.com/embed/${youtubeMatch[1]}`
+    }
+
+    // Vimeo
+    const vimeoRegex = /vimeo\.com\/(\d+)/
+    const vimeoMatch = url.match(vimeoRegex)
+    if (vimeoMatch) {
+      return `https://player.vimeo.com/video/${vimeoMatch[1]}`
+    }
+
+    return null
+  }
+
   const handleCancel = () => {
     setShowForm(false)
     setEditingId(null)
@@ -409,6 +429,20 @@ export default function ManageTutorialsPage() {
                         <p className="text-white/70 mb-3">
                           {tutorial.description}
                         </p>
+
+                        {/* Video Player */}
+                        {tutorial.videoUrl &&
+                          getVideoEmbedUrl(tutorial.videoUrl) && (
+                            <div className="mb-4">
+                              <iframe
+                                src={getVideoEmbedUrl(tutorial.videoUrl) || ""}
+                                className="w-full h-64 rounded-xl"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                              />
+                            </div>
+                          )}
+
                         <div className="flex items-center gap-4 text-sm text-white/50">
                           <span className="px-3 py-1 bg-[#C9A86A]/20 text-[#C9A86A] rounded-lg">
                             {tutorial.category}

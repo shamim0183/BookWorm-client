@@ -32,12 +32,21 @@ export default function ProgressUpdateModal({
     }
   }, [isOpen, libraryEntry])
 
-  const totalPages = libraryEntry?.progress?.totalPages || 0
+  const totalPages =
+    libraryEntry?.book?.totalPages || libraryEntry?.progress?.totalPages || 0
   const percentage =
     totalPages > 0 ? Math.round((pagesRead / totalPages) * 100) : 0
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Check if book has totalPages set
+    if (!totalPages || totalPages === 0) {
+      toast.error(
+        "This book doesn't have total pages set. Please ask admin to update the book details."
+      )
+      return
+    }
 
     if (pagesRead < 0 || pagesRead > totalPages) {
       toast.error("Invalid page number")
@@ -46,7 +55,7 @@ export default function ProgressUpdateModal({
 
     setLoading(true)
     try {
-      await updateProgress(libraryEntry._id, pagesRead)
+      await updateProgress(libraryEntry._id, pagesRead, totalPages)
       toast.success("Progress updated!")
       onSuccess()
       onClose()

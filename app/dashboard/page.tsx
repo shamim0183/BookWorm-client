@@ -1,7 +1,11 @@
 "use client"
 
+import GenrePieChart from "@/components/GenrePieChart"
+import MonthlyBooksChart from "@/components/MonthlyBooksChart"
 import PageWrapper from "@/components/PageWrapper"
 import ProtectedLayout from "@/components/ProtectedLayout"
+import ReadingChallenge from "@/components/ReadingChallenge"
+import ReadingStreakCard from "@/components/ReadingStreakCard"
 import axios from "axios"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"

@@ -1,6 +1,7 @@
 "use client"
 
-import { updateProgress } from "@/lib/api"
+import { updateProgress } from "use client"
+
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 

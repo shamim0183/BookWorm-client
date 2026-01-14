@@ -142,6 +142,7 @@ export default function BookCard({
               {progressPercentage}%
             </span>
           </div>
+        )}
       </div>
 
       {/* Quick Actions - Absolutely positioned at bottom with slide-up animation */}

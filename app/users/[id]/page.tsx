@@ -28,6 +28,7 @@ export default function UserProfilePage() {
     if (id) {
       fetchUserProfile()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   const fetchUserProfile = async () => {
@@ -51,6 +52,8 @@ export default function UserProfilePage() {
   }
 
   const handleFollow = async () => {
+    if (!user) return
+
     setFollowLoading(true)
     try {
       const token = localStorage.getItem("token")
@@ -75,9 +78,13 @@ export default function UserProfilePage() {
         toast.success("Followed successfully")
       }
       fetchUserProfile()
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Follow error:", error)
-      toast.error(error.response?.data?.message || "Action failed")
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "Action failed")
+      } else {
+        toast.error("Action failed")
+      }
     } finally {
       setFollowLoading(false)
     }

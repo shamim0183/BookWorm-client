@@ -115,6 +115,27 @@ export default function UserProfilePage() {
       <FloatingBooks />
 
       <div className="max-w-3xl mx-auto relative z-10">
+        {/* Back Button */}
+        <button
+          onClick={() => router.push("/dashboard")}
+          className="mb-4 flex items-center gap-2 text-white/80 hover:text-white transition group"
+        >
+          <svg
+            className="w-5 h-5 transform group-hover:-translate-x-1 transition"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          <span className="font-medium">Back to Dashboard</span>
+        </button>
+
         {/* Profile Card */}
         <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 mb-6 shadow-2xl">
           <div className="flex items-start gap-6">

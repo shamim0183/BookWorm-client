@@ -84,7 +84,7 @@ export default function EditBookModal({
     try {
       const token = localStorage.getItem("token")
       const response = await axios.post(
-        `${API_URL}/upload/image`,
+        `${API_URL}/upload/book-cover`,
         uploadFormData,
         {
           headers: {
@@ -114,7 +114,7 @@ export default function EditBookModal({
         uploadFormData.append("image", coverFile)
         const token = localStorage.getItem("token")
         const uploadResponse = await axios.post(
-          `${API_URL}/upload/image`,
+          `${API_URL}/upload/book-cover`,
           uploadFormData,
           {
             headers: {
@@ -276,9 +276,13 @@ export default function EditBookModal({
                 <input
                   type="text"
                   value={formData.coverImage}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setFormData({ ...formData, coverImage: e.target.value })
-                  }
+                    // Clear file selection when URL is manually entered
+                    if (e.target.value.trim()) {
+                      setCoverFile(null)
+                    }
+                  }}
                   placeholder="Or enter image URL"
                   className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-[#C9A86A]"
                 />

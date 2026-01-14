@@ -16,7 +16,7 @@ export default function BrowseBooksPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const booksPerPage = 20
+  const booksPerPage = 10
 
   useEffect(() => {
     loadBooks(currentPage)
@@ -147,6 +147,16 @@ export default function BrowseBooksPage() {
                         </svg>
                       </div>
                     )}
+
+                    {/* Rating Badge */}
+                    {book.averageRating > 0 && (
+                      <div className="absolute top-2 right-2 px-2 py-1 bg-[#C9A86A]/90 backdrop-blur-sm border border-[#C9A86A]/50 rounded-full flex items-center gap-1">
+                        <span className="text-yellow-300 text-xs">★</span>
+                        <span className="text-white text-xs font-semibold">
+                          {book.averageRating.toFixed(1)}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Book Info */}
@@ -197,7 +207,7 @@ export default function BrowseBooksPage() {
           )}
 
           {/* Pagination Controls */}
-          {totalPages > 1 && (
+          {!searchQuery && totalPages > 1 && (
             <div className="mt-8 flex justify-center items-center gap-2">
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}

@@ -52,7 +52,7 @@ export default function AdminBooksPage() {
   const [existingBooksSearch, setExistingBooksSearch] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [sortBy, setSortBy] = useState("newest")
-  const booksPerPage = 15
+  const booksPerPage = 10
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean
     title: string
@@ -302,7 +302,7 @@ export default function AdminBooksPage() {
           {/* Header */}
           <div className="mb-8 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8">
             <div className="flex items-center gap-4 mb-4">
-              <button
+              {/* <button
                 onClick={() => router.push("/admin/dashboard")}
                 className="p-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl transition-all group"
                 title="Back to Dashboard"
@@ -320,7 +320,7 @@ export default function AdminBooksPage() {
                     d="M10 19l-7-7m0 0l7-7m-7 7h18"
                   />
                 </svg>
-              </button>
+              </button> */}
               <div>
                 <h1 className="text-4xl font-bold text-white">Manage Books</h1>
                 <p className="text-white/70 text-lg mt-1">
@@ -741,7 +741,7 @@ export default function AdminBooksPage() {
                     <button
                       onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                       disabled={currentPage === 1}
-                      className="px-4 py-2 bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-xl transition"
+                      className="px-4 py-2 bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-xl transition cursor-pointer"
                     >
                       Previous
                     </button>
@@ -751,7 +751,7 @@ export default function AdminBooksPage() {
                         <button
                           key={page}
                           onClick={() => setCurrentPage(page)}
-                          className={`px-4 py-2 font-medium rounded-xl transition ${
+                          className={`px-4 py-2 font-medium rounded-xl transition cursor-pointer ${
                             currentPage === page
                               ? "bg-[#C9A86A] text-white shadow-lg"
                               : "bg-white/10 hover:bg-white/20 text-white"
@@ -767,7 +767,7 @@ export default function AdminBooksPage() {
                         setCurrentPage((p) => Math.min(totalPages, p + 1))
                       }
                       disabled={currentPage === totalPages}
-                      className="px-4 py-2 bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-xl transition"
+                      className="px-4 py-2 bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-xl transition cursor-pointer"
                     >
                       Next
                     </button>

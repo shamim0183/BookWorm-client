@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "BookWorm - Your Personal Reading Tracker",
   description:
     "Discover books, track reading, write reviews, get recommendations",
+  icons: {
+    icon: "/favicon.png",
+  },
 }
 
 export default function RootLayout({

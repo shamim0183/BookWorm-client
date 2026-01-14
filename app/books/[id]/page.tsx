@@ -487,7 +487,7 @@ export default function BookDetailsPage() {
                     </div>
                   ) : (
                     <div className="bg-white/10 rounded-xl p-4">
-                      <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center justify-between mb-4">
                         <p className="text-white font-semibold">
                           In your library:{" "}
                           <span className="text-[#C9A86A]">
@@ -500,20 +500,20 @@ export default function BookDetailsPage() {
                         </p>
                         <button
                           onClick={handleRemoveFromLibrary}
-                          className="text-red-400 hover:text-red-300 text-sm cursor-pointer"
+                          className="px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 text-xs rounded-lg transition cursor-pointer border border-red-400/30"
                         >
                           Remove
                         </button>
                       </div>
 
                       {/* Shelf Switching Buttons */}
-                      <div className="mb-4">
+                      <div>
                         <p className="text-white/70 text-sm mb-2">Move to:</p>
                         <div className="flex flex-wrap gap-2">
                           {libraryEntry.shelf !== "wantToRead" && (
                             <button
                               onClick={() => handleAddToLibrary("wantToRead")}
-                              className="px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 text-sm font-medium rounded-lg transition border border-blue-400/30 cursor-pointer"
+                              className="px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 hover:text-blue-200 text-sm font-medium rounded-lg transition border border-blue-400/30 cursor-pointer"
                             >
                               Want to Read
                             </button>
@@ -523,7 +523,7 @@ export default function BookDetailsPage() {
                               onClick={() =>
                                 handleAddToLibrary("currentlyReading")
                               }
-                              className="px-4 py-2 bg-green-600/20 hover:bg-green-600/30 text-green-300 text-sm font-medium rounded-lg transition border border-green-400/30 cursor-pointer"
+                              className="px-4 py-2 bg-green-600/20 hover:bg-green-600/30 text-green-300 hover:text-green-200 text-sm font-medium rounded-lg transition border border-green-400/30 cursor-pointer"
                             >
                               Currently Reading
                             </button>
@@ -531,53 +531,13 @@ export default function BookDetailsPage() {
                           {libraryEntry.shelf !== "read" && (
                             <button
                               onClick={() => handleAddToLibrary("read")}
-                              className="px-4 py-2 bg-[#C9A86A]/20 hover:bg-[#C9A86A]/30 text-[#C9A86A] text-sm font-medium rounded-lg transition border border-[#C9A86A]/30 cursor-pointer"
+                              className="px-4 py-2 bg-[#C9A86A]/20 hover:bg-[#C9A86A]/30 text-[#C9A86A] hover:text-[#D4B676] text-sm font-medium rounded-lg transition border border-[#C9A86A]/30 cursor-pointer"
                             >
                               Finished
                             </button>
                           )}
                         </div>
                       </div>
-
-                      {/* Progress Tracker for Currently Reading */}
-                      {libraryEntry.shelf === "currentlyReading" && (
-                        <div className="space-y-3 pt-3 border-t border-white/20">
-                          <p className="text-white/70 text-sm mb-2">
-                            Reading Progress:
-                          </p>
-                          <div className="flex items-center gap-3">
-                            <input
-                              type="number"
-                              value={pagesRead}
-                              onChange={(e) =>
-                                setPagesRead(Number(e.target.value))
-                              }
-                              max={book.totalPages}
-                              min={0}
-                              className="w-24 px-3 py-2 bg-white/20 border border-white/30 rounded-lg text-white"
-                            />
-                            <span className="text-white/70">
-                              / {book.totalPages} pages
-                            </span>
-                            <button
-                              onClick={handleUpdateProgress}
-                              className="px-4 py-2 bg-[#C9A86A] hover:bg-[#B89858] text-white rounded-lg transition cursor-pointer"
-                            >
-                              Update
-                            </button>
-                          </div>
-                          {libraryEntry.progress && (
-                            <div className="w-full bg-white/20 rounded-full h-3">
-                              <div
-                                className="bg-[#C9A86A] h-3 rounded-full transition-all"
-                                style={{
-                                  width: `${libraryEntry.progress.percentage}%`,
-                                }}
-                              />
-                            </div>
-                          )}
-                        </div>
-                      )}
                     </div>
                   )}
                 </div>

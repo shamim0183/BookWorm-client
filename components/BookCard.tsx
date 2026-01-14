@@ -93,12 +93,22 @@ export default function BookCard({
         )}
 
         {/* Shelf Badge */}
-        <div className="absolute top-2 right-2">
+        <div className="absolute top-2 right-2 flex flex-col gap-1.5">
           <span
             className={`px-2 py-1 text-xs font-semibold rounded-full border backdrop-blur-sm ${getShelfColor()}`}
           >
             {getShelfLabel()}
           </span>
+
+          {/* Rating Badge */}
+          {book.averageRating > 0 && (
+            <div className="px-2 py-1 bg-[#C9A86A]/90 backdrop-blur-sm border border-[#C9A86A]/50 rounded-full flex items-center gap-1">
+              <span className="text-yellow-300 text-xs">★</span>
+              <span className="text-white text-xs font-semibold">
+                {book.averageRating.toFixed(1)}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Progress Bar (for Currently Reading) */}

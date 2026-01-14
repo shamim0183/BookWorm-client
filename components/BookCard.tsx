@@ -92,19 +92,20 @@ export default function BookCard({
           </div>
         )}
 
-        {/* Shelf Badge */}
-        <div className="absolute top-2 right-2 flex flex-col gap-1.5">
+        {/* Compact Badges - Top Right, Horizontal */}
+        <div className="absolute top-2 right-2 flex flex-row gap-1 items-center">
+          {/* Shelf Badge - More compact */}
           <span
-            className={`px-2 py-1 text-xs font-semibold rounded-full border backdrop-blur-sm ${getShelfColor()}`}
+            className={`px-2 py-0.5 text-[10px] font-bold rounded-md border backdrop-blur-sm ${getShelfColor()}`}
           >
             {getShelfLabel()}
           </span>
 
-          {/* Rating Badge - Glassmorphism */}
+          {/* Rating Badge - Compact Glassmorphism */}
           {(book.ratings?.average || book.averageRating) > 0 && (
-            <div className="px-2.5 py-1.5 bg-black/40 backdrop-blur-md border border-white/20 rounded-lg flex items-center gap-1 shadow-lg">
-              <span className="text-yellow-400 text-sm">★</span>
-              <span className="text-white text-sm font-bold">
+            <div className="px-2 py-0.5 bg-black/50 backdrop-blur-md border border-white/20 rounded-md flex items-center gap-0.5 shadow-lg">
+              <span className="text-yellow-400 text-[10px]">★</span>
+              <span className="text-white text-[10px] font-bold">
                 {(book.ratings?.average || book.averageRating).toFixed(1)}
               </span>
             </div>
@@ -123,12 +124,12 @@ export default function BookCard({
           )}
       </div>
 
-      {/* Book Info */}
-      <div className="p-4">
-        <h3 className="text-white font-semibold text-sm line-clamp-2 mb-1">
+      {/* Book Info - Reduced padding */}
+      <div className="p-3">
+        <h3 className="text-white font-semibold text-sm line-clamp-2 mb-0.5">
           {book.title}
         </h3>
-        <p className="text-white/60 text-xs line-clamp-1 mb-3">{book.author}</p>
+        <p className="text-white/60 text-xs line-clamp-1 mb-2">{book.author}</p>
 
         {/* Progress Text */}
         {libraryEntry.shelf === "currentlyReading" && (

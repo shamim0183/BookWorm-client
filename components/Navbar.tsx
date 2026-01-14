@@ -42,14 +42,12 @@ export default function Navbar() {
             href={user?.role === "admin" ? "/admin/dashboard" : "/library"}
             className="flex items-center gap-2 group"
           >
-            <div className="w-10 h-10 bg-[#C9A86A] rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-              <svg
-                className="w-6 h-6 text-white"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
-              </svg>
+            <div className="w-10 h-10 rounded-lg overflow-hidden">
+              <img
+                src="/BookWorm.png"
+                alt="BookWorm"
+                className="w-full h-full object-contain"
+              />
             </div>
             <span className="text-xl font-heading font-bold text-white hidden sm:block">
               BookWorm
@@ -112,13 +110,17 @@ export default function Navbar() {
 
             {/* Dropdown Menu */}
             {profileDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-64 bg-[#1F242E] border-2 border-[#C9A86A]/30 rounded-xl shadow-2xl overflow-hidden">
+              <div className="absolute right-0 mt-2 w-56 sm:w-64 bg-[#1F242E] border-2 border-[#C9A86A]/30 rounded-xl shadow-2xl overflow-hidden">
                 {/* User Info */}
-                <div className="px-4 py-4 border-b border-white/10 bg-gradient-to-br from-[#2C5F4F]/20 to-transparent">
-                  <p className="text-base font-bold text-white">{user?.name}</p>
-                  <p className="text-sm text-gray-400 mt-1">{user?.email}</p>
-                  <div className="mt-3">
-                    <span className="inline-block px-3 py-1 bg-[#C9A86A] text-white text-xs font-bold uppercase rounded-lg">
+                <div className="px-3 sm:px-4 py-3 sm:py-4 border-b border-white/10 bg-gradient-to-br from-[#2C5F4F]/20 to-transparent">
+                  <p className="text-sm sm:text-base font-bold text-white truncate">
+                    {user?.name}
+                  </p>
+                  <p className="text-xs sm:text-sm text-gray-400 mt-1 truncate">
+                    {user?.email}
+                  </p>
+                  <div className="mt-2 sm:mt-3">
+                    <span className="inline-block px-2 sm:px-3 py-0.5 sm:py-1 bg-[#C9A86A] text-white text-xs font-bold uppercase rounded-lg">
                       {user?.role}
                     </span>
                   </div>
@@ -127,10 +129,10 @@ export default function Navbar() {
                 <Link
                   href="/profile"
                   onClick={() => setProfileDropdownOpen(false)}
-                  className="w-full px-4 py-3 text-left font-medium text-white hover:bg-white/5 transition-all duration-200 flex items-center gap-3 cursor-pointer group"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-left font-medium text-white hover:bg-white/5 transition-all duration-200 flex items-center gap-2 sm:gap-3 cursor-pointer group"
                 >
                   <svg
-                    className="w-5 h-5 text-[#C9A86A] group-hover:text-[#B89858] transition"
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-[#C9A86A] group-hover:text-[#B89858] transition"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -142,7 +144,7 @@ export default function Navbar() {
                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                     />
                   </svg>
-                  <span className="group-hover:translate-x-1 transition-transform">
+                  <span className="text-sm sm:text-base group-hover:translate-x-1 transition-transform">
                     My Profile
                   </span>
                 </Link>
@@ -152,10 +154,10 @@ export default function Navbar() {
                     logout()
                     setProfileDropdownOpen(false)
                   }}
-                  className="w-full px-4 py-3 text-left font-medium text-white hover:bg-white/5 transition-all duration-200 flex items-center gap-3 cursor-pointer group"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-left font-medium text-white hover:bg-white/5 transition-all duration-200 flex items-center gap-2 sm:gap-3 cursor-pointer group"
                 >
                   <svg
-                    className="w-5 h-5 text-red-400 group-hover:text-red-300 transition"
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-red-400 group-hover:text-red-300 transition"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -167,7 +169,7 @@ export default function Navbar() {
                       d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                     />
                   </svg>
-                  <span className="group-hover:translate-x-1 transition-transform">
+                  <span className="text-sm sm:text-base group-hover:translate-x-1 transition-transform">
                     Logout
                   </span>
                 </button>

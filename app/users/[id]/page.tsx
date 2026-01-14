@@ -116,7 +116,7 @@ export default function UserProfilePage() {
 
       <div className="max-w-3xl mx-auto relative z-10">
         {/* Profile Card */}
-        <div className="bg-[#1F242E] rounded-2xl p-8 mb-6 border border-white/10">
+        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 mb-6 shadow-2xl">
           <div className="flex items-start gap-6">
             {/* Avatar */}
             <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-[#C9A86A] to-[#B89858] flex items-center justify-center overflow-hidden shrink-0 shadow-lg">

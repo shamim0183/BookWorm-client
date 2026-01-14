@@ -124,12 +124,12 @@ export default function BookCard({
           )}
       </div>
 
-      {/* Book Info - Reduced padding */}
-      <div className="p-3">
-        <h3 className="text-white font-semibold text-sm line-clamp-2 mb-0.5">
+      {/* Book Info */}
+      <div className="p-4">
+        <h3 className="text-white font-semibold text-sm line-clamp-2 mb-1">
           {book.title}
         </h3>
-        <p className="text-white/60 text-xs line-clamp-1 mb-2">{book.author}</p>
+        <p className="text-white/60 text-xs line-clamp-1 mb-3">{book.author}</p>
 
         {/* Progress Text */}
         {libraryEntry.shelf === "currentlyReading" && (

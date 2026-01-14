@@ -106,7 +106,7 @@ export default function UserProfilePage() {
     )
   }
 
-  const isOwnProfile = currentUser?.userId === id
+  const isOwnProfile = currentUser?._id === id
 
   return (
     <div className="min-h-screen bg-[#0F1419] py-8">

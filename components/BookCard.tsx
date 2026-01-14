@@ -100,12 +100,12 @@ export default function BookCard({
             {getShelfLabel()}
           </span>
 
-          {/* Rating Badge */}
-          {book.averageRating > 0 && (
-            <div className="px-2 py-1 bg-[#C9A86A]/90 backdrop-blur-sm border border-[#C9A86A]/50 rounded-full flex items-center gap-1">
-              <span className="text-yellow-300 text-xs">★</span>
-              <span className="text-white text-xs font-semibold">
-                {book.averageRating.toFixed(1)}
+          {/* Rating Badge - Glassmorphism */}
+          {(book.ratings?.average || book.averageRating) > 0 && (
+            <div className="px-2.5 py-1.5 bg-black/40 backdrop-blur-md border border-white/20 rounded-lg flex items-center gap-1 shadow-lg">
+              <span className="text-yellow-400 text-sm">★</span>
+              <span className="text-white text-sm font-bold">
+                {(book.ratings?.average || book.averageRating).toFixed(1)}
               </span>
             </div>
           )}

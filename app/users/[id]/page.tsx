@@ -158,11 +158,11 @@ export default function UserProfilePage() {
               <button
                 onClick={handleFollow}
                 disabled={followLoading}
-                className={`px-6 py-2 rounded-lg font-semibold transition ${
+                className={`px-6 py-2 rounded-lg font-semibold transition cursor-pointer ${
                   user.isFollowing
                     ? "bg-white/10 text-white hover:bg-white/20"
                     : "bg-[#C9A86A] text-white hover:bg-[#B89858]"
-                } disabled:opacity-50`}
+                } disabled:opacity-50 disabled:cursor-not-allowed`}
               >
                 {followLoading
                   ? "Loading..."

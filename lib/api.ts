@@ -49,11 +49,15 @@ export const addToLibrary = async (
   }
 }
 
-export const updateProgress = async (entryId: string, pagesRead: number) => {
+export const updateProgress = async (
+  entryId: string,
+  pagesRead: number,
+  totalPages: number
+) => {
   try {
     const response = await axios.put(
       `${API_BASE_URL}/library/${entryId}/progress`,
-      { pagesRead },
+      { pagesRead, totalPages },
       { headers: authHeaders() }
     )
     return response.data

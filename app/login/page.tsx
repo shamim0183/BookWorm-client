@@ -54,11 +54,12 @@ export default function LoginPage() {
       localStorage.setItem("token", token)
       localStorage.setItem("user", JSON.stringify(user))
 
-      // Update AuthContext to sync state
-      await authLogin(token)
+      // Show success message
+      toast.success("Login successful! Redirecting...")
 
-      // Redirect based on role
-      router.push(user.role === "admin" ? "/admin/dashboard" : "/library")
+      // Redirect based on role - AuthContext will pick up the changes
+      window.location.href =
+        user.role === "admin" ? "/admin/dashboard" : "/library"
     } catch (error: any) {
       toast.error(error.response?.data?.error || "Invalid credentials")
       setLoading(false)
@@ -85,11 +86,12 @@ export default function LoginPage() {
       localStorage.setItem("token", token)
       localStorage.setItem("user", JSON.stringify(userData))
 
-      // Update AuthContext to sync state
-      await authLogin(token)
+      // Show success message
+      toast.success("Login successful! Redirecting...")
 
-      // Redirect based on role
-      router.push(userData.role === "admin" ? "/admin/dashboard" : "/library")
+      // Redirect based on role - AuthContext will pick up the changes
+      window.location.href =
+        userData.role === "admin" ? "/admin/dashboard" : "/library"
     } catch (error: any) {
       toast.error(error.message || "Google sign-in failed")
       setLoading(false)

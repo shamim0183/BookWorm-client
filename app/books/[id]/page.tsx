@@ -193,6 +193,18 @@ export default function BookDetailsPage() {
 
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Validate rating
+    if (!reviewForm.rating || reviewForm.rating === 0) {
+      toast.error("Please select a star rating before submitting")
+      return
+    }
+
+    if (reviewForm.rating < 1 || reviewForm.rating > 5) {
+      toast.error("Rating must be between 1 and 5 stars")
+      return
+    }
+
     try {
       const token = localStorage.getItem("token")
 
@@ -201,7 +213,7 @@ export default function BookDetailsPage() {
         await axios.put(
           `${API_URL}/reviews/${userReview._id}`,
           {
-            rating: reviewForm.rating,
+            rating: Number(reviewForm.rating), // Ensure it's a number
             comment: reviewForm.reviewText,
           },
           { headers: { Authorization: `Bearer ${token}` } }
@@ -222,7 +234,7 @@ export default function BookDetailsPage() {
           `${API_URL}/reviews`,
           {
             bookId,
-            rating: reviewForm.rating,
+            rating: Number(reviewForm.rating), // Ensure it's a number
             comment: reviewForm.reviewText,
           },
           { headers: { Authorization: `Bearer ${token}` } }

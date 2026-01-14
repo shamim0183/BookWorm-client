@@ -119,14 +119,14 @@ export default function DashboardPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6">
               <div className="text-3xl font-bold text-[#C9A86A] mb-1">
-                {stats?.booksRead || 0}
+                {stats?.booksCompletedThisYear || 0}
               </div>
               <div className="text-white/70 text-sm">Books Read</div>
             </div>
 
             <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6">
               <div className="text-3xl font-bold text-blue-400 mb-1">
-                {stats?.currentlyReading || 0}
+                {stats?.byShelf?.currentlyReading || 0}
               </div>
               <div className="text-white/70 text-sm">Currently Reading</div>
             </div>

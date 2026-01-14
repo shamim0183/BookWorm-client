@@ -230,6 +230,8 @@ export default function UserProfilePage() {
         </div>
       </PageWrapper>
     </ProtectedLayout>
+  )
+}
       {/* Floating Books Background */}
       <FloatingBooks />
 

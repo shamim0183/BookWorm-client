@@ -305,13 +305,36 @@ export default function AdminBooksPage() {
   return (
     <ProtectedLayout>
       <PageWrapper className="-mt-16 pt-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="mb-8 bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8">
-            <h1 className="text-4xl font-bold text-white mb-2">Manage Books</h1>
-            <p className="text-white/70 text-lg">
-              Add books from OpenLibrary or manually with custom covers
-            </p>
+            <div className="flex items-center gap-4 mb-4">
+              <button
+                onClick={() => router.push("/admin/dashboard")}
+                className="p-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl transition-all group"
+                title="Back to Dashboard"
+              >
+                <svg
+                  className="w-6 h-6 text-white group-hover:text-[#C9A86A]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
+                </svg>
+              </button>
+              <div>
+                <h1 className="text-4xl font-bold text-white">Manage Books</h1>
+                <p className="text-white/70 text-lg mt-1">
+                  Add books from OpenLibrary or manually with custom covers
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* OpenLibrary Search */}

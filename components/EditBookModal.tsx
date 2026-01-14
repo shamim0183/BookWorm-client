@@ -157,15 +157,15 @@ export default function EditBookModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 pt-20">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-3xl bg-[#1F242E]/95 backdrop-blur-xl border-2 border-white/20 rounded-3xl p-8 shadow-2xl animate-in fade-in zoom-in duration-200 my-8">
+      <div className="relative w-full max-w-3xl bg-[#1F242E]/95 backdrop-blur-xl border-2 border-white/20 rounded-3xl p-6 md:p-8 shadow-2xl animate-in fade-in zoom-in duration-200 my-8 max-h-[calc(100vh-8rem)] overflow-y-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-3xl font-bold text-white">Edit Book</h2>

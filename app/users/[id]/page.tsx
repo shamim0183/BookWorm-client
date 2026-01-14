@@ -109,8 +109,11 @@ export default function UserProfilePage() {
   const isOwnProfile = currentUser?._id === id
 
   return (
-    <div className="min-h-screen bg-[#0F1419] py-8 px-4">
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-[#1a4d4d] via-[#0F1419] to-[#1a3d3d] py-8 px-4 relative overflow-hidden">
+      {/* Floating Books Background */}
+      <FloatingBooks />
+
+      <div className="max-w-3xl mx-auto relative z-10">
         {/* Profile Card */}
         <div className="bg-[#1F242E] rounded-2xl p-8 mb-6 border border-white/10">
           <div className="flex items-start gap-6">

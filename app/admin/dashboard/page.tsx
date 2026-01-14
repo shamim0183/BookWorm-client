@@ -26,14 +26,21 @@ export default function AdminDashboardPage() {
   const loadData = async () => {
     try {
       setLoading(true)
-      // TODO: Load admin stats from API
-      // For now, using placeholder data
-      setStats({
-        totalBooks: 42,
-        totalUsers: 128,
-        pendingReviews: 5,
-        newUsersThisMonth: 12,
-      })
+      const token = localStorage.getItem("token")
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/stats`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      if (!response.ok) throw new Error("Failed to fetch stats")
+
+      const data = await response.json()
+      setStats(data.stats)
     } catch (error) {
       toast.error("Failed to load dashboard")
     } finally {

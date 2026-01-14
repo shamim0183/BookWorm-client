@@ -18,7 +18,7 @@ interface Book {
   description: string
   genres: { _id: string; name: string }[]
   totalPages: number
-  publishedYear: number
+  publishYear: number
   averageRating?: number
   ratings?: {
     average: number
@@ -455,7 +455,7 @@ export default function BookDetailsPage() {
                 {/* Details */}
                 <div className="flex gap-6 text-white/70 mb-6">
                   <span>{book.totalPages} pages</span>
-                  <span>Published {book.publishedYear}</span>
+                  <span>Published {book.publishYear}</span>
                   <span>{book.totalShelved} readers</span>
                 </div>
 

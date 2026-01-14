@@ -33,7 +33,7 @@ interface Book {
   coverId?: number
   totalPages?: number
   genres: Genre[]
-  publishedYear?: number // Optional - admin can add during edit
+  publishYear?: number // Optional - admin can add during edit
 }
 
 export default function AdminBooksPage() {
@@ -119,10 +119,11 @@ export default function AdminBooksPage() {
 
     setSearching(true)
     try {
+      // Request edition data to get page numbers
       const response = await axios.get(
         `https://openlibrary.org/search.json?q=${encodeURIComponent(
           debouncedSearchQuery
-        )}&limit=10`
+        )}&fields=key,title,author_name,author_key,first_publish_year,cover_i,isbn,editions,editions.key,editions.title,editions.number_of_pages,editions.publish_date&limit=10`
       )
       setSearchResults(response.data.docs || [])
     } catch (error) {
@@ -133,6 +134,8 @@ export default function AdminBooksPage() {
   }
 
   const handleSelectOpenLibraryBook = (book: any) => {
+    // Note: OpenLibrary Search API doesn't return page numbers in edition data
+    // Users will need to manually enter page numbers if needed
     setSelectedBook({
       title: book.title,
       author: book.author_name?.[0] || "Unknown",
@@ -142,7 +145,7 @@ export default function AdminBooksPage() {
       publishYear: book.first_publish_year,
       description: book.first_sentence?.[0] || "",
       selectedGenres: [],
-      totalPages: book.number_of_pages_median || 0,
+      totalPages: undefined, // Not available from Search API
     })
     setSearchResults([])
     setSearchQuery("")
@@ -222,16 +225,6 @@ export default function AdminBooksPage() {
 
   const handleEdit = (book: Book) => {
     setEditingBook(book)
-    setSelectedBook({
-      title: book.title,
-      author: book.author,
-      description: book.description || "",
-      coverImage: book.coverImage || "",
-      coverId: book.coverId,
-      totalPages: book.totalPages || 0,
-      selectedGenres: book.genres.map((g) => g._id),
-    })
-    setShowManualForm(true)
   }
 
   const handleDelete = async (id: string) => {
@@ -389,11 +382,25 @@ export default function AdminBooksPage() {
                       <p className="text-sm text-white/60">
                         by {book.author_name?.[0] || "Unknown"}
                       </p>
-                      {book.first_publish_year && (
-                        <p className="text-xs text-white/50">
-                          Published: {book.first_publish_year}
-                        </p>
-                      )}
+                      <div className="flex gap-3 text-xs text-white/50 mt-1">
+                        {book.first_publish_year && (
+                          <span>Published: {book.first_publish_year}</span>
+                        )}
+                        {(book.editions?.docs?.[0]?.number_of_pages ||
+                          book.number_of_pages_median ||
+                          book.median_number_of_pages ||
+                          (book.number_of_pages &&
+                            book.number_of_pages[0])) && (
+                          <span>
+                            •{" "}
+                            {book.editions?.docs?.[0]?.number_of_pages ||
+                              book.number_of_pages_median ||
+                              book.median_number_of_pages ||
+                              book.number_of_pages[0]}{" "}
+                            pages
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <button className="px-4 py-2 bg-[#C9A86A] text-white rounded-xl text-sm hover:bg-[#B89858]">
                       Select
@@ -480,6 +487,26 @@ export default function AdminBooksPage() {
                   }
                   className="w-full px-4 py-2 bg-white/20 border-2 border-white/30 rounded-xl focus:border-[#C9A86A] outline-none text-white placeholder:text-white/50"
                   placeholder="Enter total pages"
+                />
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-white/80 mb-2">
+                  Published Year
+                </label>
+                <input
+                  type="number"
+                  value={selectedBook.publishYear ?? ""}
+                  onChange={(e) =>
+                    setSelectedBook({
+                      ...selectedBook,
+                      publishYear: e.target.value
+                        ? parseInt(e.target.value)
+                        : undefined,
+                    })
+                  }
+                  className="w-full px-4 py-2 bg-white/20 border-2 border-white/30 rounded-xl focus:border-[#C9A86A] outline-none text-white placeholder:text-white/50"
+                  placeholder="e.g., 2014"
                 />
               </div>
 

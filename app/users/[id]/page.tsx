@@ -22,8 +22,14 @@ export default function UserProfilePage() {
 
   const fetchUserProfile = async () => {
     try {
+      const token = localStorage.getItem("token")
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/social/profile/${id}`
+        `${process.env.NEXT_PUBLIC_API_URL}/social/profile/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       )
       setUser(res.data)
     } catch (error) {
@@ -37,14 +43,24 @@ export default function UserProfilePage() {
   const handleFollow = async () => {
     setFollowLoading(true)
     try {
+      const token = localStorage.getItem("token")
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+
       if (user.isFollowing) {
         await axios.delete(
-          `${process.env.NEXT_PUBLIC_API_URL}/social/unfollow/${id}`
+          `${process.env.NEXT_PUBLIC_API_URL}/social/unfollow/${id}`,
+          config
         )
         toast.success("Unfollowed successfully")
       } else {
         await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/social/follow/${id}`
+          `${process.env.NEXT_PUBLIC_API_URL}/social/follow/${id}`,
+          {},
+          config
         )
         toast.success("Followed successfully")
       }

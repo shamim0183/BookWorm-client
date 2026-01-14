@@ -15,6 +15,7 @@ export default function Navbar() {
 
   // User navigation links
   const userLinks = [
+    { name: "Dashboard", href: "/dashboard" },
     { name: "My Library", href: "/library" },
     { name: "Browse Books", href: "/browse" },
     { name: "Tutorials", href: "/tutorials" },

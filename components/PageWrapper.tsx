@@ -1,6 +1,7 @@
 "use client"
 
 import { ReactNode } from "react"
+import FloatingBooks from "./FloatingBooks"
 
 interface PageWrapperProps {
   children: ReactNode

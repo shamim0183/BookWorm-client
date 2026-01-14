@@ -273,7 +273,12 @@ export default function DashboardPage() {
                   >
                     <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl overflow-hidden hover:bg-white/15 hover:border-[#C9A86A]/50 transition-all duration-300">
                       <img
-                        src={book.coverImage || "/placeholder-book.png"}
+                        src={
+                          book.coverImage ||
+                          (book.coverId
+                            ? `https://covers.openlibrary.org/b/id/${book.coverId}-L.jpg`
+                            : "/placeholder-book.png")
+                        }
                         alt={book.title}
                         className="w-full aspect-[3/4] object-cover group-hover:scale-105 transition-transform duration-300"
                       />

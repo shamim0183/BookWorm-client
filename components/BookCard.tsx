@@ -142,17 +142,18 @@ export default function BookCard({
               {progressPercentage}%
             </span>
           </div>
-        )}
+      </div>
 
-        {/* Quick Actions */}
-        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      {/* Quick Actions - Absolutely positioned at bottom with slide-up animation */}
+      <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out">
+        <div className="flex items-center gap-2 p-3 bg-gradient-to-t from-black/80 to-black/60 backdrop-blur-md">
           {libraryEntry.shelf === "currentlyReading" && onUpdateProgress && (
             <button
               onClick={(e) => {
                 e.stopPropagation()
                 onUpdateProgress()
               }}
-              className="flex-1 px-3 py-1.5 bg-[#C9A86A]/60 hover:bg-[#C9A86A]/80 text-white text-xs font-semibold rounded-lg transition border border-[#C9A86A]/50 backdrop-blur-sm cursor-pointer"
+              className="flex-1 px-3 py-1.5 bg-[#C9A86A]/80 hover:bg-[#C9A86A] text-white text-xs font-semibold rounded-lg transition border border-[#C9A86A]/50 cursor-pointer"
             >
               Update
             </button>
@@ -163,7 +164,7 @@ export default function BookCard({
                 e.stopPropagation()
                 onDelete()
               }}
-              className="px-3 py-1.5 bg-red-600/60 hover:bg-red-600/80 text-white text-xs font-semibold rounded-lg transition border border-red-500/50 backdrop-blur-sm cursor-pointer"
+              className="px-3 py-1.5 bg-red-600/80 hover:bg-red-600 text-white text-xs font-semibold rounded-lg transition border border-red-500/50 cursor-pointer"
             >
               Remove
             </button>

@@ -71,7 +71,7 @@ export default function BookCard({
           <img
             src={coverImage}
             alt={book.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full group-hover:scale-105 transition-transform duration-300"
             onError={() => setImageError(true)}
           />
         ) : (

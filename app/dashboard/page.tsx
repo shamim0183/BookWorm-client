@@ -15,6 +15,8 @@ export default function DashboardPage() {
   const [recommendations, setRecommendations] = useState<any[]>([])
   const [stats, setStats] = useState<any>(null)
   const [currentlyReading, setCurrentlyReading] = useState<any[]>([])
+  const [enhancedStats, setEnhancedStats] = useState<any>(null)
+  const [readingGoal, setReadingGoal] = useState<any>(null)
 
   useEffect(() => {
     loadDashboardData()
@@ -40,8 +42,23 @@ export default function DashboardPage() {
         headers: { Authorization: `Bearer ${token}` },
       })
 
+      // Get enhanced stats for charts
+      const enhancedStatsResponse = await axios.get(
+        `${API_URL}/stats/enhanced`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+
+      // Get reading goal
+      const goalResponse = await axios.get(`${API_URL}/goals`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+
       setRecommendations(recResponse.data.recommendations || [])
       setStats(statsResponse.data.stats || {})
+      setEnhancedStats(enhancedStatsResponse.data.data || null)
+      setReadingGoal(goalResponse.data.goal || null)
 
       // Filter currently reading books
       const reading = (libraryResponse.data.library || [])
@@ -52,6 +69,21 @@ export default function DashboardPage() {
       toast.error(error.response?.data?.error || "Failed to load dashboard")
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleUpdateGoal = async (targetBooks: number) => {
+    try {
+      const token = localStorage.getItem("token")
+      const response = await axios.post(
+        `${API_URL}/goals`,
+        { targetBooks },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      setReadingGoal(response.data.goal)
+      toast.success("Reading goal updated!")
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || "Failed to update goal")
     }
   }
 
@@ -159,6 +191,62 @@ export default function DashboardPage() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* Reading Challenge Section */}
+        {(readingGoal || enhancedStats) && (
+          <div className="mb-8">
+            <ReadingChallenge
+              currentBooks={readingGoal?.currentBooks || 0}
+              targetBooks={readingGoal?.targetBooks || 50}
+              year={new Date().getFullYear()}
+              onUpdateGoal={handleUpdateGoal}
+            />
+          </div>
+        )}
+
+        {/* Charts Grid */}
+        {enhancedStats && (
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-white mb-4">
+              Your Reading Stats
+            </h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              {enhancedStats.genreBreakdown &&
+                enhancedStats.genreBreakdown.length > 0 && (
+                  <GenrePieChart data={enhancedStats.genreBreakdown} />
+                )}
+              {enhancedStats.monthlyBooks && (
+                <MonthlyBooksChart data={enhancedStats.monthlyBooks} />
+              )}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+              <ReadingStreakCard streak={enhancedStats.readingStreak || 0} />
+
+              {/* Additional Stats Cards */}
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6">
+                <div className="text-3xl font-bold text-[#C9A86A] mb-2">
+                  {enhancedStats.booksThisYear || 0}
+                </div>
+                <div className="text-white font-semibold mb-1">
+                  Books This Year
+                </div>
+                <div className="text-white/60 text-sm">
+                  {new Date().getFullYear()} reading progress
+                </div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6">
+                <div className="text-3xl font-bold text-green-400 mb-2">
+                  {(enhancedStats.totalPages || 0).toLocaleString()}
+                </div>
+                <div className="text-white font-semibold mb-1">Total Pages</div>
+                <div className="text-white/60 text-sm">
+                  Across all books read
+                </div>
+              </div>
             </div>
           </div>
         )}

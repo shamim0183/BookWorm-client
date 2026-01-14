@@ -118,7 +118,7 @@ export default function UserProfilePage() {
         {/* Back Button */}
         <button
           onClick={() => router.push("/dashboard")}
-          className="mb-4 flex items-center gap-2 text-white/80 hover:text-white transition group"
+          className="cursor-pointer mb-4 flex items-center gap-2 text-white/80 hover:text-white transition group"
         >
           <svg
             className="w-5 h-5 transform group-hover:-translate-x-1 transition"

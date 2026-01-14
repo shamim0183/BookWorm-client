@@ -27,8 +27,14 @@ export default function UserSearch() {
 
     setLoading(true)
     try {
+      const token = localStorage.getItem("token")
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/social/users/search?q=${searchQuery}`
+        `${process.env.NEXT_PUBLIC_API_URL}/social/users/search?q=${searchQuery}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       )
       setResults(res.data)
       setShowResults(true)
@@ -74,7 +80,7 @@ export default function UserSearch() {
 
       {/* Search Results Dropdown */}
       {showResults && (
-        <div className="absolute top-full mt-2 w-full bg-[#1F242E] border border-white/20 rounded-lg shadow-xl max-h-96 overflow-y-auto z-50">
+        <div className="absolute top-full mt-2 w-full bg-[#0F1419] border-2 border-[#C9A86A]/30 rounded-xl shadow-2xl max-h-96 overflow-y-auto z-50">
           {loading ? (
             <div className="p-4 text-white/60 text-center">Searching...</div>
           ) : results.length > 0 ? (
@@ -83,9 +89,9 @@ export default function UserSearch() {
                 <Link
                   key={user._id}
                   href={`/users/${user._id}`}
-                  className="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition cursor-pointer"
+                  className="flex items-center gap-3 p-3 hover:bg-[#C9A86A]/10 rounded-lg transition cursor-pointer border-b border-white/5 last:border-0"
                 >
-                  <div className="w-10 h-10 rounded-full bg-[#C9A86A] flex items-center justify-center overflow-hidden">
+                  <div className="w-10 h-10 rounded-full bg-[#C9A86A] flex items-center justify-center overflow-hidden shrink-0">
                     {user.photoURL ? (
                       <img
                         src={user.photoURL}
@@ -106,7 +112,7 @@ export default function UserSearch() {
                       {user.email}
                     </p>
                   </div>
-                  <div className="text-xs text-white/40">
+                  <div className="text-xs text-[#C9A86A]">
                     {user.followers?.length || 0} followers
                   </div>
                 </Link>

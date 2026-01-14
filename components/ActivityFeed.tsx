@@ -30,8 +30,14 @@ export default function ActivityFeed() {
 
   const fetchFeed = async () => {
     try {
+      const token = localStorage.getItem("token")
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/social/feed?limit=20`
+        `${process.env.NEXT_PUBLIC_API_URL}/social/feed?limit=20`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       )
       setActivities(res.data)
     } catch (error) {

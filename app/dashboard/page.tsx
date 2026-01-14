@@ -269,7 +269,7 @@ export default function DashboardPage() {
                   <div
                     key={book._id}
                     onClick={() => router.push(`/books/${book._id}`)}
-                    className="group cursor-pointer"
+                    className="group cursor-pointer relative"
                   >
                     <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl overflow-hidden hover:bg-white/15 hover:border-[#C9A86A]/50 transition-all duration-300">
                       <img
@@ -283,11 +283,23 @@ export default function DashboardPage() {
                         className="w-full aspect-[3/4] object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       {book.recommendationReason && (
-                        <div className="absolute top-2 left-2 right-2">
-                          <div className="bg-black/60 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-lg line-clamp-2">
-                            {book.recommendationReason}
+                        <>
+                          {/* Info Icon - bottom right */}
+                          <div className="absolute bottom-2 right-2 w-6 h-6 bg-[#C9A86A]/90 backdrop-blur-sm border border-white/30 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg">
+                            ?
                           </div>
-                        </div>
+                          {/* Tooltip - shows on hover */}
+                          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
+                            <div className="text-white text-center">
+                              <div className="text-xs font-semibold mb-1">
+                                💡 Why this book?
+                              </div>
+                              <div className="text-xs leading-relaxed">
+                                {book.recommendationReason}
+                              </div>
+                            </div>
+                          </div>
+                        </>
                       )}
                     </div>
                     <h3 className="text-white text-sm font-semibold mt-2 line-clamp-2">

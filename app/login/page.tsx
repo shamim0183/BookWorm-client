@@ -54,6 +54,11 @@ export default function LoginPage() {
       localStorage.setItem("token", token)
       localStorage.setItem("user", JSON.stringify(user))
 
+      // Also store token in cookie for middleware (7 days expiry)
+      document.cookie = `token=${token}; path=/; max-age=${
+        7 * 24 * 60 * 60
+      }; SameSite=Strict`
+
       // Show success message
       toast.success("Login successful! Redirecting...")
 
@@ -85,6 +90,11 @@ export default function LoginPage() {
       // Store token and user data in localStorage
       localStorage.setItem("token", token)
       localStorage.setItem("user", JSON.stringify(userData))
+
+      // Also store token in cookie for middleware (7 days expiry)
+      document.cookie = `token=${token}; path=/; max-age=${
+        7 * 24 * 60 * 60
+      }; SameSite=Strict`
 
       // Show success message
       toast.success("Login successful! Redirecting...")

@@ -382,7 +382,7 @@ export default function AdminBooksPage() {
           </div>
 
           {/* Add/Edit Book Form */}
-          {selectedBook && (
+          {selectedBook && !editingBook && (
             <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 mb-8">
               <h2 className="text-2xl font-semibold text-white mb-6">
                 {editingBook ? "Edit Book" : "Add Book Details"}

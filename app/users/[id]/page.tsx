@@ -109,13 +109,13 @@ export default function UserProfilePage() {
   const isOwnProfile = currentUser?._id === id
 
   return (
-    <div className="min-h-screen bg-[#0F1419] py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        {/* Profile Header */}
-        <div className="bg-[#1F242E] rounded-xl p-6 sm:p-8 mb-6">
-          <div className="flex flex-col sm:flex-row items-center gap-6">
+    <div className="min-h-screen bg-[#0F1419] py-8 px-4">
+      <div className="max-w-3xl mx-auto">
+        {/* Profile Card */}
+        <div className="bg-[#1F242E] rounded-2xl p-8 mb-6 border border-white/10">
+          <div className="flex items-start gap-6">
             {/* Avatar */}
-            <div className="w-24 h-24 rounded-full bg-[#C9A86A] flex items-center justify-center overflow-hidden">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-[#C9A86A] to-[#B89858] flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
               {user.photoURL ? (
                 <img
                   src={user.photoURL}
@@ -123,63 +123,87 @@ export default function UserProfilePage() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-4xl font-bold text-white">
+                <span className="text-3xl sm:text-4xl font-bold text-white">
                   {user.name.charAt(0).toUpperCase()}
                 </span>
               )}
             </div>
 
-            {/* User Info */}
-            <div className="flex-1 text-center sm:text-left">
-              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+            {/* User Info & Stats */}
+            <div className="flex-1 min-w-0">
+              {/* Name & Email */}
+              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1 truncate">
                 {user.name}
               </h1>
-              <p className="text-white/60 mb-4">{user.email}</p>
+              <p className="text-white/50 text-sm mb-4 truncate">
+                {user.email}
+              </p>
 
-              {/* Stats */}
-              <div className="flex gap-6 justify-center sm:justify-start">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-[#C9A86A]">
+              {/* Stats Row */}
+              <div className="flex gap-8 mb-4">
+                <div>
+                  <div className="text-xl sm:text-2xl font-bold text-[#C9A86A]">
                     {user.followerCount || 0}
                   </div>
-                  <div className="text-sm text-white/60">Followers</div>
+                  <div className="text-xs sm:text-sm text-white/60">
+                    Followers
+                  </div>
                 </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-[#C9A86A]">
+                <div>
+                  <div className="text-xl sm:text-2xl font-bold text-[#C9A86A]">
                     {user.followingCount || 0}
                   </div>
-                  <div className="text-sm text-white/60">Following</div>
+                  <div className="text-xs sm:text-sm text-white/60">
+                    Following
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Follow Button */}
             {!isOwnProfile && (
-              <button
-                onClick={handleFollow}
-                disabled={followLoading}
-                className={`px-6 py-2 rounded-lg font-semibold transition cursor-pointer ${
-                  user.isFollowing
-                    ? "bg-white/10 text-white hover:bg-white/20"
-                    : "bg-[#C9A86A] text-white hover:bg-[#B89858]"
-                } disabled:opacity-50 disabled:cursor-not-allowed`}
-              >
-                {followLoading
-                  ? "Loading..."
-                  : user.isFollowing
-                  ? "Following"
-                  : "Follow"}
-              </button>
+              <div className="shrink-0">
+                <button
+                  onClick={handleFollow}
+                  disabled={followLoading}
+                  className={`px-5 py-2 rounded-lg font-semibold text-sm transition cursor-pointer ${
+                    user.isFollowing
+                      ? "bg-white/10 text-white hover:bg-white/15 border border-white/20"
+                      : "bg-gradient-to-r from-[#C9A86A] to-[#B89858] text-white hover:shadow-lg hover:shadow-[#C9A86A]/30"
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  {followLoading
+                    ? "Loading..."
+                    : user.isFollowing
+                    ? "Following"
+                    : "Follow"}
+                </button>
+              </div>
             )}
           </div>
         </div>
 
-        {/* Activity Section */}
-        <div className="bg-[#1F242E] rounded-xl p-6">
-          <h2 className="text-xl font-bold text-white mb-4">Recent Activity</h2>
-          <p className="text-white/60 text-center py-8">
-            No recent activity to show
-          </p>
+        {/* Recent Activity Card */}
+        <div className="bg-[#1F242E] rounded-2xl p-8 border border-white/10">
+          <h2 className="text-xl font-bold text-white mb-6">Recent Activity</h2>
+          <div className="text-center py-12">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center">
+              <svg
+                className="w-8 h-8 text-white/30"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+              </svg>
+            </div>
+            <p className="text-white/40 text-sm">No recent activity to show</p>
+          </div>
         </div>
       </div>
     </div>

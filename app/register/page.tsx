@@ -6,7 +6,7 @@ import axios from "axios"
 import gsap from "gsap"
 import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
-import toast, { Toaster } from "react-hot-toast"
+import toast from "react-hot-toast"
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
 const IMGBB_KEY = process.env.NEXT_PUBLIC_IMGBB_API_KEY
@@ -182,14 +182,6 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1F242E] via-[#2C5F4F] to-[#1F242E] flex flex-row-reverse relative overflow-hidden">
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: { background: "#1F242E", color: "#FAF7F0" },
-          success: { iconTheme: { primary: "#2C5F4F", secondary: "#FAF7F0" } },
-        }}
-      />
-
       {/* Floating Book Covers - Behind Both Panels */}
       <div className="absolute inset-0 overflow-hidden opacity-40">
         {/* Large Books */}

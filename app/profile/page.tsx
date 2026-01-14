@@ -5,7 +5,7 @@ import ProtectedLayout from "@/components/ProtectedLayout"
 import { useAuth } from "@/lib/AuthContext"
 import axios from "axios"
 import { useState } from "react"
-import toast, { Toaster } from "react-hot-toast"
+import toast from "react-hot-toast"
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
 const IMGBB_KEY = process.env.NEXT_PUBLIC_IMGBB_API_KEY
@@ -105,13 +105,6 @@ export default function ProfilePage() {
 
   return (
     <ProtectedLayout>
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: { background: "#1F242E", color: "#FAF7F0" },
-          success: { iconTheme: { primary: "#2C5F4F", secondary: "#FAF7F0" } },
-        }}
-      />
       <PageWrapper className="-mt-16 pt-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Header */}

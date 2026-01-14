@@ -6,7 +6,7 @@ import SuccessModal from "@/components/SuccessModal"
 import axios from "axios"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import toast, { Toaster } from "react-hot-toast"
+import toast from "react-hot-toast"
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
 
@@ -355,13 +355,6 @@ export default function BookDetailsPage() {
 
   return (
     <ProtectedLayout>
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: { background: "#1F242E", color: "#FAF7F0" },
-          success: { iconTheme: { primary: "#2C5F4F", secondary: "#FAF7F0" } },
-        }}
-      />
       <PageWrapper className="-mt-16 pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Back Button */}
@@ -682,8 +675,6 @@ export default function BookDetailsPage() {
             successModal.title === "Already Reviewed" ? "warning" : "success"
           }
         />
-
-        <Toaster />
       </PageWrapper>
     </ProtectedLayout>
   )

@@ -4,13 +4,21 @@ import axios from "axios"
 import Link from "next/link"
 import { useState } from "react"
 
+interface UserResult {
+  _id: string
+  name: string
+  email: string
+  photoURL?: string
+  followers?: string[]
+}
+
 export default function UserSearch() {
   const [query, setQuery] = useState("")
-  const [results, setResults] = useState([])
+  const [results, setResults] = useState<UserResult[]>([])
   const [loading, setLoading] = useState(false)
   const [showResults, setShowResults] = useState(false)
 
-  const searchUsers = async (searchQuery) => {
+  const searchUsers = async (searchQuery: string) => {
     if (!searchQuery.trim()) {
       setResults([])
       setShowResults(false)
@@ -31,7 +39,7 @@ export default function UserSearch() {
     }
   }
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setQuery(value)
     searchUsers(value)

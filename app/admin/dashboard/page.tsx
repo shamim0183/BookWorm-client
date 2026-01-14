@@ -95,7 +95,7 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
               <div className="text-[#C9A86A] text-4xl font-bold mb-2">
-                {stats.totalBooks}
+                {stats?.totalBooks || 0}
               </div>
               <div className="text-white/80 text-sm font-medium">
                 Total Books
@@ -121,7 +121,7 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
               <div className="text-blue-400 text-4xl font-bold mb-2">
-                {stats.totalUsers}
+                {stats?.totalUsers || 0}
               </div>
               <div className="text-white/80 text-sm font-medium">
                 Total Users
@@ -147,7 +147,7 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
               <div className="text-yellow-400 text-4xl font-bold mb-2">
-                {stats.pendingReviews}
+                {stats?.pendingReviews || 0}
               </div>
               <div className="text-white/80 text-sm font-medium">
                 Pending Reviews
@@ -173,7 +173,7 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
               <div className="text-green-400 text-4xl font-bold mb-2">
-                +{stats.newUsersThisMonth}
+                +{stats?.newUsersThisMonth || 0}
               </div>
               <div className="text-white/80 text-sm font-medium">
                 New Users This Month

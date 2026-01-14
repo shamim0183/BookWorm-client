@@ -1,11 +1,13 @@
 "use client"
 
+import ActivityFeed from "@/components/ActivityFeed"
 import GenrePieChart from "@/components/GenrePieChart"
 import MonthlyBooksChart from "@/components/MonthlyBooksChart"
 import PageWrapper from "@/components/PageWrapper"
 import ProtectedLayout from "@/components/ProtectedLayout"
 import ReadingChallenge from "@/components/ReadingChallenge"
 import ReadingStreakCard from "@/components/ReadingStreakCard"
+import UserSearch from "@/components/UserSearch"
 import axios from "axios"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -257,6 +259,27 @@ export default function DashboardPage() {
               </div>
             </div>
           )}
+
+          {/* Social Features Section */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-white mb-6">
+              Discover & Connect
+            </h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* User Search */}
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6">
+                <h3 className="text-xl font-bold text-white mb-4">
+                  Find Readers
+                </h3>
+                <UserSearch />
+              </div>
+
+              {/* Activity Feed */}
+              <div>
+                <ActivityFeed />
+              </div>
+            </div>
+          </div>
 
           {/* Recommendations Section */}
           <div>

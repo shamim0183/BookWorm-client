@@ -4,8 +4,24 @@ import axios from "axios"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 
+interface Activity {
+  _id: string
+  type: string
+  user: {
+    _id: string
+    name: string
+    photoURL?: string
+  }
+  book?: {
+    _id: string
+    title: string
+    coverUrl?: string
+  }
+  createdAt: string
+}
+
 export default function ActivityFeed() {
-  const [activities, setActivities] = useState([])
+  const [activities, setActivities] = useState<Activity[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -25,7 +41,7 @@ export default function ActivityFeed() {
     }
   }
 
-  const getActivityMessage = (activity) => {
+  const getActivityMessage = (activity: Activity) => {
     switch (activity.type) {
       case "added_book":
         return "added a book to their library"
@@ -40,10 +56,10 @@ export default function ActivityFeed() {
     }
   }
 
-  const formatTime = (date) => {
+  const formatTime = (date: string) => {
     const now = new Date()
     const activityDate = new Date(date)
-    const diffMs = now - activityDate
+    const diffMs = now.getTime() - activityDate.getTime()
     const diffMins = Math.floor(diffMs / 60000)
     const diffHours = Math.floor(diffMs / 3600000)
     const diffDays = Math.floor(diffMs / 86400000)

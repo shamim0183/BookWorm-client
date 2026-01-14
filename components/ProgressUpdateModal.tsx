@@ -17,9 +17,6 @@ export default function ProgressUpdateModal({
   onSuccess,
   libraryEntry,
 }: ProgressUpdateModalProps) {
-  // Early return BEFORE any hooks to ensure consistent hook count
-  if (!isOpen || !libraryEntry) return null
-
   const currentProgress = libraryEntry?.progress?.pagesRead || 0
 
   const [pagesRead, setPagesRead] = useState(currentProgress)
@@ -31,6 +28,9 @@ export default function ProgressUpdateModal({
       setPagesRead(libraryEntry.progress?.pagesRead || 0)
     }
   }, [isOpen, libraryEntry])
+
+  // Early return AFTER all hooks
+  if (!isOpen || !libraryEntry) return null
 
   const totalPages =
     libraryEntry?.book?.totalPages || libraryEntry?.progress?.totalPages || 0

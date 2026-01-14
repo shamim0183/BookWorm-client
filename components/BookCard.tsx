@@ -147,7 +147,11 @@ export default function BookCard({
 
       {/* Quick Actions - Absolutely positioned at bottom with slide-up animation */}
       <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out">
-        <div className="flex items-center gap-2 p-3 bg-gradient-to-t from-black/80 to-black/60 backdrop-blur-md">
+        <div
+          className={`flex items-center gap-2 p-3 bg-gradient-to-t from-black/80 to-black/60 backdrop-blur-md ${
+            libraryEntry.shelf !== "currentlyReading" ? "justify-center" : ""
+          }`}
+        >
           {libraryEntry.shelf === "currentlyReading" && onUpdateProgress && (
             <button
               onClick={(e) => {

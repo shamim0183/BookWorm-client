@@ -4,6 +4,7 @@ import { useAuth } from "@/lib/AuthContext"
 import { signInWithGoogle } from "@/lib/auth"
 import axios from "axios"
 import gsap from "gsap"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import toast from "react-hot-toast"
@@ -191,7 +192,10 @@ export default function LoginPage() {
         ref={leftPanelRef}
         className="hidden lg:flex lg:w-1/2 p-12 flex-col justify-between relative z-10"
       >
-        <div className="flex items-center gap-3 mb-12">
+        <Link
+          href="/"
+          className="flex items-center gap-3 mb-12 cursor-pointer hover:opacity-80 transition"
+        >
           <div className="w-12 h-12 bg-[#C9A86A] rounded-xl flex items-center justify-center">
             <svg
               className="w-7 h-7 text-white"
@@ -204,7 +208,7 @@ export default function LoginPage() {
           <span className="text-2xl font-heading font-bold text-white">
             BookWorm
           </span>
-        </div>
+        </Link>
 
         <div className="space-y-6 max-w-md">
           <h2 className="text-4xl font-heading font-bold text-white leading-tight">

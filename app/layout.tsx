@@ -4,11 +4,26 @@ import { Toaster } from "react-hot-toast"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "BookWorm - Your Personal Reading Tracker",
+  title: "BookWorm - Personal Reading Tracker & Book Recommendations",
   description:
-    "Discover books, track reading, write reviews, get recommendations",
+    "Track your reading progress, discover personalized book recommendations, write reviews, and connect with fellow readers. Your ultimate reading companion.",
+  keywords: [
+    "reading tracker",
+    "book recommendations",
+    "personal library",
+    "reading progress",
+    "book reviews",
+    "reading goals",
+    "book management",
+  ],
   icons: {
-    icon: "/favicon.png",
+    icon: "/BookWorm.png",
+  },
+  openGraph: {
+    title: "BookWorm - Your Personal Reading Companion",
+    description:
+      "Track reading, get personalized recommendations, and discover your next favorite book.",
+    type: "website",
   },
 }
 

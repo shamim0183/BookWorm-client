@@ -1,127 +1,73 @@
 "use client"
 
-/**
- * Reusable FloatingBooks component for background animations
- * Displays floating book covers with different sizes and animations
- * Used across all pages for consistent theming
- */
+import { useEffect, useState } from "react"
+
+interface FloatingBook {
+  id: number
+  image: string
+  size: number
+  left: number
+  top: number
+  rotation: number
+  duration: number
+  delay: number
+}
+
 export default function FloatingBooks() {
-  const books = [
-    // Large books
-    {
-      url: "https://covers.openlibrary.org/b/id/8235886-L.jpg",
-      size: "w-40 h-56",
-      position: "top-20 left-20",
-      animation: "animate-float",
-      rotation: "rotate-12",
-    },
-    {
-      url: "https://covers.openlibrary.org/b/id/10387084-L.jpg",
-      size: "w-44 h-60",
-      position: "bottom-40 left-40",
-      animation: "animate-float",
-      rotation: "-rotate-6",
-    },
-    {
-      url: "https://covers.openlibrary.org/b/id/12549326-L.jpg",
-      size: "w-40 h-56",
-      position: "top-40 right-16",
-      animation: "animate-float-delayed",
-      rotation: "rotate-[-15deg]",
-    },
+  const [books, setBooks] = useState<FloatingBook[]>([])
 
-    // Medium books
-    {
-      url: "https://covers.openlibrary.org/b/id/12583098-L.jpg",
-      size: "w-32 h-44",
-      position: "top-60 right-32",
-      animation: "animate-float-delayed",
-      rotation: "rotate-3",
-    },
-    {
-      url: "https://covers.openlibrary.org/b/id/10677563-L.jpg",
-      size: "w-32 h-48",
-      position: "bottom-1/3 left-1/4",
-      animation: "animate-float-delayed",
-      rotation: "-rotate-12",
-    },
-    {
-      url: "https://covers.openlibrary.org/b/id/7884916-L.jpg",
-      size: "w-28 h-40",
-      position: "top-1/3 right-1/4",
-      animation: "animate-float",
-      rotation: "rotate-6",
-    },
-    {
-      url: "https://covers.openlibrary.org/b/id/8465165-L.jpg",
-      size: "w-32 h-46",
-      position: "bottom-32 right-1/3",
-      animation: "animate-float",
-      rotation: "rotate-8",
-    },
-    {
-      url: "https://covers.openlibrary.org/b/id/10521270-L.jpg",
-      size: "w-30 h-42",
-      position: "top-1/2 left-16",
-      animation: "animate-float-delayed",
-      rotation: "-rotate-8",
-    },
+  useEffect(() => {
+    // Generate random floating books on mount/refresh
+    // OpenLibrary has millions of covers - generate truly random IDs
+    const generatedBooks: FloatingBook[] = Array.from(
+      { length: 15 },
+      (_, i) => {
+        // Generate random cover ID from OpenLibrary
+        // Valid range: ~8000000-10000000 for quality covers
+        const randomCoverId = Math.floor(Math.random() * 2000000) + 8000000
 
-    // Small books
-    {
-      url: "https://covers.openlibrary.org/b/id/8225261-L.jpg",
-      size: "w-20 h-32",
-      position: "bottom-20 right-20",
-      animation: "animate-float-delayed",
-      rotation: "rotate-[-5deg]",
-    },
-    {
-      url: "https://covers.openlibrary.org/b/id/8231357-L.jpg",
-      size: "w-24 h-34",
-      position: "top-1/4 left-1/3",
-      animation: "animate-float",
-      rotation: "rotate-12",
-    },
-    {
-      url: "https://covers.openlibrary.org/b/id/7659574-L.jpg",
-      size: "w-22 h-32",
-      position: "bottom-1/4 right-1/4",
-      animation: "animate-float-delayed",
-      rotation: "-rotate-10",
-    },
-    {
-      url: "https://covers.openlibrary.org/b/id/8418735-L.jpg",
-      size: "w-20 h-30",
-      position: "top-3/4 left-1/2",
-      animation: "animate-float",
-      rotation: "rotate-15",
-    },
+        return {
+          id: i,
+          image: `https://covers.openlibrary.org/b/id/${randomCoverId}-M.jpg`,
+          size: Math.random() * 80 + 60, // 60-140px (more variety)
+          left: Math.random() * 110 - 5, // -5% to 105% (books can go slightly off-screen)
+          top: Math.random() * 110 - 5, // -5% to 105% (more vertical spread)
+          rotation: Math.random() * 90 - 45, // -45 to +45 degrees (tilted left/right)
+          duration: Math.random() * 10 + 15, // 15-25 seconds
+          delay: Math.random() * -20, // Start at different times
+        }
+      }
+    )
 
-    // Center feature book
-    {
-      url: "https://covers.openlibrary.org/b/id/12919193-L.jpg",
-      size: "w-48 h-64",
-      position: "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
-      animation: "animate-float",
-      rotation: "rotate-[-8deg]",
-      opacity: "opacity-40",
-    },
-  ]
+    setBooks(generatedBooks)
+  }, []) // Empty dependency = regenerates on every mount/refresh
 
   return (
-    <div className="absolute inset-0 overflow-hidden opacity-40 pointer-events-none">
-      {books.map((book, index) => (
-        <img
-          key={index}
-          src={book.url}
-          alt=""
-          className={`absolute ${book.size} ${book.position} ${
-            book.animation
-          } ${book.rotation} ${
-            book.opacity || ""
-          } rounded-lg shadow-2xl object-cover`}
-          loading="lazy"
-        />
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 opacity-15">
+      {books.map((book) => (
+        <div
+          key={book.id}
+          className="absolute animate-float"
+          style={{
+            left: `${book.left}%`,
+            top: `${book.top}%`,
+            width: `${book.size}px`,
+            height: `${book.size * 1.5}px`,
+            transform: `rotate(${book.rotation}deg)`,
+            animationDuration: `${book.duration}s`,
+            animationDelay: `${book.delay}s`,
+          }}
+        >
+          <img
+            src={book.image}
+            alt="Floating book"
+            className="w-full h-full object-cover rounded-lg shadow-2xl opacity-80"
+            onError={(e) => {
+              // Fallback if image fails to load
+              e.currentTarget.style.display = "none"
+            }}
+          />
+        </div>
       ))}
     </div>
   )

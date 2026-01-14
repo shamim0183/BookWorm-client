@@ -1,5 +1,6 @@
 "use client"
 
+import FloatingBooks from "@/components/FloatingBooks"
 import { useAuth } from "@/lib/AuthContext"
 import axios from "axios"
 import { useParams, useRouter } from "next/navigation"
@@ -187,7 +188,7 @@ export default function UserProfilePage() {
         </div>
 
         {/* Recent Activity Card */}
-        <div className="bg-[#1F242E] rounded-2xl p-8 border border-white/10">
+        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl">
           <h2 className="text-xl font-bold text-white mb-6">Recent Activity</h2>
           <div className="text-center py-12">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center">

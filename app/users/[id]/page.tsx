@@ -6,11 +6,21 @@ import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 
+interface UserProfile {
+  _id: string
+  name: string
+  email: string
+  photoURL?: string
+  followerCount: number
+  followingCount: number
+  isFollowing: boolean
+}
+
 export default function UserProfilePage() {
   const { id } = useParams()
   const router = useRouter()
   const { user: currentUser } = useAuth()
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [followLoading, setFollowLoading] = useState(false)
 
@@ -23,7 +33,7 @@ export default function UserProfilePage() {
   const fetchUserProfile = async () => {
     try {
       const token = localStorage.getItem("token")
-      const res = await axios.get(
+      const res = await axios.get<UserProfile>(
         `${process.env.NEXT_PUBLIC_API_URL}/social/profile/${id}`,
         {
           headers: {
